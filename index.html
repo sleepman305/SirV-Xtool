@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Toolbox">
+<meta name="theme-color" content="#0a0a0f">
+<meta name="format-detection" content="telephone=no">
+<title>Toolbox</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23ff6b35'/%3E%3Cstop offset='0.5' stop-color='%23a855f7'/%3E%3Cstop offset='1' stop-color='%2306b6d4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='180' height='180' rx='40' fill='%230a0a0f'/%3E%3Ccircle cx='90' cy='90' r='50' fill='url(%23g)'/%3E%3C/svg%3E">
+
+<style>
+:root {
+  --bg: #0a0a0f;
+  --bg-elev: #14141c;
+  --surface: rgba(255, 255, 255, 0.04);
+  --surface-2: rgba(255, 255, 255, 0.07);
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.15);
+  --text: #fafafa;
+  --text-2: rgba(255, 255, 255, 0.62);
+  --text-3: rgba(255, 255, 255, 0.38);
+  --accent-unzip: linear-gradient(135deg, #ff6b35 0%, #ffa05c 100%);
+  --accent-bg: linear-gradient(135deg, #ec4899 0%, #a855f7 100%);
+  --accent-files: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+  --accent-dl: linear-gradient(135deg, #10b981 0%, #84cc16 100%);
+  --safe-top: env(safe-area-inset-top);
+  --safe-bottom: env(safe-area-inset-bottom);
+  --display: 'Instrument Serif', Georgia, serif;
+  --body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+*:not(input):not(textarea) { -webkit-user-select: none; user-select: none; }
+input, textarea { -webkit-user-select: text; user-select: text; }
+
+html, body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  overscroll-behavior-y: none;
+}
+
+body {
+  min-height: 100dvh;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(168, 85, 247, 0.18), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 100% 30%, rgba(6, 182, 212, 0.12), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 0% 60%, rgba(255, 107, 53, 0.10), transparent 60%),
+    var(--bg);
+  background-attachment: fixed;
+}
+
+.view {
+  display: none;
+  min-height: 100dvh;
+  padding-top: calc(var(--safe-top) + 12px);
+  padding-bottom: calc(var(--safe-bottom) + 24px);
+}
+.view.active { display: block; animation: fadeIn 0.35s cubic-bezier(0.2, 0.8, 0.2, 1); }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes stagger {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==================== HOME ==================== */
+.home-hero {
+  padding: 32px 24px 28px;
+}
+.home-hero .greeting {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin-bottom: 14px;
+  animation: stagger 0.6s 0.05s both cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.home-hero h1 {
+  font-family: var(--display);
+  font-size: 56px;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  font-weight: 400;
+  animation: stagger 0.7s 0.12s both cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.home-hero h1 em {
+  font-style: italic;
+  background: linear-gradient(135deg, #ff6b35, #a855f7, #06b6d4);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.home-hero .sub {
+  color: var(--text-2);
+  font-size: 15px;
+  margin-top: 16px;
+  max-width: 320px;
+  animation: stagger 0.7s 0.2s both cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.modules {
+  padding: 8px 16px 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.module-card {
+  position: relative;
+  aspect-ratio: 1 / 1.05;
+  border-radius: 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.2s ease, background 0.2s ease;
+  animation: stagger 0.6s both cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.module-card:nth-child(1) { animation-delay: 0.28s; }
+.module-card:nth-child(2) { animation-delay: 0.34s; }
+.module-card:nth-child(3) { animation-delay: 0.40s; }
+.module-card:nth-child(4) { animation-delay: 0.46s; }
+
+.module-card:active { transform: scale(0.97); background: var(--surface-2); }
+
+.module-card .icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+}
+.module-card .icon.u { background: var(--accent-unzip); }
+.module-card .icon.b { background: var(--accent-bg); }
+.module-card .icon.f { background: var(--accent-files); }
+.module-card .icon.d { background: var(--accent-dl); }
+
+.module-card .meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.module-card .title {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.module-card .desc {
+  font-size: 12.5px;
+  color: var(--text-2);
+  line-height: 1.35;
+}
+.module-card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.12), transparent 40%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.footer-tip {
+  margin: 24px 24px 8px;
+  padding: 16px;
+  border-radius: 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--text-2);
+  line-height: 1.5;
+  animation: stagger 0.6s 0.55s both cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.footer-tip strong { color: var(--text); font-weight: 600; }
+
+/* ==================== MODULE PAGES ==================== */
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 20px 16px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: rgba(10, 10, 15, 0.6);
+}
+.back-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: grid;
+  place-items: center;
+  color: var(--text);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+.back-btn:active { background: var(--surface-2); }
+.page-title {
+  font-family: var(--display);
+  font-size: 28px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+.page-title em { font-style: italic; color: var(--text-2); }
+
+.page-content { padding: 0 20px; }
+
+.dropzone {
+  margin-top: 8px;
+  border: 1.5px dashed var(--border-strong);
+  border-radius: 22px;
+  padding: 36px 20px;
+  text-align: center;
+  background: var(--surface);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.dropzone:active { background: var(--surface-2); border-color: rgba(255,255,255,0.25); }
+.dropzone .big-icon {
+  font-size: 40px;
+  margin-bottom: 12px;
+  display: block;
+}
+.dropzone .label {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.dropzone .hint {
+  font-size: 13px;
+  color: var(--text-2);
+}
+.dropzone input[type=file] { display: none; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 20px;
+  border-radius: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  width: 100%;
+}
+.btn:active { transform: scale(0.98); background: var(--surface-2); }
+.btn.primary { background: linear-gradient(135deg, #fafafa, #d4d4d8); color: #0a0a0f; border-color: transparent; }
+.btn.primary:active { transform: scale(0.98); }
+.btn.gradient-u { background: var(--accent-unzip); border-color: transparent; }
+.btn.gradient-b { background: var(--accent-bg); border-color: transparent; }
+.btn.gradient-f { background: var(--accent-files); border-color: transparent; }
+.btn.gradient-d { background: var(--accent-dl); border-color: transparent; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.status {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-size: 14px;
+  color: var(--text-2);
+  display: none;
+}
+.status.show { display: block; }
+.status.error { border-color: rgba(239, 68, 68, 0.4); color: #fca5a5; }
+.status.success { border-color: rgba(16, 185, 129, 0.4); color: #6ee7b7; }
+
+.progress-bar {
+  height: 4px;
+  background: var(--surface-2);
+  border-radius: 99px;
+  overflow: hidden;
+  margin-top: 12px;
+  display: none;
+}
+.progress-bar.show { display: block; }
+.progress-bar .fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #a855f7, #06b6d4);
+  border-radius: 99px;
+  transition: width 0.3s ease;
+}
+
+/* ==================== UNZIP ==================== */
+.file-list { margin-top: 20px; display: flex; flex-direction: column; gap: 8px; }
+.file-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+.file-item .ic {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--surface-2);
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.file-item .info { flex: 1; min-width: 0; }
+.file-item .name {
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.file-item .size { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+.file-item .act {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--surface-2);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.file-item .act:active { background: var(--border-strong); }
+
+.actions-row { display: flex; gap: 10px; margin-top: 16px; }
+.actions-row .btn { flex: 1; }
+
+/* ==================== BG REMOVAL ==================== */
+.image-preview {
+  margin-top: 20px;
+  border-radius: 18px;
+  overflow: hidden;
+  background:
+    repeating-conic-gradient(rgba(255,255,255,0.04) 0% 25%, transparent 0% 50%)
+    50% / 24px 24px,
+    var(--surface);
+  border: 1px solid var(--border);
+  min-height: 240px;
+  display: none;
+  position: relative;
+}
+.image-preview.show { display: block; }
+.image-preview img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 60vh;
+  object-fit: contain;
+}
+
+/* ==================== FILES ==================== */
+.files-toolbar {
+  display: flex;
+  gap: 8px;
+  margin: 4px 0 16px;
+  flex-wrap: wrap;
+}
+.chip {
+  padding: 9px 14px;
+  border-radius: 99px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.chip:active { background: var(--surface-2); }
+.breadcrumb {
+  font-size: 13px;
+  color: var(--text-2);
+  margin-bottom: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+}
+.breadcrumb .crumb {
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+.breadcrumb .crumb:active { background: var(--surface); }
+.breadcrumb .crumb.current { color: var(--text); font-weight: 600; }
+.breadcrumb .sep { color: var(--text-3); }
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-3);
+}
+.empty-state .ic { font-size: 48px; margin-bottom: 12px; opacity: 0.5; }
+.empty-state .t { font-size: 15px; font-weight: 600; color: var(--text-2); margin-bottom: 4px; }
+.empty-state .s { font-size: 13px; }
+
+.fab {
+  position: fixed;
+  bottom: calc(var(--safe-bottom) + 20px);
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--accent-files);
+  border: none;
+  color: white;
+  font-size: 28px;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
+  cursor: pointer;
+  z-index: 20;
+}
+.fab:active { transform: scale(0.95); }
+
+/* ==================== DOWNLOADER ==================== */
+.url-input-wrap {
+  margin-top: 8px;
+  position: relative;
+}
+.url-input {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px 16px 16px 50px;
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.url-input:focus { border-color: var(--border-strong); }
+.url-input-wrap::before {
+  content: '🔗';
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+}
+.platform-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 16px;
+}
+.platform-btn {
+  padding: 16px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  text-align: left;
+  color: var(--text);
+  font-family: var(--body);
+}
+.platform-btn:active { transform: scale(0.97); background: var(--surface-2); }
+.platform-btn .pic {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.platform-btn .pic.yt { background: linear-gradient(135deg, #ff0000, #cc0000); }
+.platform-btn .pic.tt { background: linear-gradient(135deg, #00f2ea, #ff0050); }
+.platform-btn .pic.fb { background: linear-gradient(135deg, #1877f2, #0a52cf); }
+.platform-btn .pic.ig { background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+.platform-btn .pic.tw { background: linear-gradient(135deg, #1d1d1f, #000); }
+.platform-btn .pic.un { background: linear-gradient(135deg, #6366f1, #8b5cf6); }
+
+.platform-btn .nm {
+  font-size: 14px;
+  font-weight: 700;
+  display: block;
+}
+.platform-btn .sub {
+  font-size: 11px;
+  color: var(--text-3);
+  display: block;
+  margin-top: 2px;
+}
+
+.section-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin: 24px 0 10px;
+}
+
+.help-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  font-size: 13.5px;
+  color: var(--text-2);
+  line-height: 1.6;
+}
+.help-card a {
+  color: #93c5fd;
+  text-decoration: none;
+  font-weight: 600;
+}
+.help-card ol { padding-left: 20px; margin-top: 8px; }
+.help-card li { margin-bottom: 6px; }
+
+/* ==================== SHEET (modal) ==================== */
+.sheet-bg {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 100;
+  display: none;
+  align-items: flex-end;
+}
+.sheet-bg.show { display: flex; animation: fadeIn 0.2s ease; }
+.sheet {
+  width: 100%;
+  background: var(--bg-elev);
+  border-top-left-radius: 28px;
+  border-top-right-radius: 28px;
+  padding: 12px 20px calc(var(--safe-bottom) + 24px);
+  animation: slideUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  max-height: 85dvh;
+  overflow-y: auto;
+}
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+.sheet .handle {
+  width: 36px;
+  height: 4px;
+  background: var(--border-strong);
+  border-radius: 99px;
+  margin: 4px auto 16px;
+}
+.sheet h3 { font-family: var(--display); font-size: 24px; font-weight: 400; margin-bottom: 6px; }
+.sheet p { color: var(--text-2); font-size: 14px; margin-bottom: 16px; }
+.sheet-input {
+  width: 100%;
+  padding: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 15px;
+  outline: none;
+  margin-bottom: 12px;
+}
+.sheet-input:focus { border-color: var(--border-strong); }
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: calc(var(--safe-bottom) + 90px);
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(20, 20, 28, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  color: var(--text);
+  padding: 12px 20px;
+  border-radius: 99px;
+  border: 1px solid var(--border-strong);
+  font-size: 14px;
+  font-weight: 600;
+  z-index: 200;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  max-width: 90vw;
+  text-align: center;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- ==================== HOME ==================== -->
+<section id="view-home" class="view active">
+  <div class="home-hero">
+    <div class="greeting">Toolbox · iPhone Edition</div>
+    <h1>Bộ công cụ <em>gọn nhẹ</em><br>chạy thẳng trên trình duyệt.</h1>
+    <p class="sub">Bốn module nhỏ thay thế cả tá app. Không cài đặt, không hết hạn.</p>
+  </div>
+
+  <div class="modules">
+    <div class="module-card" data-go="unzip">
+      <div class="icon u">📦</div>
+      <div class="meta">
+        <div class="title">Giải nén</div>
+        <div class="desc">ZIP, xem nội dung, tải file ra</div>
+      </div>
+    </div>
+    <div class="module-card" data-go="bgremove">
+      <div class="icon b">✨</div>
+      <div class="meta">
+        <div class="title">Xoá nền</div>
+        <div class="desc">AI tách nền ảnh ngay trên máy</div>
+      </div>
+    </div>
+    <div class="module-card" data-go="files">
+      <div class="icon f">📁</div>
+      <div class="meta">
+        <div class="title">Quản lý file</div>
+        <div class="desc">Kho lưu trữ riêng có thư mục</div>
+      </div>
+    </div>
+    <div class="module-card" data-go="download">
+      <div class="icon d">⬇️</div>
+      <div class="meta">
+        <div class="title">Tải video</div>
+        <div class="desc">YouTube, TikTok, FB, IG…</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-tip">
+    <strong>Mẹo:</strong> Bấm nút Chia sẻ trong Safari → <strong>Thêm vào MH chính</strong> để dùng như app thật, mở toàn màn hình.
+  </div>
+</section>
+
+<!-- ==================== UNZIP ==================== -->
+<section id="view-unzip" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">Giải <em>nén</em></div>
+  </div>
+  <div class="page-content">
+    <label class="dropzone" for="unzip-input">
+      <span class="big-icon">📦</span>
+      <div class="label">Chọn file ZIP</div>
+      <div class="hint">Bấm để chọn từ Files / iCloud / ảnh</div>
+      <input type="file" id="unzip-input" accept=".zip,application/zip,application/x-zip-compressed">
+    </label>
+
+    <div class="progress-bar" id="unzip-progress"><div class="fill"></div></div>
+    <div class="status" id="unzip-status"></div>
+
+    <div class="file-list" id="unzip-list"></div>
+    <div class="actions-row" id="unzip-actions" style="display:none">
+      <button class="btn primary" id="unzip-download-all">Tải tất cả (.zip)</button>
+      <button class="btn" id="unzip-save-files">Lưu vào Quản lý file</button>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== BG REMOVE ==================== -->
+<section id="view-bgremove" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">Xoá <em>nền</em></div>
+  </div>
+  <div class="page-content">
+    <label class="dropzone" for="bg-input">
+      <span class="big-icon">🖼️</span>
+      <div class="label">Chọn ảnh</div>
+      <div class="hint">PNG, JPG · Xử lý ngay trên máy</div>
+      <input type="file" id="bg-input" accept="image/*">
+    </label>
+
+    <div class="progress-bar" id="bg-progress"><div class="fill"></div></div>
+    <div class="status" id="bg-status"></div>
+
+    <div class="image-preview" id="bg-preview"></div>
+
+    <div class="actions-row" id="bg-actions" style="display:none">
+      <button class="btn primary" id="bg-download">Tải ảnh PNG</button>
+      <button class="btn" id="bg-save">Lưu vào Quản lý file</button>
+    </div>
+
+    <div class="help-card" style="margin-top:20px">
+      Lần đầu chạy, trình duyệt sẽ tải model AI (~30–80MB). Sau đó ảnh xử lý <strong>hoàn toàn offline</strong>, không gửi đi đâu cả.
+    </div>
+  </div>
+</section>
+
+<!-- ==================== FILES ==================== -->
+<section id="view-files" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">Quản lý <em>file</em></div>
+  </div>
+  <div class="page-content">
+    <div class="breadcrumb" id="files-breadcrumb"></div>
+    <div class="files-toolbar">
+      <div class="chip" id="files-new-folder">＋ Thư mục mới</div>
+      <div class="chip" id="files-upload">⤴︎ Thêm file</div>
+      <input type="file" id="files-input" multiple style="display:none">
+    </div>
+    <div class="file-list" id="files-list"></div>
+    <div class="empty-state" id="files-empty" style="display:none">
+      <div class="ic">📭</div>
+      <div class="t">Chưa có gì ở đây</div>
+      <div class="s">Bấm <strong>Thêm file</strong> để bắt đầu</div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== DOWNLOAD ==================== -->
+<section id="view-download" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">Tải <em>video</em></div>
+  </div>
+  <div class="page-content">
+    <div class="url-input-wrap">
+      <input type="url" class="url-input" id="dl-url" placeholder="Dán link (YouTube, TikTok, FB…)" inputmode="url" autocapitalize="off" autocorrect="off">
+    </div>
+
+    <div class="section-label">Chọn nguồn</div>
+    <div class="platform-grid">
+      <button class="platform-btn" data-platform="youtube">
+        <div class="pic yt">▶</div>
+        <div><span class="nm">YouTube</span><span class="sub">Video + audio</span></div>
+      </button>
+      <button class="platform-btn" data-platform="tiktok">
+        <div class="pic tt">♪</div>
+        <div><span class="nm">TikTok</span><span class="sub">Không watermark</span></div>
+      </button>
+      <button class="platform-btn" data-platform="facebook">
+        <div class="pic fb">f</div>
+        <div><span class="nm">Facebook</span><span class="sub">Video, reels</span></div>
+      </button>
+      <button class="platform-btn" data-platform="instagram">
+        <div class="pic ig">◉</div>
+        <div><span class="nm">Instagram</span><span class="sub">Reels, posts</span></div>
+      </button>
+      <button class="platform-btn" data-platform="twitter">
+        <div class="pic tw">𝕏</div>
+        <div><span class="nm">Twitter / X</span><span class="sub">+ Threads</span></div>
+      </button>
+      <button class="platform-btn" data-platform="universal">
+        <div class="pic un">∞</div>
+        <div><span class="nm">Bất kỳ</span><span class="sub">Cobalt universal</span></div>
+      </button>
+    </div>
+
+    <div class="section-label">Cách hoạt động</div>
+    <div class="help-card">
+      Các nút trên gọi app <strong>Shortcuts</strong> của iOS để tải. Lần đầu cần cài shortcut tương ứng:
+      <ol>
+        <li><a href="https://routinehub.co/shortcut/12498/" target="_blank">YT Download (RoutineHub)</a></li>
+        <li><a href="https://routinehub.co/shortcut/9508/" target="_blank">TikTok no watermark</a></li>
+        <li><a href="https://routinehub.co/shortcut/11703/" target="_blank">Cobalt Universal</a> (cho mọi nền tảng)</li>
+      </ol>
+      Sau khi cài xong, đổi tên shortcut khớp với danh sách trong mục <strong>Đặt tên shortcut</strong> bên dưới rồi bấm nút tải là chạy.
+    </div>
+
+    <div class="section-label">Đặt tên shortcut (tuỳ chỉnh)</div>
+    <div class="help-card" style="padding:8px">
+      <div id="shortcut-config"></div>
+    </div>
+  </div>
+</section>
+
+<!-- Sheet for new folder / rename -->
+<div class="sheet-bg" id="sheet-bg">
+  <div class="sheet" id="sheet">
+    <div class="handle"></div>
+    <h3 id="sheet-title">Đặt tên</h3>
+    <p id="sheet-desc"></p>
+    <input type="text" class="sheet-input" id="sheet-input" autocomplete="off">
+    <div class="actions-row">
+      <button class="btn" id="sheet-cancel">Huỷ</button>
+      <button class="btn primary" id="sheet-ok">Lưu</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ============ Libraries ============ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+<script type="module">
+// ==================== UTIL ====================
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+
+const navTo = (id) => {
+  $$('.view').forEach(v => v.classList.remove('active'));
+  $('#view-' + id).classList.add('active');
+  window.scrollTo(0, 0);
+  history.pushState({view: id}, '', '#' + id);
+};
+window.addEventListener('popstate', e => {
+  const id = (e.state && e.state.view) || 'home';
+  $$('.view').forEach(v => v.classList.remove('active'));
+  $('#view-' + id).classList.add('active');
+});
+
+$$('.module-card').forEach(c => c.addEventListener('click', () => navTo(c.dataset.go)));
+$$('[data-back]').forEach(b => b.addEventListener('click', () => navTo('home')));
+
+const fmtSize = (b) => {
+  if (b < 1024) return b + ' B';
+  if (b < 1024*1024) return (b/1024).toFixed(1) + ' KB';
+  if (b < 1024*1024*1024) return (b/1024/1024).toFixed(1) + ' MB';
+  return (b/1024/1024/1024).toFixed(2) + ' GB';
+};
+
+const toast = (msg) => {
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => t.classList.remove('show'), 2200);
+};
+
+const downloadBlob = (blob, filename) => {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+};
+
+const sheet = {
+  open({title, desc, value='', placeholder=''}) {
+    return new Promise(res => {
+      $('#sheet-title').textContent = title;
+      $('#sheet-desc').textContent = desc || '';
+      const inp = $('#sheet-input');
+      inp.value = value; inp.placeholder = placeholder;
+      $('#sheet-bg').classList.add('show');
+      setTimeout(() => inp.focus(), 100);
+      const close = (v) => {
+        $('#sheet-bg').classList.remove('show');
+        $('#sheet-ok').onclick = null;
+        $('#sheet-cancel').onclick = null;
+        $('#sheet-bg').onclick = null;
+        res(v);
+      };
+      $('#sheet-ok').onclick = () => close(inp.value.trim() || null);
+      $('#sheet-cancel').onclick = () => close(null);
+      $('#sheet-bg').onclick = (e) => { if (e.target.id === 'sheet-bg') close(null); };
+    });
+  }
+};
+
+// ==================== UNZIP ====================
+let unzippedEntries = [];
+
+$('#unzip-input').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const status = $('#unzip-status');
+  const prog = $('#unzip-progress');
+  const list = $('#unzip-list');
+  const actions = $('#unzip-actions');
+
+  list.innerHTML = '';
+  actions.style.display = 'none';
+  unzippedEntries = [];
+  status.className = 'status show';
+  status.textContent = 'Đang giải nén ' + file.name + '…';
+  prog.classList.add('show');
+  prog.querySelector('.fill').style.width = '15%';
+
+  try {
+    const buf = await file.arrayBuffer();
+    prog.querySelector('.fill').style.width = '40%';
+    const zip = await JSZip.loadAsync(buf);
+    prog.querySelector('.fill').style.width = '70%';
+
+    const items = [];
+    zip.forEach((path, entry) => {
+      if (!entry.dir) items.push({path, entry});
+    });
+
+    for (const {path, entry} of items) {
+      const blob = await entry.async('blob');
+      unzippedEntries.push({name: path, blob, size: blob.size});
+    }
+
+    prog.querySelector('.fill').style.width = '100%';
+    renderUnzipList();
+    actions.style.display = 'flex';
+    status.className = 'status show success';
+    status.textContent = '✓ Giải nén xong: ' + items.length + ' file';
+    setTimeout(() => prog.classList.remove('show'), 600);
+  } catch (err) {
+    status.className = 'status show error';
+    status.textContent = '✗ Lỗi: ' + err.message;
+    prog.classList.remove('show');
+  }
+});
+
+function renderUnzipList() {
+  const list = $('#unzip-list');
+  list.innerHTML = '';
+  unzippedEntries.forEach((it, i) => {
+    const ext = it.name.split('.').pop().toLowerCase();
+    const icon = {jpg:'🖼️',jpeg:'🖼️',png:'🖼️',gif:'🖼️',webp:'🖼️',
+                  mp4:'🎬',mov:'🎬',avi:'🎬',mkv:'🎬',
+                  mp3:'🎵',wav:'🎵',m4a:'🎵',
+                  pdf:'📄',doc:'📝',docx:'📝',txt:'📝',
+                  zip:'📦',rar:'📦'}[ext] || '📎';
+    const el = document.createElement('div');
+    el.className = 'file-item';
+    el.innerHTML = `
+      <div class="ic">${icon}</div>
+      <div class="info">
+        <div class="name">${it.name}</div>
+        <div class="size">${fmtSize(it.size)}</div>
+      </div>
+      <div class="act" data-i="${i}">⬇</div>
+    `;
+    el.querySelector('.act').addEventListener('click', () => {
+      downloadBlob(it.blob, it.name.split('/').pop());
+      toast('Đang tải xuống…');
+    });
+    list.appendChild(el);
+  });
+}
+
+$('#unzip-download-all').addEventListener('click', async () => {
+  if (!unzippedEntries.length) return;
+  const zip = new JSZip();
+  unzippedEntries.forEach(it => zip.file(it.name, it.blob));
+  const blob = await zip.generateAsync({type:'blob'});
+  downloadBlob(blob, 'extracted.zip');
+  toast('Đã đóng gói tất cả');
+});
+
+$('#unzip-save-files').addEventListener('click', async () => {
+  for (const it of unzippedEntries) {
+    await FS.addFile(it.name.split('/').pop(), it.blob, FS.currentPath);
+  }
+  toast('Đã lưu vào Quản lý file');
+});
+
+// ==================== BG REMOVE ====================
+let bgResultBlob = null;
+let bgRemover = null;
+
+async function loadBgRemover() {
+  if (bgRemover) return bgRemover;
+  const status = $('#bg-status');
+  status.className = 'status show';
+  status.textContent = 'Đang tải model AI lần đầu (30-80MB)…';
+  try {
+    const mod = await import('https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.5/+esm');
+    bgRemover = mod.removeBackground || mod.default?.removeBackground || mod.default;
+    return bgRemover;
+  } catch (err) {
+    throw new Error('Không tải được thư viện: ' + err.message);
+  }
+}
+
+$('#bg-input').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const status = $('#bg-status');
+  const prog = $('#bg-progress');
+  const preview = $('#bg-preview');
+  const actions = $('#bg-actions');
+
+  actions.style.display = 'none';
+  preview.classList.remove('show');
+  bgResultBlob = null;
+
+  try {
+    const remove = await loadBgRemover();
+
+    status.className = 'status show';
+    status.textContent = 'Đang xử lý ảnh…';
+    prog.classList.add('show');
+    prog.querySelector('.fill').style.width = '20%';
+
+    const result = await remove(file, {
+      progress: (key, current, total) => {
+        const pct = 20 + (current/total) * 70;
+        prog.querySelector('.fill').style.width = pct + '%';
+      }
+    });
+
+    bgResultBlob = result;
+    const url = URL.createObjectURL(result);
+    preview.innerHTML = `<img src="${url}" alt="result">`;
+    preview.classList.add('show');
+    prog.querySelector('.fill').style.width = '100%';
+    actions.style.display = 'flex';
+    status.className = 'status show success';
+    status.textContent = '✓ Đã xoá nền xong';
+    setTimeout(() => prog.classList.remove('show'), 600);
+  } catch (err) {
+    status.className = 'status show error';
+    status.textContent = '✗ Lỗi: ' + err.message;
+    prog.classList.remove('show');
+  }
+});
+
+$('#bg-download').addEventListener('click', () => {
+  if (!bgResultBlob) return;
+  downloadBlob(bgResultBlob, 'no-bg-' + Date.now() + '.png');
+  toast('Đang tải xuống…');
+});
+
+$('#bg-save').addEventListener('click', async () => {
+  if (!bgResultBlob) return;
+  await FS.addFile('no-bg-' + Date.now() + '.png', bgResultBlob, FS.currentPath);
+  toast('Đã lưu vào Quản lý file');
+});
+
+// ==================== FILE MANAGER (IndexedDB) ====================
+const FS = {
+  db: null,
+  currentPath: '/',
+
+  async init() {
+    return new Promise((res, rej) => {
+      const req = indexedDB.open('toolbox-files', 1);
+      req.onupgradeneeded = () => {
+        const db = req.result;
+        if (!db.objectStoreNames.contains('items')) {
+          const s = db.createObjectStore('items', {keyPath: 'id', autoIncrement: true});
+          s.createIndex('parent', 'parent', {unique: false});
+        }
+      };
+      req.onsuccess = () => { this.db = req.result; res(); };
+      req.onerror = () => rej(req.error);
+    });
+  },
+
+  tx(mode='readonly') {
+    return this.db.transaction('items', mode).objectStore('items');
+  },
+
+  async list(parent) {
+    return new Promise(res => {
+      const idx = this.tx().index('parent');
+      const out = [];
+      idx.openCursor(IDBKeyRange.only(parent)).onsuccess = (e) => {
+        const cur = e.target.result;
+        if (cur) { out.push(cur.value); cur.continue(); }
+        else res(out.sort((a,b) => (a.type === 'folder' ? -1 : 1) - (b.type === 'folder' ? -1 : 1) || a.name.localeCompare(b.name)));
+      };
+    });
+  },
+
+  async add(item) {
+    return new Promise((res, rej) => {
+      const r = this.tx('readwrite').add(item);
+      r.onsuccess = () => res(r.result);
+      r.onerror = () => rej(r.error);
+    });
+  },
+
+  async addFolder(name, parent='/') {
+    return this.add({type:'folder', name, parent, created: Date.now()});
+  },
+
+  async addFile(name, blob, parent='/') {
+    return this.add({type:'file', name, parent, blob, size: blob.size, created: Date.now()});
+  },
+
+  async remove(id) {
+    return new Promise((res, rej) => {
+      const r = this.tx('readwrite').delete(id);
+      r.onsuccess = () => res();
+      r.onerror = () => rej(r.error);
+    });
+  },
+
+  async get(id) {
+    return new Promise((res) => {
+      const r = this.tx().get(id);
+      r.onsuccess = () => res(r.result);
+    });
+  },
+
+  async rename(id, newName) {
+    const item = await this.get(id);
+    if (!item) return;
+    item.name = newName;
+    return new Promise((res, rej) => {
+      const r = this.tx('readwrite').put(item);
+      r.onsuccess = () => res();
+      r.onerror = () => rej(r.error);
+    });
+  }
+};
+
+async function renderFiles() {
+  const list = $('#files-list');
+  const empty = $('#files-empty');
+  const crumb = $('#files-breadcrumb');
+
+  // breadcrumb
+  const parts = FS.currentPath.split('/').filter(Boolean);
+  crumb.innerHTML = `<span class="crumb${parts.length===0?' current':''}" data-path="/">🏠 Home</span>`;
+  let acc = '';
+  parts.forEach((p, i) => {
+    acc += '/' + p;
+    crumb.innerHTML += `<span class="sep">›</span><span class="crumb${i===parts.length-1?' current':''}" data-path="${acc}/">${p}</span>`;
+  });
+  $$('#files-breadcrumb .crumb').forEach(c => c.addEventListener('click', () => {
+    FS.currentPath = c.dataset.path === '/' ? '/' : c.dataset.path;
+    renderFiles();
+  }));
+
+  const items = await FS.list(FS.currentPath);
+  list.innerHTML = '';
+
+  if (!items.length) { empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+
+  for (const it of items) {
+    const el = document.createElement('div');
+    el.className = 'file-item';
+    const isFolder = it.type === 'folder';
+    const ext = isFolder ? '' : (it.name.split('.').pop() || '').toLowerCase();
+    const icon = isFolder ? '📁' :
+      ({jpg:'🖼️',jpeg:'🖼️',png:'🖼️',gif:'🖼️',webp:'🖼️',
+        mp4:'🎬',mov:'🎬',mp3:'🎵',m4a:'🎵',wav:'🎵',
+        pdf:'📄',txt:'📝',doc:'📝',docx:'📝',zip:'📦'}[ext] || '📎');
+    el.innerHTML = `
+      <div class="ic">${icon}</div>
+      <div class="info">
+        <div class="name">${it.name}</div>
+        <div class="size">${isFolder ? 'Thư mục' : fmtSize(it.size)}</div>
+      </div>
+      <div class="act" data-id="${it.id}" data-act="more">⋯</div>
+    `;
+    el.querySelector('.info').addEventListener('click', async () => {
+      if (isFolder) {
+        FS.currentPath = (FS.currentPath === '/' ? '' : FS.currentPath) + '/' + it.name + '/';
+        FS.currentPath = FS.currentPath.replace('//', '/');
+        renderFiles();
+      } else {
+        downloadBlob(it.blob, it.name);
+        toast('Đang tải xuống…');
+      }
+    });
+    el.querySelector('.act').addEventListener('click', () => openItemMenu(it, isFolder));
+    list.appendChild(el);
+  }
+}
+
+async function openItemMenu(it, isFolder) {
+  const sb = $('#sheet-bg');
+  const sh = $('#sheet');
+  sh.innerHTML = `
+    <div class="handle"></div>
+    <h3 style="font-family:var(--display);font-size:24px;font-weight:400;margin-bottom:6px">${it.name}</h3>
+    <p style="color:var(--text-2);font-size:13px;margin-bottom:18px">${isFolder ? 'Thư mục' : fmtSize(it.size)}</p>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      ${!isFolder ? '<button class="btn primary" data-a="download">⬇  Tải về máy</button>' : ''}
+      <button class="btn" data-a="rename">✎  Đổi tên</button>
+      <button class="btn" data-a="delete" style="color:#fca5a5">🗑  Xoá</button>
+      <button class="btn" data-a="cancel">Huỷ</button>
+    </div>
+  `;
+  sb.classList.add('show');
+
+  return new Promise((res) => {
+    const close = () => { sb.classList.remove('show'); res(); };
+    sb.onclick = (e) => { if (e.target.id === 'sheet-bg') close(); };
+    sh.querySelectorAll('[data-a]').forEach(b => b.onclick = async () => {
+      const a = b.dataset.a;
+      if (a === 'download' && !isFolder) {
+        downloadBlob(it.blob, it.name);
+        toast('Đang tải xuống…');
+      } else if (a === 'delete') {
+        await FS.remove(it.id);
+        renderFiles();
+        toast('Đã xoá');
+      } else if (a === 'rename') {
+        close();
+        const n = await sheet.open({title:'Đổi tên', value: it.name, placeholder:'Tên mới'});
+        if (n) { await FS.rename(it.id, n); renderFiles(); }
+        return;
+      }
+      close();
+    });
+  });
+}
+
+$('#files-new-folder').addEventListener('click', async () => {
+  const n = await sheet.open({title:'Thư mục mới', placeholder:'Tên thư mục'});
+  if (!n) return;
+  await FS.addFolder(n, FS.currentPath);
+  renderFiles();
+});
+
+$('#files-upload').addEventListener('click', () => $('#files-input').click());
+$('#files-input').addEventListener('change', async (e) => {
+  for (const f of e.target.files) {
+    await FS.addFile(f.name, f, FS.currentPath);
+  }
+  e.target.value = '';
+  renderFiles();
+  toast('Đã thêm file');
+});
+
+// Render files when entering the view
+document.addEventListener('click', (e) => {
+  const card = e.target.closest('.module-card');
+  if (card && card.dataset.go === 'files') setTimeout(renderFiles, 50);
+});
+
+// ==================== DOWNLOADER ====================
+const SHORTCUT_DEFAULTS = {
+  youtube: 'YT Download',
+  tiktok: 'TikTok Download',
+  facebook: 'FB Download',
+  instagram: 'IG Download',
+  twitter: 'X Download',
+  universal: 'Cobalt'
+};
+const SHORTCUT_LABELS = {
+  youtube: 'YouTube', tiktok: 'TikTok', facebook: 'Facebook',
+  instagram: 'Instagram', twitter: 'Twitter / X', universal: 'Cobalt (Universal)'
+};
+
+function loadShortcutNames() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('shortcut-names') || '{}');
+    return {...SHORTCUT_DEFAULTS, ...saved};
+  } catch { return {...SHORTCUT_DEFAULTS}; }
+}
+function saveShortcutNames(map) {
+  localStorage.setItem('shortcut-names', JSON.stringify(map));
+}
+
+function renderShortcutConfig() {
+  const names = loadShortcutNames();
+  const wrap = $('#shortcut-config');
+  wrap.innerHTML = '';
+  Object.keys(SHORTCUT_DEFAULTS).forEach(key => {
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;gap:10px;align-items:center;padding:8px;';
+    row.innerHTML = `
+      <div style="font-size:13px;color:var(--text-2);min-width:90px">${SHORTCUT_LABELS[key]}</div>
+      <input type="text" class="sheet-input" data-key="${key}" value="${names[key]}" style="margin:0;flex:1;font-size:13px;padding:8px 10px">
+    `;
+    row.querySelector('input').addEventListener('input', (e) => {
+      const map = loadShortcutNames();
+      map[key] = e.target.value;
+      saveShortcutNames(map);
+    });
+    wrap.appendChild(row);
+  });
+}
+renderShortcutConfig();
+
+$$('.platform-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const url = $('#dl-url').value.trim();
+    if (!url) { toast('Hãy dán link trước'); return; }
+    const key = btn.dataset.platform;
+    const names = loadShortcutNames();
+    const shortcutName = names[key];
+    const scheme = `shortcuts://run-shortcut?name=${encodeURIComponent(shortcutName)}&input=${encodeURIComponent(url)}`;
+    window.location.href = scheme;
+  });
+});
+
+// ==================== INIT ====================
+(async () => {
+  await FS.init();
+  // route from hash
+  const h = location.hash.replace('#','');
+  if (h && $('#view-' + h)) navTo(h);
+})();
+</script>
+</body>
+</html>
