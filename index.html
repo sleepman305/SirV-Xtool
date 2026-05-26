@@ -792,13 +792,20 @@ body {
 
     <div class="section-label">Cách hoạt động</div>
     <div class="help-card">
-      Các nút trên gọi app <strong>Shortcuts</strong> của iOS để tải. Lần đầu cần cài shortcut <strong>Cobalt</strong> — 1 shortcut hỗ trợ <em>tất cả nền tảng</em>:
+      <strong style="color:#fca5a5">⚠ Lưu ý YouTube:</strong> Từ 2025, YouTube chặn các server Cobalt → <strong>YouTube không tải được qua Cobalt</strong>. Cần shortcut riêng (xem bên dưới).
+      <br><br>
+      <strong>Cài đặt 1 lần:</strong>
       <ol>
-        <li>Mở link: <a href="https://routinehub.co/shortcut/19755/" target="_blank">Download Video & Audio With Cobalt (RoutineHub)</a></li>
-        <li>Bấm nút <strong>Download Shortcut</strong> → mở trong app Shortcuts → bấm <strong>Add Shortcut</strong></li>
-        <li>Cài thêm tuỳ chọn YouTube riêng nếu muốn: <a href="https://routinehub.co/shortcut/15247/" target="_blank">YouTube Download (RoutineHub)</a></li>
+        <li><strong>Cobalt</strong> (TikTok/IG/FB/Twitter): <a href="https://routinehub.co/shortcut/19755/" target="_blank">Download Video & Audio With Cobalt</a></li>
+        <li><strong>YouTube</strong> (cần 3 thứ — cài App Store trước):
+          <ul style="margin-top:6px">
+            <li>App <strong>Scriptable</strong> (miễn phí)</li>
+            <li>App <strong>a-Shell mini</strong> (miễn phí)</li>
+            <li>Shortcut: <a href="https://routinehub.co/shortcut/15247/" target="_blank">YouTube Download</a></li>
+          </ul>
+        </li>
       </ol>
-      Sau khi cài, mặc định shortcut tên là "<strong>Download Video & Audio With Cobalt</strong>". Bạn có thể đổi tên trong app Shortcuts cho ngắn gọn, rồi cập nhật ô bên dưới cho khớp.
+      Shortcut YouTube này chạy extract <em>ngay trên iPhone</em>, không qua server, nên YouTube không chặn được.
     </div>
 
     <div class="section-label">Đặt tên shortcut (tuỳ chỉnh)</div>
@@ -1257,7 +1264,7 @@ document.addEventListener('click', (e) => {
 
 // ==================== DOWNLOADER ====================
 const SHORTCUT_DEFAULTS = {
-  youtube: 'Download Video & Audio With Cobalt',
+  youtube: 'YouTube Download',
   tiktok: 'Download Video & Audio With Cobalt',
   facebook: 'Download Video & Audio With Cobalt',
   instagram: 'Download Video & Audio With Cobalt',
