@@ -897,6 +897,14 @@ body {
       <div class="icon doc">📦</div>
       <div><div class="title">Giải nén</div><div class="desc">ZIP, xem nội dung</div></div>
     </div>
+    <div class="module-card" data-go="pdfshrink">
+      <div class="icon doc">🗜️</div>
+      <div><div class="title">Nén PDF</div><div class="desc">Giảm dung lượng PDF</div></div>
+    </div>
+    <div class="module-card" data-go="xlsxshrink">
+      <div class="icon doc">📗</div>
+      <div><div class="title">Nén Excel</div><div class="desc">Tối ưu file xlsx</div></div>
+    </div>
   </div>
 
   <div class="modules module-group" data-group="img">
@@ -1124,6 +1132,88 @@ body {
     <div class="actions-row" id="unzip-actions" style="display:none">
       <button class="btn primary" id="unzip-download-all">Tải tất cả (.zip)</button>
       <button class="btn" id="unzip-save-files">Lưu vào Quản lý file</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PDF SHRINK ============ -->
+<section id="view-pdfshrink" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">Nén PDF</div>
+  </div>
+  <div class="page-content">
+    <label class="dropzone" for="pdfshrink-input">
+      <span class="big-icon">🗜️</span>
+      <div class="label">Chọn file PDF</div>
+      <div class="hint">Render lại trang để giảm dung lượng</div>
+      <input type="file" id="pdfshrink-input" accept="application/pdf,.pdf">
+    </label>
+    <div id="pdfshrink-options" style="display:none">
+      <div class="field">
+        <div class="field-label">Chất lượng ảnh JPEG</div>
+        <input type="range" id="pdfshrink-quality" min="30" max="95" value="70" style="width:100%">
+        <div style="text-align:center;color:var(--text-2);font-size:13px;margin-top:4px"><span id="pdfshrink-quality-val">70</span>%</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Độ phân giải</div>
+        <select class="select" id="pdfshrink-scale">
+          <option value="0.75">Compact (~54 DPI · file rất nhỏ)</option>
+          <option value="1" selected>Web (~72 DPI · xem màn hình)</option>
+          <option value="1.5">Standard (~108 DPI · cân bằng)</option>
+          <option value="2">Print (~144 DPI · in được)</option>
+        </select>
+      </div>
+    </div>
+    <div class="progress-bar" id="pdfshrink-progress"><div class="fill"></div></div>
+    <div class="status" id="pdfshrink-status"></div>
+    <div class="actions-row" id="pdfshrink-actions" style="display:none">
+      <button class="btn primary" id="pdfshrink-download">Tải PDF nén</button>
+      <button class="btn" id="pdfshrink-save">Lưu</button>
+    </div>
+    <div class="help-card">
+      <strong>Cách hoạt động:</strong> mỗi trang PDF được render lại thành ảnh JPEG rồi gộp lại thành PDF mới. Hiệu quả nhất với PDF scan và PDF có nhiều ảnh.<br>
+      <strong>Lưu ý:</strong> sau khi nén, text trong PDF không còn là text gốc nữa (đã thành ảnh), không search/copy được. Nếu cần giữ text, dùng PDF gốc.
+    </div>
+  </div>
+</section>
+
+<!-- ============ XLSX SHRINK ============ -->
+<section id="view-xlsxshrink" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">Nén Excel</div>
+  </div>
+  <div class="page-content">
+    <label class="dropzone" for="xlsxshrink-input">
+      <span class="big-icon">📗</span>
+      <div class="label">Chọn file Excel</div>
+      <div class="hint">Chỉ hỗ trợ .xlsx (định dạng mới)</div>
+      <input type="file" id="xlsxshrink-input" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+    </label>
+    <div id="xlsxshrink-options" style="display:none">
+      <div class="field">
+        <div class="field-label">Chất lượng ảnh embed</div>
+        <input type="range" id="xlsxshrink-quality" min="30" max="95" value="70" style="width:100%">
+        <div style="text-align:center;color:var(--text-2);font-size:13px;margin-top:4px"><span id="xlsxshrink-quality-val">70</span>%</div>
+      </div>
+      <div class="field">
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
+          <input type="checkbox" id="xlsxshrink-compress-img" checked style="width:18px;height:18px;cursor:pointer">
+          <span style="font-size:14px">Nén ảnh embed trong file (nếu có)</span>
+        </label>
+      </div>
+    </div>
+    <div class="progress-bar" id="xlsxshrink-progress"><div class="fill"></div></div>
+    <div class="status" id="xlsxshrink-status"></div>
+    <div class="actions-row" id="xlsxshrink-actions" style="display:none">
+      <button class="btn primary" id="xlsxshrink-download">Tải file nén</button>
+      <button class="btn" id="xlsxshrink-save">Lưu</button>
+    </div>
+    <div class="help-card">
+      <strong>File có ảnh:</strong> có thể giảm 30-80% (chính là ảnh chiếm phần lớn dung lượng).<br>
+      <strong>File chỉ có data/công thức:</strong> thường chỉ giảm 0-10% (XML đã được nén sẵn).<br>
+      <strong>File .xls (cũ):</strong> không hỗ trợ — mở trong Excel và Save As .xlsx trước.
     </div>
   </div>
 </section>
@@ -2508,6 +2598,219 @@ $('#unzip-save-files').addEventListener('click', async () => {
     await FS.addFile(it.name.split('/').pop(), it.blob, FS.currentPath);
   }
   toast('Đã lưu vào Quản lý file');
+});
+
+// ==================== PDF SHRINK ====================
+let pdfShrinkResult = null;
+let pdfShrinkOriginalSize = 0;
+let pdfShrinkTimer = null;
+
+$('#pdfshrink-quality').addEventListener('input', e => $('#pdfshrink-quality-val').textContent = e.target.value);
+
+$('#pdfshrink-input').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  pdfShrinkOriginalSize = file.size;
+  $('#pdfshrink-options').style.display = 'block';
+  await doPdfShrink(file);
+});
+
+async function doPdfShrink(file) {
+  try {
+    setStatus($('#pdfshrink-status'), 'Đang load PDF...');
+    setProgress($('#pdfshrink-progress'), 3);
+    $('#pdfshrink-actions').style.display = 'none';
+    pdfShrinkResult = null;
+
+    const pdfjsLib = await import('https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/+esm');
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/build/pdf.worker.min.mjs';
+
+    const buf = await file.arrayBuffer();
+    const pdfSrc = await pdfjsLib.getDocument({data: buf}).promise;
+
+    const quality = parseInt($('#pdfshrink-quality').value) / 100;
+    const scale = parseFloat($('#pdfshrink-scale').value);
+
+    const { jsPDF } = await import('https://cdn.jsdelivr.net/npm/jspdf@2.5.1/+esm');
+    let pdfOut = null;
+
+    for (let p = 1; p <= pdfSrc.numPages; p++) {
+      setStatus($('#pdfshrink-status'), `Đang nén trang ${p}/${pdfSrc.numPages}...`);
+      setProgress($('#pdfshrink-progress'), 3 + (p / pdfSrc.numPages) * 92);
+
+      const page = await pdfSrc.getPage(p);
+      const origVp = page.getViewport({scale: 1});
+      const pageW = origVp.width;   // points (PDF unit)
+      const pageH = origVp.height;
+
+      // Render at chosen scale (controls visual resolution in output)
+      const renderVp = page.getViewport({scale});
+      const c = document.createElement('canvas');
+      c.width = Math.round(renderVp.width);
+      c.height = Math.round(renderVp.height);
+      await page.render({canvasContext: c.getContext('2d'), viewport: renderVp}).promise;
+      const dataUrl = c.toDataURL('image/jpeg', quality);
+
+      if (p === 1) {
+        pdfOut = new jsPDF({unit: 'pt', format: [pageW, pageH], orientation: pageW > pageH ? 'l' : 'p'});
+      } else {
+        pdfOut.addPage([pageW, pageH], pageW > pageH ? 'l' : 'p');
+      }
+      pdfOut.addImage(dataUrl, 'JPEG', 0, 0, pageW, pageH, undefined, 'FAST');
+    }
+
+    const blob = pdfOut.output('blob');
+    pdfShrinkResult = blob;
+    const ratio = blob.size / pdfShrinkOriginalSize;
+    const reduction = Math.round((1 - ratio) * 100);
+    const msg = reduction > 0
+      ? `✓ ${fmtSize(pdfShrinkOriginalSize)} → ${fmtSize(blob.size)} (giảm ${reduction}%)`
+      : `⚠ ${fmtSize(pdfShrinkOriginalSize)} → ${fmtSize(blob.size)} (file không nén được thêm — thử chất lượng/độ phân giải thấp hơn)`;
+    setStatus($('#pdfshrink-status'), msg, reduction > 0 ? 'success' : 'error');
+    setProgress($('#pdfshrink-progress'), 100);
+    $('#pdfshrink-actions').style.display = 'flex';
+  } catch (err) {
+    setStatus($('#pdfshrink-status'), '✗ Lỗi: ' + err.message, 'error');
+  }
+}
+
+const _triggerPdfShrink = () => {
+  const f = $('#pdfshrink-input').files[0];
+  if (!f) return;
+  clearTimeout(pdfShrinkTimer);
+  pdfShrinkTimer = setTimeout(() => doPdfShrink(f), 350);
+};
+$('#pdfshrink-quality').addEventListener('change', _triggerPdfShrink);
+$('#pdfshrink-scale').addEventListener('change', _triggerPdfShrink);
+
+$('#pdfshrink-download').addEventListener('click', () => {
+  if (pdfShrinkResult) downloadBlob(pdfShrinkResult, 'compressed-' + Date.now() + '.pdf');
+});
+$('#pdfshrink-save').addEventListener('click', async () => {
+  if (pdfShrinkResult) { await FS.addFile('compressed-' + Date.now() + '.pdf', pdfShrinkResult, FS.currentPath); toast('Đã lưu'); }
+});
+
+// ==================== XLSX SHRINK ====================
+let xlsxShrinkResult = null;
+let xlsxShrinkOriginalSize = 0;
+let xlsxShrinkTimer = null;
+let xlsxShrinkLastFile = null;
+
+$('#xlsxshrink-quality').addEventListener('input', e => $('#xlsxshrink-quality-val').textContent = e.target.value);
+
+$('#xlsxshrink-input').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  // Reject .xls
+  if (/\.xls$/i.test(file.name) && !/\.xlsx$/i.test(file.name)) {
+    setStatus($('#xlsxshrink-status'), '✗ File .xls (cũ) không hỗ trợ — Save As .xlsx trong Excel trước', 'error');
+    return;
+  }
+  xlsxShrinkLastFile = file;
+  xlsxShrinkOriginalSize = file.size;
+  $('#xlsxshrink-options').style.display = 'block';
+  await doXlsxShrink(file);
+});
+
+async function doXlsxShrink(file) {
+  try {
+    setStatus($('#xlsxshrink-status'), 'Đang phân tích file...');
+    setProgress($('#xlsxshrink-progress'), 8);
+    $('#xlsxshrink-actions').style.display = 'none';
+    xlsxShrinkResult = null;
+
+    const buf = await file.arrayBuffer();
+    const zip = await JSZip.loadAsync(buf);
+    setProgress($('#xlsxshrink-progress'), 25);
+
+    const quality = parseInt($('#xlsxshrink-quality').value) / 100;
+    const compressImgs = $('#xlsxshrink-compress-img').checked;
+
+    let imgCount = 0;
+    let imgBytesSaved = 0;
+    let totalImages = 0;
+
+    if (compressImgs) {
+      // Find embedded JPEG images in xl/media/
+      const imgPaths = [];
+      zip.forEach((path, entry) => {
+        if (/^xl\/media\/.+\.(jpe?g)$/i.test(path) && !entry.dir) imgPaths.push(path);
+      });
+      totalImages = imgPaths.length;
+
+      for (let i = 0; i < imgPaths.length; i++) {
+        const path = imgPaths[i];
+        setStatus($('#xlsxshrink-status'), `Đang nén ảnh ${i+1}/${imgPaths.length}...`);
+        setProgress($('#xlsxshrink-progress'), 25 + ((i+1) / Math.max(imgPaths.length, 1)) * 55);
+
+        try {
+          const origBlob = await zip.file(path).async('blob');
+          // Skip very small images (compression overhead not worth it)
+          if (origBlob.size < 20 * 1024) continue;
+
+          const img = await loadImage(origBlob);
+          const c = document.createElement('canvas');
+          c.width = img.width;
+          c.height = img.height;
+          const ctx = c.getContext('2d');
+          ctx.fillStyle = '#fff';
+          ctx.fillRect(0, 0, c.width, c.height);
+          ctx.drawImage(img, 0, 0);
+
+          const newBlob = await new Promise(r => c.toBlob(r, 'image/jpeg', quality));
+          // Only replace if we actually got savings
+          if (newBlob && newBlob.size < origBlob.size * 0.95) {
+            zip.file(path, newBlob);
+            imgCount++;
+            imgBytesSaved += origBlob.size - newBlob.size;
+          }
+        } catch (err) {
+          console.warn('Skip image:', path, err.message);
+        }
+      }
+    }
+
+    setStatus($('#xlsxshrink-status'), 'Đang nén lại file...');
+    setProgress($('#xlsxshrink-progress'), 85);
+
+    const blob = await zip.generateAsync({
+      type: 'blob',
+      mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      compression: 'DEFLATE',
+      compressionOptions: { level: 9 }
+    });
+
+    xlsxShrinkResult = blob;
+    const reduction = Math.round((1 - blob.size / xlsxShrinkOriginalSize) * 100);
+    let msg;
+    if (imgCount > 0) {
+      msg = `✓ ${fmtSize(xlsxShrinkOriginalSize)} → ${fmtSize(blob.size)} (giảm ${reduction}%, nén ${imgCount}/${totalImages} ảnh)`;
+    } else if (reduction > 1) {
+      msg = `✓ ${fmtSize(xlsxShrinkOriginalSize)} → ${fmtSize(blob.size)} (giảm ${reduction}%)`;
+    } else {
+      msg = `⚠ ${fmtSize(xlsxShrinkOriginalSize)} → ${fmtSize(blob.size)} (file đã ở mức nén tốt nhất, không giảm được thêm)`;
+    }
+    setStatus($('#xlsxshrink-status'), msg, reduction > 1 || imgCount > 0 ? 'success' : 'error');
+    setProgress($('#xlsxshrink-progress'), 100);
+    $('#xlsxshrink-actions').style.display = 'flex';
+  } catch (err) {
+    setStatus($('#xlsxshrink-status'), '✗ Lỗi: ' + err.message, 'error');
+  }
+}
+
+const _triggerXlsxShrink = () => {
+  if (!xlsxShrinkLastFile) return;
+  clearTimeout(xlsxShrinkTimer);
+  xlsxShrinkTimer = setTimeout(() => doXlsxShrink(xlsxShrinkLastFile), 350);
+};
+$('#xlsxshrink-quality').addEventListener('change', _triggerXlsxShrink);
+$('#xlsxshrink-compress-img').addEventListener('change', _triggerXlsxShrink);
+
+$('#xlsxshrink-download').addEventListener('click', () => {
+  if (xlsxShrinkResult) downloadBlob(xlsxShrinkResult, 'compressed-' + Date.now() + '.xlsx');
+});
+$('#xlsxshrink-save').addEventListener('click', async () => {
+  if (xlsxShrinkResult) { await FS.addFile('compressed-' + Date.now() + '.xlsx', xlsxShrinkResult, FS.currentPath); toast('Đã lưu'); }
 });
 
 // ==================== BG REMOVE ====================
