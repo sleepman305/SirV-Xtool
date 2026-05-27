@@ -63,26 +63,14 @@ body {
 }
 
 .view {
-  display: none !important;
+  display: none;
   min-height: 100dvh;
   padding-top: calc(var(--safe-top) + 12px);
   padding-bottom: calc(var(--safe-bottom) + 24px);
 }
 .view.active {
-  display: block !important;
+  display: block;
   animation: fadeIn 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-/* Defeat Safari iOS compositor ghosting: physically move inactive views offscreen */
-section.view:not(.active) {
-  position: fixed !important;
-  top: -200vh !important;
-  left: -200vw !important;
-  width: 0 !important;
-  height: 0 !important;
-  visibility: hidden !important;
-  pointer-events: none !important;
-  z-index: -9999 !important;
-  contain: strict;
 }
 
 @keyframes fadeIn {
@@ -190,17 +178,8 @@ section.view:not(.active) {
   color: var(--text-2);
   line-height: 1.35;
 }
-.module-card::before {
-  content: '';
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.12), transparent 40%);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
+.module-card {
+  border-top: 1px solid rgba(255,255,255,0.1);
 }
 
 .footer-tip {
