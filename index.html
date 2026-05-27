@@ -39,8 +39,24 @@
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-*:not(input):not(textarea) { -webkit-user-select: none; user-select: none; }
-input, textarea { -webkit-user-select: text; user-select: text; }
+
+/* Allow normal text selection by default everywhere.
+   user-select:none is applied only to specific UI elements below. */
+input, textarea, .big-result, .text-area, .text-input {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* Disable selection only on interactive UI controls (so tapping/clicking doesn't accidentally select text) */
+.btn, .module-card, .module-card *, .tab, .tabs, .back-btn,
+.chip, .platform-btn, .platform-btn *,
+.sheet .handle, .breadcrumb .crumb, .thumb .num, .thumb .del,
+.brand, .brand-tag, .brand-logo, .section-label, .field-label,
+.empty-state, .empty-state *, .icon,
+.toast, .qr-result, .unit-result .lbl, .file-item .ic, .file-item .act {
+  -webkit-user-select: none;
+  user-select: none;
+}
 
 html, body {
   background: var(--bg);
@@ -50,7 +66,11 @@ html, body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
-  overscroll-behavior-y: none;
+}
+
+/* Explicit: body should be scrollable and respond to wheel events */
+body {
+  touch-action: pan-y;
 }
 
 body {
@@ -511,10 +531,16 @@ body {
   border-radius: 14px;
   font-family: ui-monospace, 'SF Mono', Menlo, monospace;
   font-size: 14px;
-  word-break: break-all;
+  line-height: 1.6;
   white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-break: normal;
   color: var(--text);
   display: none;
+  /* Allow normal text selection & scroll on this content area */
+  -webkit-user-select: text !important;
+  user-select: text !important;
+  cursor: text;
 }
 .big-result.show { display: block; }
 
@@ -635,6 +661,199 @@ body {
 }
 .unit-result .val { font-size: 36px; font-weight: 800; letter-spacing: -0.02em; }
 .unit-result .lbl { font-size: 13px; color: var(--text-2); margin-top: 4px; }
+
+/* ============================================
+   DESKTOP / PC LAYOUT (responsive)
+   ============================================ */
+@media (min-width: 768px) {
+  html, body {
+    font-size: 15px;
+  }
+  body {
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 0%, rgba(168, 85, 247, 0.15), transparent 60%),
+      radial-gradient(ellipse 40% 40% at 90% 30%, rgba(6, 182, 212, 0.10), transparent 60%),
+      radial-gradient(ellipse 50% 40% at 10% 60%, rgba(255, 107, 53, 0.08), transparent 60%),
+      var(--bg);
+  }
+  .view {
+    padding-top: 20px;
+    padding-bottom: 40px;
+  }
+  .home-hero {
+    padding: 48px 24px 24px;
+  }
+  .brand-logo {
+    width: 88px;
+    height: 88px;
+    margin-bottom: 18px;
+  }
+  .brand {
+    font-size: 84px;
+  }
+  .brand-tag {
+    font-size: 12.5px;
+    margin-top: 12px;
+  }
+  .tabs-wrap {
+    text-align: center;
+    overflow-x: visible;
+    padding: 0 24px;
+    margin: 22px 0 24px;
+  }
+  .tab {
+    padding: 11px 18px;
+    font-size: 14px;
+  }
+  .modules {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 4px 24px 60px;
+  }
+  .module-card {
+    aspect-ratio: 1 / 0.92;
+    padding: 20px;
+    transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  }
+  .module-card:hover {
+    transform: translateY(-3px);
+    background: var(--surface-2);
+    border-color: var(--border-strong);
+    box-shadow: 0 10px 28px rgba(0,0,0,0.3);
+  }
+  .module-card .icon {
+    width: 46px;
+    height: 46px;
+    font-size: 22px;
+    border-radius: 13px;
+  }
+  .module-card .title {
+    font-size: 16px;
+  }
+  .module-card .desc {
+    font-size: 12.5px;
+  }
+
+  /* Module pages — centered, narrower for readability */
+  .page-header {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 16px 24px 18px;
+  }
+  .page-title {
+    font-size: 26px;
+  }
+  .page-content {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 24px 60px;
+  }
+  .back-btn {
+    width: 42px;
+    height: 42px;
+    transition: background 0.15s;
+  }
+  .back-btn:hover {
+    background: var(--surface-2);
+  }
+  .dropzone {
+    padding: 52px 24px;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .dropzone:hover {
+    background: var(--surface-2);
+  }
+  .dropzone.drag-over {
+    background: rgba(168, 85, 247, 0.14);
+    border-color: rgba(168, 85, 247, 0.55);
+  }
+  .dropzone .big-icon {
+    font-size: 44px;
+  }
+  .btn {
+    padding: 14px 22px;
+    font-size: 14.5px;
+    transition: background 0.15s, transform 0.1s;
+  }
+  .btn:hover:not(:disabled) {
+    background: var(--surface-2);
+  }
+  .btn.primary:hover:not(:disabled) {
+    background: linear-gradient(135deg, #ffffff, #e4e4e7);
+  }
+  .chip {
+    transition: background 0.15s, transform 0.1s;
+  }
+  .chip:hover:not(.active) {
+    background: var(--surface-2);
+  }
+  .file-item {
+    transition: background 0.15s;
+  }
+  .file-item:hover {
+    background: var(--surface-2);
+  }
+  .file-item .act {
+    transition: background 0.15s;
+  }
+  .file-item .act:hover {
+    background: var(--border-strong);
+  }
+  .platform-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .platform-btn {
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .platform-btn:hover {
+    background: var(--surface-2);
+    border-color: var(--border-strong);
+  }
+  .thumb-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+  .image-preview {
+    min-height: 280px;
+  }
+  .image-preview img, .image-preview canvas {
+    max-height: 70vh;
+  }
+  .sheet-bg {
+    align-items: center;
+  }
+  .sheet {
+    max-width: 480px;
+    margin: 0 auto;
+    border-radius: 22px;
+    padding: 22px 24px 22px;
+    max-height: 80dvh;
+  }
+  .sheet .handle {
+    display: none;
+  }
+  .toast {
+    bottom: 30px;
+  }
+
+  /* Cursors: desktop = pointer for clickable */
+  .module-card, .tab, .back-btn, .chip, .btn,
+  .file-item, .file-item .act, .file-item .info,
+  .platform-btn, .breadcrumb .crumb, .thumb .del {
+    cursor: pointer;
+  }
+  .dropzone { cursor: pointer; }
+}
+
+@media (min-width: 1280px) {
+  .modules {
+    grid-template-columns: repeat(5, 1fr);
+    max-width: 1280px;
+  }
+  .brand { font-size: 96px; }
+  .brand-logo { width: 96px; height: 96px; }
+}
 </style>
 </head>
 <body>
@@ -867,19 +1086,21 @@ body {
     </div>
     <label class="dropzone" for="ocr-input">
       <span class="big-icon">🔍</span>
-      <div class="label">Chọn ảnh</div>
-      <div class="hint">JPG, PNG · Có chữ rõ là tốt nhất</div>
-      <input type="file" id="ocr-input" accept="image/*">
+      <div class="label">Chọn ảnh hoặc PDF</div>
+      <div class="hint">JPG, PNG, PDF · Tự nhận PDF có text sẵn</div>
+      <input type="file" id="ocr-input" accept="image/*,application/pdf,.pdf">
     </label>
     <div class="progress-bar" id="ocr-progress"><div class="fill"></div></div>
     <div class="status" id="ocr-status"></div>
     <div class="big-result" id="ocr-result"></div>
     <div class="actions-row" id="ocr-actions" style="display:none">
-      <button class="btn primary" id="ocr-copy">Copy text</button>
+      <button class="btn primary" id="ocr-copy">Copy</button>
       <button class="btn" id="ocr-save">Lưu .txt</button>
+      <button class="btn" id="ocr-save-docx">Lưu .docx</button>
     </div>
     <div class="help-card">
-      Lần đầu sẽ tải model OCR (~15MB tiếng Việt). Sau đó xử lý hoàn toàn offline.
+      <strong>PDF có text sẵn</strong> (sinh từ Word, web...) → trích thẳng, nhanh và chính xác 100%.<br>
+      <strong>PDF scan ảnh</strong> hoặc <strong>ảnh</strong> → tải model OCR (~15MB tiếng Việt) chạy offline.
     </div>
   </div>
 </section>
@@ -1488,23 +1709,57 @@ body {
       <div class="field-label">Link video</div>
       <input type="url" class="text-input" id="dl-url" placeholder="Dán link..." inputmode="url" autocapitalize="off">
     </div>
-    <div class="section-label">Chọn nguồn</div>
-    <div class="platform-grid">
-      <button class="platform-btn" data-platform="youtube"><div class="pic yt">▶</div><div><span class="nm">YouTube</span><span class="sub">Cần Scriptable</span></div></button>
-      <button class="platform-btn" data-platform="tiktok"><div class="pic tt">♪</div><div><span class="nm">TikTok</span><span class="sub">Không watermark</span></div></button>
-      <button class="platform-btn" data-platform="facebook"><div class="pic fb">f</div><div><span class="nm">Facebook</span><span class="sub">Video, reels</span></div></button>
-      <button class="platform-btn" data-platform="instagram"><div class="pic ig">◉</div><div><span class="nm">Instagram</span><span class="sub">Reels, posts</span></div></button>
-      <button class="platform-btn" data-platform="twitter"><div class="pic tw">𝕏</div><div><span class="nm">Twitter / X</span><span class="sub">+ Threads</span></div></button>
-      <button class="platform-btn" data-platform="universal"><div class="pic un">∞</div><div><span class="nm">Cobalt</span><span class="sub">Mọi nền tảng</span></div></button>
+    <!-- iOS-only: uses Shortcuts URL scheme -->
+    <div id="dl-ios-block">
+      <div class="section-label">Chọn nguồn</div>
+      <div class="platform-grid">
+        <button class="platform-btn" data-platform="youtube"><div class="pic yt">▶</div><div><span class="nm">YouTube</span><span class="sub">Cần Scriptable</span></div></button>
+        <button class="platform-btn" data-platform="tiktok"><div class="pic tt">♪</div><div><span class="nm">TikTok</span><span class="sub">Không watermark</span></div></button>
+        <button class="platform-btn" data-platform="facebook"><div class="pic fb">f</div><div><span class="nm">Facebook</span><span class="sub">Video, reels</span></div></button>
+        <button class="platform-btn" data-platform="instagram"><div class="pic ig">◉</div><div><span class="nm">Instagram</span><span class="sub">Reels, posts</span></div></button>
+        <button class="platform-btn" data-platform="twitter"><div class="pic tw">𝕏</div><div><span class="nm">Twitter / X</span><span class="sub">+ Threads</span></div></button>
+        <button class="platform-btn" data-platform="universal"><div class="pic un">∞</div><div><span class="nm">Cobalt</span><span class="sub">Mọi nền tảng</span></div></button>
+      </div>
+      <div class="help-card">
+        <strong style="color:#fca5a5">⚠ YouTube:</strong> Cobalt server bị YouTube chặn. Cần cài bộ riêng:
+        <ol>
+          <li><strong>Cobalt</strong> (TikTok/IG/FB/X): <a href="https://routinehub.co/shortcut/19755/" target="_blank">Cài shortcut</a></li>
+          <li><strong>YouTube</strong> cần 3 thứ:
+            <ul><li>App <strong>Scriptable</strong></li><li>App <strong>a-Shell mini</strong></li><li><a href="https://routinehub.co/shortcut/15247/" target="_blank">YouTube Download shortcut</a></li></ul>
+          </li>
+        </ol>
+      </div>
     </div>
-    <div class="help-card">
-      <strong style="color:#fca5a5">⚠ YouTube:</strong> Cobalt server bị YouTube chặn. Cần cài bộ riêng:
-      <ol>
-        <li><strong>Cobalt</strong> (TikTok/IG/FB/X): <a href="https://routinehub.co/shortcut/19755/" target="_blank">Cài shortcut</a></li>
-        <li><strong>YouTube</strong> cần 3 thứ:
-          <ul><li>App <strong>Scriptable</strong></li><li>App <strong>a-Shell mini</strong></li><li><a href="https://routinehub.co/shortcut/15247/" target="_blank">YouTube Download shortcut</a></li></ul>
-        </li>
-      </ol>
+
+    <!-- PC-only: opens external services + clipboard helpers -->
+    <div id="dl-pc-block" style="display:none">
+      <div class="section-label">Cách 1 — Mở dịch vụ tải</div>
+      <button class="btn primary" id="dl-pc-cobalt" style="margin-top:8px">🚀 Mở Cobalt.tools (mọi nền tảng)</button>
+      <div class="platform-grid" style="margin-top:10px">
+        <button class="platform-btn" data-host="www.y2mate.com"><div class="pic yt">▶</div><div><span class="nm">Y2Mate</span><span class="sub">YouTube tốt nhất</span></div></button>
+        <button class="platform-btn" data-host="snaptik.app"><div class="pic tt">♪</div><div><span class="nm">SnapTik</span><span class="sub">TikTok no watermark</span></div></button>
+        <button class="platform-btn" data-host="snapinsta.app"><div class="pic ig">◉</div><div><span class="nm">SnapInsta</span><span class="sub">Instagram</span></div></button>
+        <button class="platform-btn" data-host="fdown.net"><div class="pic fb">f</div><div><span class="nm">FDown</span><span class="sub">Facebook</span></div></button>
+        <button class="platform-btn" data-host="twdown.net"><div class="pic tw">𝕏</div><div><span class="nm">TWDown</span><span class="sub">Twitter / X</span></div></button>
+        <button class="platform-btn" data-host="9xbuddy.com"><div class="pic un">∞</div><div><span class="nm">9xBuddy</span><span class="sub">1000+ nền tảng</span></div></button>
+      </div>
+
+      <div class="section-label" style="margin-top:24px">Cách 2 — Dùng yt-dlp (terminal)</div>
+      <div class="actions-row" style="margin-top:8px">
+        <button class="btn" id="dl-pc-ytdlp-v">📹 Copy lệnh tải video</button>
+        <button class="btn" id="dl-pc-ytdlp-a">🎵 Copy lệnh tải MP3</button>
+      </div>
+
+      <div class="help-card">
+        <strong>Cách 1 hoạt động thế nào:</strong>
+        <ol>
+          <li>Dán link video vào ô trên</li>
+          <li>Bấm 1 nút bất kỳ ở trên</li>
+          <li>URL tự động copy vào clipboard, trang dịch vụ mở ra ở tab mới</li>
+          <li>Paste URL vào ô của trang đó → tải về</li>
+        </ol>
+        <strong>Cách 2:</strong> Cần cài <a href="https://github.com/yt-dlp/yt-dlp" target="_blank">yt-dlp</a>. Trên Windows: <code style="background:var(--surface-2);padding:1px 6px;border-radius:4px">pip install yt-dlp</code> rồi paste lệnh đã copy vào CMD/PowerShell.
+      </div>
     </div>
   </div>
 </section>
@@ -1552,6 +1807,7 @@ const navTo = (id) => {
   if (id === 'files') setTimeout(renderFiles, 50);
   if (id === 'units') setTimeout(initUnits, 50);
   if (id === 'tts') setTimeout(initTTS, 50);
+  if (id === 'download') setTimeout(initDownload, 50);
 };
 
 window.addEventListener('popstate', e => {
@@ -1954,33 +2210,155 @@ $('#pi-download').addEventListener('click', async () => {
 // ==================== OCR ====================
 let ocrResult = '';
 
+// Make OCR text clean: collapse multi-spaces, join wrapping lines, preserve structure
+function cleanOcrText(raw) {
+  if (!raw) return '';
+  // Step 1: normalize whitespace inside each line
+  const lines = raw.split(/\r?\n/).map(l =>
+    l.replace(/[\u00A0\u2000-\u200B\t]+/g, ' ')
+     .replace(/ {2,}/g, ' ')
+     .trim()
+  );
+
+  // Heuristics for paragraph boundaries
+  const isPageMarker = (l) => /^---\s*Trang/i.test(l);
+  const isHeading = (l) => {
+    if (!l || l.length < 3 || l.length > 100) return false;
+    // Mostly uppercase letters (Vietnamese diacritics included)
+    if (!/[A-ZÀ-Ỹ]/.test(l)) return false;
+    if (/[a-zà-ỹ]/.test(l)) return false; // has lowercase → not heading
+    return true;
+  };
+  const startsNewBlock = (l) =>
+    /^[-•*+–—]\s/.test(l) ||
+    /^\d+[\.\)]\s/.test(l) ||
+    /^[IVXLCM]+\.\s/.test(l) ||
+    /^[a-zA-Z][\.\)]\s/.test(l) ||
+    /^(Chương|Mục|Phần|Điều|Khoản|Phụ\s*lục|Article|Section|Chapter)\s+/i.test(l);
+  const endsCleanly = (l) =>
+    /[.!?:;…]["'”»)\]]?\s*$/.test(l) ||
+    /["'”»][.!?:;]\s*$/.test(l);
+
+  // Step 2: join wrapped lines
+  const out = [];
+  for (const line of lines) {
+    if (!line) { out.push(''); continue; }
+    if (isPageMarker(line) || isHeading(line)) { out.push(line); continue; }
+    if (out.length === 0) { out.push(line); continue; }
+    const prev = out[out.length - 1];
+    if (!prev || isPageMarker(prev) || isHeading(prev) || endsCleanly(prev) || startsNewBlock(line)) {
+      out.push(line);
+    } else {
+      out[out.length - 1] = prev + ' ' + line;
+    }
+  }
+
+  // Step 3: collapse 3+ blank lines
+  return out.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+}
+
 $('#ocr-input').addEventListener('change', async (e) => {
   const file = e.target.files[0];
   if (!file) return;
   const lang = $('#ocr-lang').value;
-  setStatus($('#ocr-status'), 'Đang tải model OCR...');
+  setStatus($('#ocr-status'), 'Đang khởi tạo...');
   setProgress($('#ocr-progress'), 5);
   $('#ocr-actions').style.display = 'none';
   $('#ocr-result').classList.remove('show');
 
+  const isPdf = /pdf/i.test(file.type) || /\.pdf$/i.test(file.name);
+
   try {
-    const Tesseract = (await import('https://cdn.jsdelivr.net/npm/tesseract.js@5.0.5/+esm')).default;
-    const worker = await Tesseract.createWorker(lang, 1, {
-      logger: (m) => {
-        if (m.status === 'recognizing text') setProgress($('#ocr-progress'), 30 + m.progress * 65);
-        else setProgress($('#ocr-progress'), 5 + m.progress * 25);
+    if (isPdf) {
+      // ===== PDF: extract embedded text where possible, OCR scanned pages =====
+      setStatus($('#ocr-status'), 'Đang load PDF...');
+      const pdfjsLib = await import('https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/+esm');
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/build/pdf.worker.min.mjs';
+      const buf = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({data: buf}).promise;
+      setProgress($('#ocr-progress'), 10);
+
+      let worker = null;
+      const pageOut = [];
+      let ocrCount = 0;
+
+      for (let p = 1; p <= pdf.numPages; p++) {
+        const page = await pdf.getPage(p);
+
+        // Try embedded text first: group items by Y coordinate into lines
+        const tc = await page.getTextContent();
+        const lineMap = new Map(); // y -> string
+        for (const it of tc.items) {
+          const s = it.str;
+          if (!s) continue;
+          const y = it.transform ? Math.round(it.transform[5]) : 0;
+          // Bucket Y into rows (round to nearest 3px) for stability
+          const yKey = Math.round(y / 3) * 3;
+          lineMap.set(yKey, (lineMap.get(yKey) || '') + s);
+        }
+        // Sort by Y descending (top to bottom in PDF coordinates Y goes up)
+        const sortedLines = [...lineMap.entries()].sort((a, b) => b[0] - a[0]).map(e => e[1]);
+        const embedded = sortedLines.join('\n').replace(/[ \t]+/g, ' ').trim();
+
+        if (embedded.length > 20) {
+          pageOut.push(`--- Trang ${p} ---\n${embedded}`);
+        } else {
+          // Scanned page → OCR
+          if (!worker) {
+            setStatus($('#ocr-status'), 'Đang tải model OCR (lần đầu ~15MB)...');
+            const Tesseract = (await import('https://cdn.jsdelivr.net/npm/tesseract.js@5.0.5/+esm')).default;
+            worker = await Tesseract.createWorker(lang, 1);
+          }
+          setStatus($('#ocr-status'), `Đang OCR trang ${p}/${pdf.numPages}...`);
+          const viewport = page.getViewport({scale: 2});
+          const c = document.createElement('canvas');
+          c.width = viewport.width; c.height = viewport.height;
+          await page.render({canvasContext: c.getContext('2d'), viewport}).promise;
+          const blob = await new Promise(r => c.toBlob(r, 'image/png'));
+          const { data: { text } } = await worker.recognize(blob);
+          pageOut.push(`--- Trang ${p} (OCR) ---\n${text.trim()}`);
+          ocrCount++;
+        }
+
+        setProgress($('#ocr-progress'), 10 + (p / pdf.numPages) * 85);
       }
-    });
-    setStatus($('#ocr-status'), 'Đang nhận dạng text...');
-    const { data: { text } } = await worker.recognize(file);
-    await worker.terminate();
-    ocrResult = text.trim();
-    const out = $('#ocr-result');
-    out.textContent = ocrResult || '(Không tìm thấy text)';
-    out.classList.add('show');
-    $('#ocr-actions').style.display = 'flex';
-    setProgress($('#ocr-progress'), 100);
-    setStatus($('#ocr-status'), '✓ Xong', 'success');
+
+      if (worker) await worker.terminate();
+
+      ocrResult = cleanOcrText(pageOut.join('\n\n'));
+      const out = $('#ocr-result');
+      out.textContent = ocrResult || '(Không tìm thấy text)';
+      out.classList.add('show');
+      $('#ocr-actions').style.display = 'flex';
+      setProgress($('#ocr-progress'), 100);
+      const msg = ocrCount === 0
+        ? `✓ Trích text từ ${pdf.numPages} trang (text sẵn)`
+        : ocrCount === pdf.numPages
+          ? `✓ OCR ${pdf.numPages} trang (PDF scan)`
+          : `✓ ${pdf.numPages} trang (${pdf.numPages - ocrCount} text + ${ocrCount} OCR)`;
+      setStatus($('#ocr-status'), msg, 'success');
+
+    } else {
+      // ===== Image: OCR flow =====
+      setStatus($('#ocr-status'), 'Đang tải model OCR...');
+      const Tesseract = (await import('https://cdn.jsdelivr.net/npm/tesseract.js@5.0.5/+esm')).default;
+      const worker = await Tesseract.createWorker(lang, 1, {
+        logger: (m) => {
+          if (m.status === 'recognizing text') setProgress($('#ocr-progress'), 30 + m.progress * 65);
+          else setProgress($('#ocr-progress'), 5 + m.progress * 25);
+        }
+      });
+      setStatus($('#ocr-status'), 'Đang nhận dạng text...');
+      const { data: { text } } = await worker.recognize(file);
+      await worker.terminate();
+      ocrResult = cleanOcrText(text);
+      const out = $('#ocr-result');
+      out.textContent = ocrResult || '(Không tìm thấy text)';
+      out.classList.add('show');
+      $('#ocr-actions').style.display = 'flex';
+      setProgress($('#ocr-progress'), 100);
+      setStatus($('#ocr-status'), '✓ Xong', 'success');
+    }
   } catch (err) {
     setStatus($('#ocr-status'), '✗ Lỗi: ' + err.message, 'error');
   }
@@ -1988,7 +2366,85 @@ $('#ocr-input').addEventListener('change', async (e) => {
 
 $('#ocr-copy').addEventListener('click', () => copyText(ocrResult));
 $('#ocr-save').addEventListener('click', () => {
-  downloadBlob(new Blob([ocrResult], {type:'text/plain'}), 'ocr-' + Date.now() + '.txt');
+  downloadBlob(new Blob([ocrResult], {type:'text/plain;charset=utf-8'}), 'ocr-' + Date.now() + '.txt');
+});
+
+// ----- DOCX export -----
+function _xmlEsc(s) {
+  return String(s)
+    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '') // strip illegal XML control chars
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
+function _ocrParaXml(line) {
+  // Empty line → empty paragraph
+  if (!line.trim()) return '<w:p/>';
+  // Page marker → bold blue heading
+  if (/^---\s*Trang/i.test(line)) {
+    const t = _xmlEsc(line.replace(/^---\s*/, '').replace(/\s*---\s*$/, ''));
+    return `<w:p><w:pPr><w:spacing w:before="240" w:after="120"/></w:pPr>`
+      + `<w:r><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/><w:b/><w:sz w:val="28"/><w:szCs w:val="28"/><w:color w:val="2E74B5"/></w:rPr>`
+      + `<w:t xml:space="preserve">${t}</w:t></w:r></w:p>`;
+  }
+  // All-uppercase line → bold section heading
+  const trimmed = line.trim();
+  const isHeading = trimmed.length < 100 && /[A-ZÀ-Ỹ]/.test(trimmed) && !/[a-zà-ỹ]/.test(trimmed);
+  if (isHeading) {
+    return `<w:p><w:pPr><w:spacing w:before="180" w:after="120"/></w:pPr>`
+      + `<w:r><w:rPr><w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:cs="Times New Roman"/><w:b/><w:sz w:val="26"/><w:szCs w:val="26"/></w:rPr>`
+      + `<w:t xml:space="preserve">${_xmlEsc(trimmed)}</w:t></w:r></w:p>`;
+  }
+  // Regular paragraph
+  return `<w:p><w:pPr><w:spacing w:after="120"/></w:pPr>`
+    + `<w:r><w:rPr><w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:cs="Times New Roman"/><w:sz w:val="26"/><w:szCs w:val="26"/></w:rPr>`
+    + `<w:t xml:space="preserve">${_xmlEsc(trimmed)}</w:t></w:r></w:p>`;
+}
+
+$('#ocr-save-docx').addEventListener('click', async () => {
+  if (!ocrResult) { toast('Chưa có text'); return; }
+  setStatus($('#ocr-status'), 'Đang tạo file Word...');
+  try {
+    const body = ocrResult.split('\n').map(_ocrParaXml).join('');
+
+    const documentXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+<w:body>
+${body}
+<w:sectPr><w:pgSz w:w="12240" w:h="15840"/><w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440"/></w:sectPr>
+</w:body>
+</w:document>`;
+
+    const contentTypes = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+<Default Extension="xml" ContentType="application/xml"/>
+<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+</Types>`;
+
+    const rootRels = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
+</Relationships>`;
+
+    const zip = new JSZip();
+    zip.file('[Content_Types].xml', contentTypes);
+    zip.folder('_rels').file('.rels', rootRels);
+    zip.folder('word').file('document.xml', documentXml);
+
+    const blob = await zip.generateAsync({
+      type: 'blob',
+      mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      compression: 'DEFLATE'
+    });
+    downloadBlob(blob, 'ocr-' + Date.now() + '.docx');
+    setStatus($('#ocr-status'), '✓ Đã tải file .docx', 'success');
+  } catch (err) {
+    setStatus($('#ocr-status'), '✗ Lỗi tạo Word: ' + err.message, 'error');
+  }
 });
 
 // ==================== UNZIP ====================
@@ -2959,15 +3415,192 @@ const SHORTCUT_DEFAULTS = {
   universal: 'Download Video & Audio With Cobalt'
 };
 
-$$('.platform-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const url = $('#dl-url').value.trim();
-    if (!url) { toast('Hãy dán link trước'); return; }
-    const key = btn.dataset.platform;
+// Platform detection: iPhone/iPad uses iOS Shortcuts, everything else uses PC flow
+const IS_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
+            || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+function initDownload() {
+  const iosBlock = $('#dl-ios-block');
+  const pcBlock = $('#dl-pc-block');
+  if (!iosBlock || !pcBlock) return;
+  if (IS_IOS) {
+    iosBlock.style.display = 'block';
+    pcBlock.style.display = 'none';
+  } else {
+    iosBlock.style.display = 'none';
+    pcBlock.style.display = 'block';
+  }
+}
+
+// Get URL from input, validate roughly
+function getDownloadUrl() {
+  const url = ($('#dl-url')?.value || '').trim();
+  if (!url) { toast('Hãy dán link trước'); return null; }
+  if (!/^https?:\/\//i.test(url)) { toast('URL phải bắt đầu bằng http(s)://'); return null; }
+  return url;
+}
+
+async function copyAndOpen(targetUrl, hostLabel) {
+  const url = getDownloadUrl();
+  if (!url) return;
+  try { await navigator.clipboard.writeText(url); } catch {}
+  window.open(targetUrl, '_blank', 'noopener');
+  toast('URL đã copy — paste vào ' + hostLabel);
+}
+
+// Document-level delegation (works even when views are detached and re-attached)
+document.addEventListener('click', (e) => {
+  // iOS: Shortcuts-based platform buttons (scoped to ios block)
+  const iosBtn = e.target.closest('#dl-ios-block .platform-btn');
+  if (iosBtn) {
+    const url = getDownloadUrl();
+    if (!url) return;
+    const key = iosBtn.dataset.platform;
     const name = SHORTCUT_DEFAULTS[key];
     window.location.href = `shortcuts://run-shortcut?name=${encodeURIComponent(name)}&input=${encodeURIComponent(url)}`;
-  });
+    return;
+  }
+
+  // PC: Cobalt.tools main button
+  if (e.target.closest('#dl-pc-cobalt')) {
+    copyAndOpen('https://cobalt.tools/', 'Cobalt.tools');
+    return;
+  }
+
+  // PC: Service buttons
+  const pcBtn = e.target.closest('#dl-pc-block .platform-btn');
+  if (pcBtn) {
+    const host = pcBtn.dataset.host;
+    copyAndOpen('https://' + host + '/', host);
+    return;
+  }
+
+  // PC: yt-dlp command copy (video)
+  if (e.target.closest('#dl-pc-ytdlp-v')) {
+    const url = getDownloadUrl();
+    if (!url) return;
+    const cmd = `yt-dlp "${url}"`;
+    navigator.clipboard.writeText(cmd).catch(() => {});
+    toast('Đã copy: ' + cmd.slice(0, 50) + (cmd.length > 50 ? '…' : ''));
+    return;
+  }
+
+  // PC: yt-dlp command copy (audio mp3)
+  if (e.target.closest('#dl-pc-ytdlp-a')) {
+    const url = getDownloadUrl();
+    if (!url) return;
+    const cmd = `yt-dlp -x --audio-format mp3 "${url}"`;
+    navigator.clipboard.writeText(cmd).catch(() => {});
+    toast('Đã copy lệnh tải MP3');
+    return;
+  }
 });
+
+// ==================== DESKTOP: KEYBOARD + DRAG-DROP ====================
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+  // Don't intercept when typing
+  const tag = (e.target.tagName || '').toLowerCase();
+  if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
+  if (e.target.isContentEditable) return;
+
+  // Esc = back to home
+  if (e.key === 'Escape') {
+    const active = document.querySelector('.view.active');
+    if (active && active.id !== 'view-home') {
+      navTo('home');
+      e.preventDefault();
+    } else if ($('#sheet-bg').classList.contains('show')) {
+      $('#sheet-bg').classList.remove('show');
+      e.preventDefault();
+    }
+    return;
+  }
+
+  // 1-5 = switch tabs (only on home)
+  const homeActive = document.querySelector('#view-home.active');
+  if (homeActive && /^[1-5]$/.test(e.key)) {
+    const tabs = ['doc','img','text','util','sys'];
+    const tab = document.querySelector(`.tab[data-tab="${tabs[parseInt(e.key)-1]}"]`);
+    if (tab) { tab.click(); e.preventDefault(); }
+  }
+});
+
+// Real drag & drop for all dropzones (event delegation on document since views are cached)
+let dragOverTarget = null;
+document.addEventListener('dragenter', (e) => {
+  const dz = e.target.closest && e.target.closest('.dropzone');
+  if (!dz) return;
+  e.preventDefault();
+  dragOverTarget = dz;
+  dz.classList.add('drag-over');
+});
+document.addEventListener('dragover', (e) => {
+  const dz = e.target.closest && e.target.closest('.dropzone');
+  if (dz) { e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; }
+});
+document.addEventListener('dragleave', (e) => {
+  const dz = e.target.closest && e.target.closest('.dropzone');
+  if (!dz) return;
+  // Only remove highlight if we actually left the dropzone
+  if (!dz.contains(e.relatedTarget)) {
+    dz.classList.remove('drag-over');
+  }
+});
+document.addEventListener('drop', (e) => {
+  const dz = e.target.closest && e.target.closest('.dropzone');
+  if (!dz) return;
+  e.preventDefault();
+  dz.classList.remove('drag-over');
+  const input = dz.querySelector('input[type=file]');
+  if (!input || !e.dataTransfer.files.length) return;
+  // Filter files by input.accept if specified
+  let files = [...e.dataTransfer.files];
+  if (input.accept) {
+    const accepts = input.accept.split(',').map(s => s.trim().toLowerCase());
+    files = files.filter(f => {
+      const name = f.name.toLowerCase();
+      const type = f.type.toLowerCase();
+      return accepts.some(a => {
+        if (a.startsWith('.')) return name.endsWith(a);
+        if (a.endsWith('/*')) return type.startsWith(a.slice(0, -1));
+        return type === a;
+      });
+    });
+  }
+  if (!files.length) { toast('Loại file không hợp lệ'); return; }
+  // Assign files via DataTransfer (works on Chrome/Edge/Firefox)
+  try {
+    const dt = new DataTransfer();
+    files.forEach(f => dt.items.add(f));
+    input.files = dt.files;
+    input.dispatchEvent(new Event('change', {bubbles: true}));
+  } catch (err) {
+    toast('Trình duyệt không hỗ trợ kéo-thả');
+  }
+});
+// Prevent default drag-drop on document-level (so accidental drops don't navigate)
+// Use document instead of window to avoid interfering with browser event loop
+document.addEventListener('dragover', (e) => { if (!e.target.closest || !e.target.closest('.dropzone')) e.preventDefault(); });
+document.addEventListener('drop', (e) => { if (!e.target.closest || !e.target.closest('.dropzone')) e.preventDefault(); });
+
+// Safety net: ensure mouse wheel always scrolls the page.
+// On some Chrome/Edge versions on Windows, wheel events can be misrouted; this guarantees scroll.
+document.addEventListener('wheel', (e) => {
+  if (e.defaultPrevented) return;
+  // Find scrollable ancestor that actually scrolls
+  let el = e.target;
+  while (el && el !== document.body && el !== document.documentElement) {
+    const cs = getComputedStyle(el);
+    if ((cs.overflowY === 'auto' || cs.overflowY === 'scroll') && el.scrollHeight > el.clientHeight) {
+      return; // an inner element handles it
+    }
+    el = el.parentElement;
+  }
+  // Nothing else scrolls — force the page to scroll
+  const scroller = document.scrollingElement || document.documentElement;
+  scroller.scrollTop += e.deltaY;
+}, { passive: true });
 
 // ==================== INIT ====================
 (async () => {
