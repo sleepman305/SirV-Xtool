@@ -1,0 +1,3621 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Xtools">
+<meta name="theme-color" content="#0a0a0f">
+<meta name="format-detection" content="telephone=no">
+<title>Xtools by SirV</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23ff6b35'/%3E%3Cstop offset='0.5' stop-color='%23a855f7'/%3E%3Cstop offset='1' stop-color='%2306b6d4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='180' height='180' rx='40' fill='%230a0a0f'/%3E%3Ccircle cx='90' cy='90' r='50' fill='url(%23g)'/%3E%3C/svg%3E">
+
+<style>
+:root {
+  --bg: #0a0a0f;
+  --bg-elev: #14141c;
+  --surface: rgba(255, 255, 255, 0.04);
+  --surface-2: rgba(255, 255, 255, 0.07);
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.15);
+  --text: #fafafa;
+  --text-2: rgba(255, 255, 255, 0.62);
+  --text-3: rgba(255, 255, 255, 0.38);
+  --accent-doc: linear-gradient(135deg, #ff6b35 0%, #ffa05c 100%);
+  --accent-img: linear-gradient(135deg, #ec4899 0%, #a855f7 100%);
+  --accent-text: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+  --accent-util: linear-gradient(135deg, #10b981 0%, #84cc16 100%);
+  --accent-sys: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  --safe-top: env(safe-area-inset-top);
+  --safe-bottom: env(safe-area-inset-bottom);
+  --display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+/* Allow normal text selection by default everywhere.
+   user-select:none is applied only to specific UI elements below. */
+input, textarea, .big-result, .text-area, .text-input {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* Disable selection only on interactive UI controls (so tapping/clicking doesn't accidentally select text) */
+.btn, .module-card, .module-card *, .tab, .tabs, .back-btn,
+.chip, .platform-btn, .platform-btn *,
+.sheet .handle, .breadcrumb .crumb, .thumb .num, .thumb .del,
+.brand, .brand-tag, .brand-logo, .section-label, .field-label,
+.empty-state, .empty-state *, .icon,
+.toast, .qr-result, .unit-result .lbl, .file-item .ic, .file-item .act {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Explicit: body should be scrollable and respond to wheel events */
+body {
+  touch-action: pan-y;
+}
+
+body {
+  min-height: 100dvh;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(168, 85, 247, 0.18), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 100% 30%, rgba(6, 182, 212, 0.12), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 0% 60%, rgba(255, 107, 53, 0.10), transparent 60%),
+    var(--bg);
+}
+
+.view {
+  display: none;
+  min-height: 100dvh;
+  padding-top: calc(var(--safe-top) + 12px);
+  padding-bottom: calc(var(--safe-bottom) + 24px);
+}
+.view.active { display: block; }
+
+/* ============ HOME ============ */
+.home-hero {
+  padding: 24px 24px 18px;
+  text-align: center;
+}
+.brand-logo {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 14px;
+  display: block;
+  filter: drop-shadow(0 6px 20px rgba(220, 38, 38, 0.25));
+}
+.brand {
+  font-family: var(--display);
+  font-size: 56px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 0.9;
+  background: linear-gradient(135deg, #ff6b35 0%, #ec4899 35%, #a855f7 65%, #06b6d4 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.brand-tag {
+  margin-top: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+/* Tabs */
+.tabs-wrap {
+  margin: 12px 0 16px;
+  padding: 0 16px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.tabs-wrap::-webkit-scrollbar { display: none; }
+.tabs {
+  display: inline-flex;
+  gap: 6px;
+  padding: 4px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+.tab {
+  padding: 9px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-2);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.tab.active {
+  background: var(--bg-elev);
+  color: var(--text);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+/* Module grid */
+.modules {
+  padding: 4px 16px 24px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.module-card {
+  position: relative;
+  aspect-ratio: 1 / 1.05;
+  border-radius: 22px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.15s, background 0.15s;
+}
+.module-card:active { transform: scale(0.97); background: var(--surface-2); }
+.module-card .icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+}
+.module-card .icon.doc { background: var(--accent-doc); }
+.module-card .icon.img { background: var(--accent-img); }
+.module-card .icon.text { background: var(--accent-text); }
+.module-card .icon.util { background: var(--accent-util); }
+.module-card .icon.sys { background: var(--accent-sys); }
+.module-card .title {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.module-card .desc {
+  font-size: 11.5px;
+  color: var(--text-2);
+  line-height: 1.35;
+  margin-top: 2px;
+}
+
+.module-group { display: none; }
+.module-group.active { display: grid; }
+
+/* ============ MODULE PAGES ============ */
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 20px 16px;
+}
+.back-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: grid;
+  place-items: center;
+  color: var(--text);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.back-btn:active { background: var(--surface-2); }
+.page-title {
+  font-family: var(--display);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.page-content { padding: 0 20px; }
+
+.dropzone {
+  display: block;
+  margin-top: 8px;
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 32px 20px;
+  text-align: center;
+  background: var(--surface);
+  cursor: pointer;
+}
+.dropzone:active { background: var(--surface-2); }
+.dropzone input[type=file] {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+.dropzone .big-icon { font-size: 38px; margin-bottom: 10px; display: block; }
+.dropzone .label { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+.dropzone .hint { font-size: 12.5px; color: var(--text-2); }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 18px;
+  border-radius: 13px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 14.5px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+}
+.btn:active { background: var(--surface-2); }
+.btn.primary { background: linear-gradient(135deg, #fafafa, #d4d4d8); color: #0a0a0f; border-color: transparent; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.status {
+  margin-top: 14px;
+  padding: 13px 15px;
+  border-radius: 13px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-size: 13.5px;
+  color: var(--text-2);
+  display: none;
+}
+.status.show { display: block; }
+.status.error { border-color: rgba(239, 68, 68, 0.4); color: #fca5a5; }
+.status.success { border-color: rgba(16, 185, 129, 0.4); color: #6ee7b7; }
+
+.progress-bar {
+  height: 4px;
+  background: var(--surface-2);
+  border-radius: 99px;
+  overflow: hidden;
+  margin-top: 10px;
+  display: none;
+}
+.progress-bar.show { display: block; }
+.progress-bar .fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #a855f7, #06b6d4);
+  border-radius: 99px;
+  transition: width 0.3s ease;
+}
+
+.file-list { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+.file-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 13px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 13px;
+}
+.file-item .ic {
+  width: 34px; height: 34px;
+  border-radius: 9px;
+  background: var(--surface-2);
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.file-item .info { flex: 1; min-width: 0; }
+.file-item .name {
+  font-size: 13.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.file-item .size { font-size: 11.5px; color: var(--text-3); margin-top: 2px; }
+.file-item .act {
+  width: 34px; height: 34px;
+  border-radius: 9px;
+  background: var(--surface-2);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  font-size: 14px;
+}
+.file-item .act:active { background: var(--border-strong); }
+
+.actions-row { display: flex; gap: 10px; margin-top: 14px; }
+.actions-row .btn { flex: 1; }
+
+.image-preview {
+  margin-top: 16px;
+  border-radius: 18px;
+  overflow: hidden;
+  background:
+    repeating-conic-gradient(rgba(255,255,255,0.04) 0% 25%, transparent 0% 50%)
+    50% / 24px 24px,
+    var(--surface);
+  border: 1px solid var(--border);
+  min-height: 200px;
+  display: none;
+  position: relative;
+}
+.image-preview.show { display: block; }
+.image-preview img, .image-preview canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 55vh;
+  object-fit: contain;
+}
+
+/* Inputs and selects */
+.field {
+  display: block;
+  margin-top: 14px;
+}
+.field-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-2);
+  margin-bottom: 6px;
+  display: block;
+}
+.text-input, .text-area, .select {
+  width: 100%;
+  padding: 13px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 14.5px;
+  outline: none;
+}
+.text-input:focus, .text-area:focus, .select:focus { border-color: var(--border-strong); }
+.text-area { min-height: 100px; resize: vertical; }
+.select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='M4 6l4 4 4-4' stroke='%23999' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 40px; }
+
+.row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.chip-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+.chip {
+  padding: 8px 13px;
+  border-radius: 99px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--text);
+}
+.chip.active { background: var(--text); color: var(--bg); border-color: transparent; }
+.chip:active { transform: scale(0.96); }
+
+.help-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  font-size: 13px;
+  color: var(--text-2);
+  line-height: 1.6;
+  margin-top: 14px;
+}
+.help-card a { color: #93c5fd; font-weight: 600; text-decoration: none; }
+.help-card strong { color: var(--text); font-weight: 600; }
+.help-card ol, .help-card ul { padding-left: 20px; margin-top: 6px; }
+.help-card li { margin-bottom: 4px; }
+
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin: 20px 0 8px;
+}
+
+/* Sheet (modal) */
+.sheet-bg {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 100;
+  display: none;
+  align-items: flex-end;
+}
+.sheet-bg.show { display: flex; }
+.sheet {
+  width: 100%;
+  background: var(--bg-elev);
+  border-top-left-radius: 26px;
+  border-top-right-radius: 26px;
+  padding: 12px 20px calc(var(--safe-bottom) + 24px);
+  max-height: 85dvh;
+  overflow-y: auto;
+}
+.sheet .handle {
+  width: 36px;
+  height: 4px;
+  background: var(--border-strong);
+  border-radius: 99px;
+  margin: 4px auto 14px;
+}
+.sheet h3 { font-family: var(--display); font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+.sheet p { color: var(--text-2); font-size: 13.5px; margin-bottom: 14px; }
+.sheet-input {
+  width: 100%;
+  padding: 13px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 14.5px;
+  outline: none;
+  margin-bottom: 12px;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: calc(var(--safe-bottom) + 90px);
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(20, 20, 28, 0.95);
+  color: var(--text);
+  padding: 11px 18px;
+  border-radius: 99px;
+  border: 1px solid var(--border-strong);
+  font-size: 13.5px;
+  font-weight: 600;
+  z-index: 200;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s;
+  max-width: 90vw;
+  text-align: center;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* QR code display */
+.qr-result {
+  margin-top: 16px;
+  padding: 20px;
+  background: white;
+  border-radius: 16px;
+  display: none;
+  text-align: center;
+}
+.qr-result.show { display: block; }
+.qr-result canvas { max-width: 100%; height: auto; }
+
+/* Big text output */
+.big-result {
+  margin-top: 16px;
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-break: normal;
+  color: var(--text);
+  display: none;
+  /* Allow normal text selection & scroll on this content area */
+  -webkit-user-select: text !important;
+  user-select: text !important;
+  cursor: text;
+}
+.big-result.show { display: block; }
+
+/* Files manager specifics */
+.files-toolbar {
+  display: flex;
+  gap: 8px;
+  margin: 4px 0 14px;
+  flex-wrap: wrap;
+}
+.breadcrumb {
+  font-size: 12.5px;
+  color: var(--text-2);
+  margin-bottom: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  align-items: center;
+}
+.breadcrumb .crumb { cursor: pointer; padding: 4px 7px; border-radius: 7px; }
+.breadcrumb .crumb:active { background: var(--surface); }
+.breadcrumb .crumb.current { color: var(--text); font-weight: 600; }
+.breadcrumb .sep { color: var(--text-3); }
+
+.empty-state {
+  text-align: center;
+  padding: 50px 20px;
+  color: var(--text-3);
+}
+.empty-state .ic { font-size: 44px; margin-bottom: 10px; opacity: 0.5; }
+.empty-state .t { font-size: 14.5px; font-weight: 600; color: var(--text-2); margin-bottom: 4px; }
+.empty-state .s { font-size: 12.5px; }
+
+/* Downloader platforms */
+.platform-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 9px;
+  margin-top: 14px;
+}
+.platform-btn {
+  padding: 14px 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  cursor: pointer;
+  text-align: left;
+  color: var(--text);
+  font-family: var(--body);
+}
+.platform-btn:active { background: var(--surface-2); }
+.platform-btn .pic {
+  width: 32px; height: 32px;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+.platform-btn .pic.yt { background: linear-gradient(135deg, #ff0000, #cc0000); }
+.platform-btn .pic.tt { background: linear-gradient(135deg, #00f2ea, #ff0050); }
+.platform-btn .pic.fb { background: linear-gradient(135deg, #1877f2, #0a52cf); }
+.platform-btn .pic.ig { background: linear-gradient(135deg, #f09433, #dc2743, #bc1888); }
+.platform-btn .pic.tw { background: linear-gradient(135deg, #1d1d1f, #000); }
+.platform-btn .pic.un { background: linear-gradient(135deg, #6366f1, #8b5cf6); }
+.platform-btn .nm { font-size: 13px; font-weight: 700; display: block; }
+.platform-btn .sub { font-size: 10.5px; color: var(--text-3); display: block; margin-top: 1px; }
+
+/* Scan/PDF specific */
+.thumb-grid {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.thumb {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+.thumb img, .thumb canvas { width: 100%; height: 100%; object-fit: cover; }
+.thumb .num {
+  position: absolute;
+  top: 4px; left: 4px;
+  background: rgba(0,0,0,0.7);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+.thumb .del {
+  position: absolute;
+  top: 4px; right: 4px;
+  background: rgba(239, 68, 68, 0.9);
+  color: white;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.unit-result {
+  margin-top: 14px;
+  padding: 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  text-align: center;
+}
+.unit-result .val { font-size: 36px; font-weight: 800; letter-spacing: -0.02em; }
+.unit-result .lbl { font-size: 13px; color: var(--text-2); margin-top: 4px; }
+
+/* ============================================
+   DESKTOP / PC LAYOUT (responsive)
+   ============================================ */
+@media (min-width: 768px) {
+  html, body {
+    font-size: 15px;
+  }
+  body {
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 0%, rgba(168, 85, 247, 0.15), transparent 60%),
+      radial-gradient(ellipse 40% 40% at 90% 30%, rgba(6, 182, 212, 0.10), transparent 60%),
+      radial-gradient(ellipse 50% 40% at 10% 60%, rgba(255, 107, 53, 0.08), transparent 60%),
+      var(--bg);
+  }
+  .view {
+    padding-top: 20px;
+    padding-bottom: 40px;
+  }
+  .home-hero {
+    padding: 48px 24px 24px;
+  }
+  .brand-logo {
+    width: 88px;
+    height: 88px;
+    margin-bottom: 18px;
+  }
+  .brand {
+    font-size: 84px;
+  }
+  .brand-tag {
+    font-size: 12.5px;
+    margin-top: 12px;
+  }
+  .tabs-wrap {
+    text-align: center;
+    overflow-x: visible;
+    padding: 0 24px;
+    margin: 22px 0 24px;
+  }
+  .tab {
+    padding: 11px 18px;
+    font-size: 14px;
+  }
+  .modules {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 4px 24px 60px;
+  }
+  .module-card {
+    aspect-ratio: 1 / 0.92;
+    padding: 20px;
+    transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  }
+  .module-card:hover {
+    transform: translateY(-3px);
+    background: var(--surface-2);
+    border-color: var(--border-strong);
+    box-shadow: 0 10px 28px rgba(0,0,0,0.3);
+  }
+  .module-card .icon {
+    width: 46px;
+    height: 46px;
+    font-size: 22px;
+    border-radius: 13px;
+  }
+  .module-card .title {
+    font-size: 16px;
+  }
+  .module-card .desc {
+    font-size: 12.5px;
+  }
+
+  /* Module pages — centered, narrower for readability */
+  .page-header {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 16px 24px 18px;
+  }
+  .page-title {
+    font-size: 26px;
+  }
+  .page-content {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 24px 60px;
+  }
+  .back-btn {
+    width: 42px;
+    height: 42px;
+    transition: background 0.15s;
+  }
+  .back-btn:hover {
+    background: var(--surface-2);
+  }
+  .dropzone {
+    padding: 52px 24px;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .dropzone:hover {
+    background: var(--surface-2);
+  }
+  .dropzone.drag-over {
+    background: rgba(168, 85, 247, 0.14);
+    border-color: rgba(168, 85, 247, 0.55);
+  }
+  .dropzone .big-icon {
+    font-size: 44px;
+  }
+  .btn {
+    padding: 14px 22px;
+    font-size: 14.5px;
+    transition: background 0.15s, transform 0.1s;
+  }
+  .btn:hover:not(:disabled) {
+    background: var(--surface-2);
+  }
+  .btn.primary:hover:not(:disabled) {
+    background: linear-gradient(135deg, #ffffff, #e4e4e7);
+  }
+  .chip {
+    transition: background 0.15s, transform 0.1s;
+  }
+  .chip:hover:not(.active) {
+    background: var(--surface-2);
+  }
+  .file-item {
+    transition: background 0.15s;
+  }
+  .file-item:hover {
+    background: var(--surface-2);
+  }
+  .file-item .act {
+    transition: background 0.15s;
+  }
+  .file-item .act:hover {
+    background: var(--border-strong);
+  }
+  .platform-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .platform-btn {
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .platform-btn:hover {
+    background: var(--surface-2);
+    border-color: var(--border-strong);
+  }
+  .thumb-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+  .image-preview {
+    min-height: 280px;
+  }
+  .image-preview img, .image-preview canvas {
+    max-height: 70vh;
+  }
+  .sheet-bg {
+    align-items: center;
+  }
+  .sheet {
+    max-width: 480px;
+    margin: 0 auto;
+    border-radius: 22px;
+    padding: 22px 24px 22px;
+    max-height: 80dvh;
+  }
+  .sheet .handle {
+    display: none;
+  }
+  .toast {
+    bottom: 30px;
+  }
+
+  /* Cursors: desktop = pointer for clickable */
+  .module-card, .tab, .back-btn, .chip, .btn,
+  .file-item, .file-item .act, .file-item .info,
+  .platform-btn, .breadcrumb .crumb, .thumb .del {
+    cursor: pointer;
+  }
+  .dropzone { cursor: pointer; }
+}
+
+@media (min-width: 1280px) {
+  .modules {
+    grid-template-columns: repeat(5, 1fr);
+    max-width: 1280px;
+  }
+  .brand { font-size: 96px; }
+  .brand-logo { width: 96px; height: 96px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============ HOME ============ -->
+<section id="view-home" class="view active">
+  <div class="home-hero">
+    <img class="brand-logo" src="data:image/png;base64,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" alt="logo">
+    <h1 class="brand">Xtools</h1>
+    <div class="brand-tag">by SirV</div>
+  </div>
+
+  <div class="tabs-wrap">
+    <div class="tabs">
+      <div class="tab active" data-tab="doc">📄 Tài liệu</div>
+      <div class="tab" data-tab="img">🖼️ Ảnh</div>
+      <div class="tab" data-tab="text">📝 Text</div>
+      <div class="tab" data-tab="util">🔧 Tiện ích</div>
+      <div class="tab" data-tab="sys">📁 Hệ thống</div>
+    </div>
+  </div>
+
+  <div class="modules module-group active" data-group="doc">
+    <div class="module-card" data-go="scan">
+      <div class="icon doc">📷</div>
+      <div><div class="title">Scan PDF</div><div class="desc">Quét tài liệu, chỉnh thẳng</div></div>
+    </div>
+    <div class="module-card" data-go="pdfmerge">
+      <div class="icon doc">📑</div>
+      <div><div class="title">Merge PDF</div><div class="desc">Gộp/tách/sắp xếp PDF</div></div>
+    </div>
+    <div class="module-card" data-go="pdfimg">
+      <div class="icon doc">🔄</div>
+      <div><div class="title">PDF ↔ Ảnh</div><div class="desc">Chuyển qua lại 2 chiều</div></div>
+    </div>
+    <div class="module-card" data-go="ocr">
+      <div class="icon doc">🔍</div>
+      <div><div class="title">OCR</div><div class="desc">Trích text từ ảnh</div></div>
+    </div>
+    <div class="module-card" data-go="unzip">
+      <div class="icon doc">📦</div>
+      <div><div class="title">Giải nén</div><div class="desc">ZIP, xem nội dung</div></div>
+    </div>
+  </div>
+
+  <div class="modules module-group" data-group="img">
+    <div class="module-card" data-go="bgremove">
+      <div class="icon img">✨</div>
+      <div><div class="title">Xoá nền</div><div class="desc">AI tách nền ảnh</div></div>
+    </div>
+    <div class="module-card" data-go="compress">
+      <div class="icon img">🗜️</div>
+      <div><div class="title">Nén ảnh</div><div class="desc">Giảm size, đổi kích thước</div></div>
+    </div>
+    <div class="module-card" data-go="convert">
+      <div class="icon img">🔁</div>
+      <div><div class="title">Convert</div><div class="desc">HEIC, JPG, PNG, WebP</div></div>
+    </div>
+    <div class="module-card" data-go="exif">
+      <div class="icon img">🛡️</div>
+      <div><div class="title">Xoá EXIF</div><div class="desc">Xoá GPS, metadata</div></div>
+    </div>
+    <div class="module-card" data-go="watermark">
+      <div class="icon img">©️</div>
+      <div><div class="title">Watermark</div><div class="desc">Đóng dấu chữ ký</div></div>
+    </div>
+    <div class="module-card" data-go="collage">
+      <div class="icon img">🧩</div>
+      <div><div class="title">Ghép ảnh</div><div class="desc">Collage 2-4 ảnh</div></div>
+    </div>
+    <div class="module-card" data-go="crop">
+      <div class="icon img">✂️</div>
+      <div><div class="title">Crop tỉ lệ</div><div class="desc">1:1, 9:16, 4:5...</div></div>
+    </div>
+  </div>
+
+  <div class="modules module-group" data-group="text">
+    <div class="module-card" data-go="json">
+      <div class="icon text">{}</div>
+      <div><div class="title">JSON viewer</div><div class="desc">Format, view, validate</div></div>
+    </div>
+    <div class="module-card" data-go="charcount">
+      <div class="icon text">🔢</div>
+      <div><div class="title">Đếm chữ</div><div class="desc">Ký tự, từ, câu, đoạn</div></div>
+    </div>
+    <div class="module-card" data-go="textcase">
+      <div class="icon text">Aa</div>
+      <div><div class="title">Đổi chữ</div><div class="desc">HOA, thường, slug, bỏ dấu</div></div>
+    </div>
+    <div class="module-card" data-go="encode">
+      <div class="icon text">🔐</div>
+      <div><div class="title">Encode/Hash</div><div class="desc">Base64, URL, MD5, SHA</div></div>
+    </div>
+    <div class="module-card" data-go="speech">
+      <div class="icon text">🎙️</div>
+      <div><div class="title">Nói → Text</div><div class="desc">Ghi âm thành chữ</div></div>
+    </div>
+  </div>
+
+  <div class="modules module-group" data-group="util">
+    <div class="module-card" data-go="qr">
+      <div class="icon util">⬛</div>
+      <div><div class="title">QR Code</div><div class="desc">Tạo và quét QR</div></div>
+    </div>
+    <div class="module-card" data-go="units">
+      <div class="icon util">📏</div>
+      <div><div class="title">Đổi đơn vị</div><div class="desc">Dài, nặng, nhiệt độ...</div></div>
+    </div>
+    <div class="module-card" data-go="date">
+      <div class="icon util">📅</div>
+      <div><div class="title">Tính ngày</div><div class="desc">Tuổi, đếm ngày, deadline</div></div>
+    </div>
+    <div class="module-card" data-go="random">
+      <div class="icon util">🎲</div>
+      <div><div class="title">Random</div><div class="desc">Bốc thăm, xúc xắc</div></div>
+    </div>
+    <div class="module-card" data-go="tts">
+      <div class="icon util">🔊</div>
+      <div><div class="title">Text → Nói</div><div class="desc">Đọc tiếng Việt</div></div>
+    </div>
+  </div>
+
+  <div class="modules module-group" data-group="sys">
+    <div class="module-card" data-go="files">
+      <div class="icon sys">📁</div>
+      <div><div class="title">Quản lý file</div><div class="desc">Kho lưu trữ riêng</div></div>
+    </div>
+    <div class="module-card" data-go="download">
+      <div class="icon sys">⬇️</div>
+      <div><div class="title">Tải video</div><div class="desc">YT, TikTok, FB, IG</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SCAN PDF ============ -->
+<section id="view-scan" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">Scan PDF</div>
+  </div>
+  <div class="page-content">
+    <label class="dropzone" for="scan-input">
+      <span class="big-icon">📷</span>
+      <div class="label">Thêm trang scan</div>
+      <div class="hint">Chụp ảnh hoặc chọn từ thư viện</div>
+      <input type="file" id="scan-input" accept="image/*" multiple>
+    </label>
+    <div class="status" id="scan-status"></div>
+    <div class="thumb-grid" id="scan-thumbs"></div>
+    <div class="field" id="scan-options" style="display:none">
+      <div class="field-label">Chế độ ảnh</div>
+      <div class="chip-row">
+        <div class="chip active" data-mode="color">Màu</div>
+        <div class="chip" data-mode="gray">Xám</div>
+        <div class="chip" data-mode="bw">Đen trắng</div>
+        <div class="chip" data-mode="enhance">Tăng nét</div>
+      </div>
+    </div>
+    <div class="actions-row" id="scan-actions" style="display:none">
+      <button class="btn primary" id="scan-export">Xuất PDF</button>
+    </div>
+    <div class="help-card">
+      <strong>Mẹo:</strong> Đặt giấy trên nền tối, chụp thẳng đứng từ trên xuống để có kết quả tốt nhất. Mỗi ảnh sẽ thành 1 trang PDF.
+    </div>
+  </div>
+</section>
+
+<!-- ============ MERGE PDF ============ -->
+<section id="view-pdfmerge" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">PDF Merge</div>
+  </div>
+  <div class="page-content">
+    <label class="dropzone" for="merge-input">
+      <span class="big-icon">📑</span>
+      <div class="label">Chọn file PDF</div>
+      <div class="hint">Chọn nhiều file để gộp</div>
+      <input type="file" id="merge-input" accept="application/pdf" multiple>
+    </label>
+    <div class="status" id="merge-status"></div>
+    <div class="file-list" id="merge-list"></div>
+    <div class="actions-row" id="merge-actions" style="display:none">
+      <button class="btn primary" id="merge-do">Gộp lại</button>
+      <button class="btn" id="merge-clear">Xoá hết</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PDF <-> IMAGE ============ -->
+<section id="view-pdfimg" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">PDF ↔ Ảnh</div>
+  </div>
+  <div class="page-content">
+    <div class="chip-row" style="margin-top:8px">
+      <div class="chip active" id="pi-mode-p2i">PDF → Ảnh</div>
+      <div class="chip" id="pi-mode-i2p">Ảnh → PDF</div>
+    </div>
+    <label class="dropzone" for="pi-input" style="margin-top:14px">
+      <span class="big-icon" id="pi-icon">📄</span>
+      <div class="label" id="pi-label">Chọn file PDF</div>
+      <div class="hint" id="pi-hint">Mỗi trang → 1 ảnh PNG</div>
+      <input type="file" id="pi-input" accept="application/pdf">
+    </label>
+    <div class="progress-bar" id="pi-progress"><div class="fill"></div></div>
+    <div class="status" id="pi-status"></div>
+    <div class="thumb-grid" id="pi-thumbs"></div>
+    <div class="actions-row" id="pi-actions" style="display:none">
+      <button class="btn primary" id="pi-download">Tải ZIP</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ OCR ============ -->
+<section id="view-ocr" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">OCR — Trích text</div>
+  </div>
+  <div class="page-content">
+    <div class="field">
+      <div class="field-label">Ngôn ngữ</div>
+      <select class="select" id="ocr-lang">
+        <option value="vie">Tiếng Việt</option>
+        <option value="eng">English</option>
+        <option value="vie+eng">Việt + English</option>
+      </select>
+    </div>
+    <label class="dropzone" for="ocr-input">
+      <span class="big-icon">🔍</span>
+      <div class="label">Chọn ảnh hoặc PDF</div>
+      <div class="hint">JPG, PNG, PDF · Tự nhận PDF có text sẵn</div>
+      <input type="file" id="ocr-input" accept="image/*,application/pdf,.pdf">
+    </label>
+    <div class="progress-bar" id="ocr-progress"><div class="fill"></div></div>
+    <div class="status" id="ocr-status"></div>
+    <div class="big-result" id="ocr-result"></div>
+    <div class="actions-row" id="ocr-actions" style="display:none">
+      <button class="btn primary" id="ocr-copy">Copy</button>
+      <button class="btn" id="ocr-save">Lưu .txt</button>
+      <button class="btn" id="ocr-save-docx">Lưu .docx</button>
+    </div>
+    <div class="help-card">
+      <strong>PDF có text sẵn</strong> (sinh từ Word, web...) → trích thẳng, nhanh và chính xác 100%.<br>
+      <strong>PDF scan ảnh</strong> hoặc <strong>ảnh</strong> → tải model OCR (~15MB tiếng Việt) chạy offline.
+    </div>
+  </div>
+</section>
+
+<!-- ============ UNZIP ============ -->
+<section id="view-unzip" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">Giải nén</div>
+  </div>
+  <div class="page-content">
+    <label class="dropzone" for="unzip-input">
+      <span class="big-icon">📦</span>
+      <div class="label">Chọn file ZIP</div>
+      <div class="hint">Bấm để chọn từ Files / iCloud / ảnh</div>
+      <input type="file" id="unzip-input" accept=".zip,application/zip,application/x-zip-compressed">
+    </label>
+    <div class="progress-bar" id="unzip-progress"><div class="fill"></div></div>
+    <div class="status" id="unzip-status"></div>
+    <div class="file-list" id="unzip-list"></div>
+    <div class="actions-row" id="unzip-actions" style="display:none">
+      <button class="btn primary" id="unzip-download-all">Tải tất cả (.zip)</button>
+      <button class="btn" id="unzip-save-files">Lưu vào Quản lý file</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BG REMOVE ============ -->
+<section id="view-bgremove" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">Xoá nền</div>
+  </div>
+  <div class="page-content">
+    <label class="dropzone" for="bg-input">
+      <span class="big-icon">🖼️</span>
+      <div class="label">Chọn ảnh</div>
+      <div class="hint">PNG, JPG · Xử lý ngay trên máy</div>
+      <input type="file" id="bg-input" accept="image/*">
+    </label>
+    <div class="progress-bar" id="bg-progress"><div class="fill"></div></div>
+    <div class="status" id="bg-status"></div>
+    <div class="image-preview" id="bg-preview"></div>
+    <div class="actions-row" id="bg-actions" style="display:none">
+      <button class="btn primary" id="bg-download">Tải ảnh PNG</button>
+      <button class="btn" id="bg-save">Lưu</button>
+    </div>
+    <div class="help-card">
+      Lần đầu sẽ tải model AI (~30-80MB). Sau đó xử lý <strong>hoàn toàn offline</strong>.
+    </div>
+  </div>
+</section>
+
+<!-- ============ COMPRESS ============ -->
+<section id="view-compress" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">Nén ảnh</div>
+  </div>
+  <div class="page-content">
+    <label class="dropzone" for="cp-input">
+      <span class="big-icon">🗜️</span>
+      <div class="label">Chọn ảnh</div>
+      <div class="hint">JPG, PNG, WebP</div>
+      <input type="file" id="cp-input" accept="image/*">
+    </label>
+    <div class="field" id="cp-options" style="display:none">
+      <div class="field-label">Chất lượng</div>
+      <input type="range" id="cp-quality" min="10" max="100" value="75" style="width:100%">
+      <div style="text-align:center;color:var(--text-2);font-size:13px;margin-top:4px"><span id="cp-quality-val">75</span>%</div>
+      <div class="field-label" style="margin-top:14px">Kích thước tối đa (px)</div>
+      <select class="select" id="cp-size">
+        <option value="0">Giữ nguyên</option>
+        <option value="3840">4K (3840px)</option>
+        <option value="1920">Full HD (1920px)</option>
+        <option value="1280">HD (1280px)</option>
+        <option value="800">800px</option>
+        <option value="500">500px</option>
+      </select>
+    </div>
+    <div class="status" id="cp-status"></div>
+    <div class="image-preview" id="cp-preview"></div>
+    <div class="actions-row" id="cp-actions" style="display:none">
+      <button class="btn primary" id="cp-download">Tải về</button>
+      <button class="btn" id="cp-save">Lưu</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONVERT ============ -->
+<section id="view-convert" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">Convert ảnh</div>
+  </div>
+  <div class="page-content">
+    <div class="field">
+      <div class="field-label">Định dạng đích</div>
+      <select class="select" id="cv-format">
+        <option value="image/jpeg">JPG</option>
+        <option value="image/png">PNG</option>
+        <option value="image/webp">WebP</option>
+      </select>
+    </div>
+    <label class="dropzone" for="cv-input">
+      <span class="big-icon">🔁</span>
+      <div class="label">Chọn ảnh (kể cả HEIC)</div>
+      <div class="hint">Chuyển sang JPG/PNG/WebP</div>
+      <input type="file" id="cv-input" accept="image/*,.heic,.heif" multiple>
+    </label>
+    <div class="progress-bar" id="cv-progress"><div class="fill"></div></div>
+    <div class="status" id="cv-status"></div>
+    <div class="file-list" id="cv-list"></div>
+    <div class="actions-row" id="cv-actions" style="display:none">
+      <button class="btn primary" id="cv-download-all">Tải tất cả (ZIP)</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ EXIF ============ -->
+<section id="view-exif" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">Xoá EXIF</div>
+  </div>
+  <div class="page-content">
+    <label class="dropzone" for="ex-input">
+      <span class="big-icon">🛡️</span>
+      <div class="label">Chọn ảnh</div>
+      <div class="hint">Xoá GPS, model máy, thời gian...</div>
+      <input type="file" id="ex-input" accept="image/jpeg,image/jpg" multiple>
+    </label>
+    <div class="status" id="ex-status"></div>
+    <div class="big-result" id="ex-info" style="font-size:12.5px"></div>
+    <div class="file-list" id="ex-list"></div>
+    <div class="actions-row" id="ex-actions" style="display:none">
+      <button class="btn primary" id="ex-download-all">Tải tất cả</button>
+    </div>
+    <div class="help-card">
+      Chỉ hỗ trợ JPG. Tất cả metadata EXIF (GPS, máy, ngày...) sẽ bị xoá sạch khỏi ảnh.
+    </div>
+  </div>
+</section>
+
+<!-- ============ WATERMARK ============ -->
+<section id="view-watermark" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">Watermark</div>
+  </div>
+  <div class="page-content">
+    <div class="field">
+      <div class="field-label">Nội dung watermark</div>
+      <input type="text" class="text-input" id="wm-text" placeholder="© SirV" value="© SirV">
+    </div>
+    <div class="field">
+      <div class="field-label">Vị trí</div>
+      <select class="select" id="wm-pos">
+        <option value="br">Dưới phải</option>
+        <option value="bl">Dưới trái</option>
+        <option value="tr">Trên phải</option>
+        <option value="tl">Trên trái</option>
+        <option value="center">Giữa (diagonal)</option>
+      </select>
+    </div>
+    <label class="dropzone" for="wm-input">
+      <span class="big-icon">©️</span>
+      <div class="label">Chọn ảnh</div>
+      <div class="hint">Có thể chọn nhiều ảnh</div>
+      <input type="file" id="wm-input" accept="image/*" multiple>
+    </label>
+    <div class="status" id="wm-status"></div>
+    <div class="file-list" id="wm-list"></div>
+    <div class="actions-row" id="wm-actions" style="display:none">
+      <button class="btn primary" id="wm-download-all">Tải tất cả</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ COLLAGE ============ -->
+<section id="view-collage" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">Ghép ảnh</div>
+  </div>
+  <div class="page-content">
+    <div class="field">
+      <div class="field-label">Bố cục</div>
+      <select class="select" id="cl-layout">
+        <option value="h2">2 ảnh ngang</option>
+        <option value="v2">2 ảnh dọc</option>
+        <option value="grid4">Lưới 2×2</option>
+        <option value="h3">3 ảnh ngang</option>
+        <option value="v3">3 ảnh dọc</option>
+      </select>
+    </div>
+    <label class="dropzone" for="cl-input">
+      <span class="big-icon">🧩</span>
+      <div class="label">Chọn ảnh</div>
+      <div class="hint">2-4 ảnh tuỳ bố cục</div>
+      <input type="file" id="cl-input" accept="image/*" multiple>
+    </label>
+    <div class="status" id="cl-status"></div>
+    <div class="image-preview" id="cl-preview"></div>
+    <div class="actions-row" id="cl-actions" style="display:none">
+      <button class="btn primary" id="cl-download">Tải ảnh ghép</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CROP ============ -->
+<section id="view-crop" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">Crop tỉ lệ</div>
+  </div>
+  <div class="page-content">
+    <div class="field">
+      <div class="field-label">Tỉ lệ</div>
+      <select class="select" id="cr-ratio">
+        <option value="1:1">1:1 — Vuông (IG post)</option>
+        <option value="4:5">4:5 — IG portrait</option>
+        <option value="9:16">9:16 — Story/Reels</option>
+        <option value="16:9">16:9 — Landscape</option>
+        <option value="3:4">3:4 — Print</option>
+        <option value="2:3">2:3 — Photo</option>
+      </select>
+    </div>
+    <label class="dropzone" for="cr-input">
+      <span class="big-icon">✂️</span>
+      <div class="label">Chọn ảnh</div>
+      <div class="hint">Cắt từ giữa theo tỉ lệ</div>
+      <input type="file" id="cr-input" accept="image/*">
+    </label>
+    <div class="status" id="cr-status"></div>
+    <div class="image-preview" id="cr-preview"></div>
+    <div class="actions-row" id="cr-actions" style="display:none">
+      <button class="btn primary" id="cr-download">Tải ảnh</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ JSON VIEWER ============ -->
+<section id="view-json" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">JSON Viewer</div>
+  </div>
+  <div class="page-content">
+    <div class="field">
+      <div class="field-label">Dán JSON vào đây</div>
+      <textarea class="text-area" id="json-input" placeholder='{"hello": "world"}'></textarea>
+    </div>
+    <div class="actions-row">
+      <button class="btn primary" id="json-format">Format đẹp</button>
+      <button class="btn" id="json-mini">Minify</button>
+    </div>
+    <div class="status" id="json-status"></div>
+    <div class="big-result" id="json-output"></div>
+    <div class="actions-row" id="json-actions" style="display:none">
+      <button class="btn" id="json-copy">Copy</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CHAR COUNT ============ -->
+<section id="view-charcount" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">Đếm chữ</div>
+  </div>
+  <div class="page-content">
+    <div class="field">
+      <div class="field-label">Nhập text</div>
+      <textarea class="text-area" id="cc-input" placeholder="Dán văn bản vào đây..." style="min-height:160px"></textarea>
+    </div>
+    <div class="unit-result">
+      <div class="val" id="cc-chars">0</div>
+      <div class="lbl">Ký tự (có dấu cách)</div>
+    </div>
+    <div class="row-2" style="margin-top:10px">
+      <div class="unit-result" style="padding:14px"><div class="val" id="cc-nospace" style="font-size:24px">0</div><div class="lbl">Không dấu cách</div></div>
+      <div class="unit-result" style="padding:14px"><div class="val" id="cc-words" style="font-size:24px">0</div><div class="lbl">Từ</div></div>
+      <div class="unit-result" style="padding:14px"><div class="val" id="cc-sentences" style="font-size:24px">0</div><div class="lbl">Câu</div></div>
+      <div class="unit-result" style="padding:14px"><div class="val" id="cc-lines" style="font-size:24px">0</div><div class="lbl">Dòng</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TEXT CASE ============ -->
+<section id="view-textcase" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">Đổi chữ</div>
+  </div>
+  <div class="page-content">
+    <div class="field">
+      <div class="field-label">Text gốc</div>
+      <textarea class="text-area" id="tc-input"></textarea>
+    </div>
+    <div class="chip-row">
+      <div class="chip" data-tc="upper">CHỮ HOA</div>
+      <div class="chip" data-tc="lower">chữ thường</div>
+      <div class="chip" data-tc="title">Chữ Hoa Đầu</div>
+      <div class="chip" data-tc="sentence">Câu hoa đầu</div>
+      <div class="chip" data-tc="slug">slug-url</div>
+      <div class="chip" data-tc="nodiacritic">Bỏ dấu</div>
+      <div class="chip" data-tc="reverse">Đảo ngược</div>
+    </div>
+    <div class="big-result" id="tc-output"></div>
+    <div class="actions-row" id="tc-actions" style="display:none">
+      <button class="btn" id="tc-copy">Copy</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ENCODE / HASH ============ -->
+<section id="view-encode" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">Encode / Hash</div>
+  </div>
+  <div class="page-content">
+    <div class="field">
+      <div class="field-label">Input</div>
+      <textarea class="text-area" id="en-input"></textarea>
+    </div>
+    <div class="chip-row">
+      <div class="chip" data-en="b64e">Base64 →</div>
+      <div class="chip" data-en="b64d">← Base64</div>
+      <div class="chip" data-en="urle">URL →</div>
+      <div class="chip" data-en="urld">← URL</div>
+      <div class="chip" data-en="md5">MD5</div>
+      <div class="chip" data-en="sha1">SHA-1</div>
+      <div class="chip" data-en="sha256">SHA-256</div>
+    </div>
+    <div class="big-result" id="en-output"></div>
+    <div class="actions-row" id="en-actions" style="display:none">
+      <button class="btn" id="en-copy">Copy</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SPEECH TO TEXT ============ -->
+<section id="view-speech" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">Nói → Text</div>
+  </div>
+  <div class="page-content">
+    <div class="field">
+      <div class="field-label">Ngôn ngữ</div>
+      <select class="select" id="sp-lang">
+        <option value="vi-VN">Tiếng Việt</option>
+        <option value="en-US">English (US)</option>
+        <option value="en-GB">English (UK)</option>
+      </select>
+    </div>
+    <div style="margin-top:20px;text-align:center">
+      <button id="sp-btn" style="width:120px;height:120px;border-radius:50%;border:none;background:linear-gradient(135deg,#ec4899,#a855f7);color:white;font-size:48px;cursor:pointer">🎙️</button>
+      <div style="margin-top:14px;color:var(--text-2);font-size:13.5px" id="sp-status">Bấm để bắt đầu</div>
+    </div>
+    <div class="big-result" id="sp-output" style="margin-top:20px"></div>
+    <div class="actions-row" id="sp-actions" style="display:none">
+      <button class="btn primary" id="sp-copy">Copy</button>
+      <button class="btn" id="sp-clear">Xoá</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ QR ============ -->
+<section id="view-qr" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">QR Code</div>
+  </div>
+  <div class="page-content">
+    <div class="chip-row" style="margin-top:8px">
+      <div class="chip active" id="qr-tab-gen">Tạo QR</div>
+      <div class="chip" id="qr-tab-read">Quét QR</div>
+    </div>
+    <div id="qr-pane-gen">
+      <div class="field">
+        <div class="field-label">Nội dung (text, URL, ...)</div>
+        <textarea class="text-area" id="qr-text" placeholder="https://..."></textarea>
+      </div>
+      <div class="actions-row">
+        <button class="btn primary" id="qr-make">Tạo QR</button>
+      </div>
+      <div class="qr-result" id="qr-out"></div>
+      <div class="actions-row" id="qr-actions" style="display:none">
+        <button class="btn" id="qr-download">Tải PNG</button>
+      </div>
+    </div>
+    <div id="qr-pane-read" style="display:none">
+      <label class="dropzone" for="qr-img" style="margin-top:14px">
+        <span class="big-icon">📷</span>
+        <div class="label">Chọn ảnh QR</div>
+        <div class="hint">Đọc nội dung mã QR</div>
+        <input type="file" id="qr-img" accept="image/*">
+      </label>
+      <div class="status" id="qr-read-status"></div>
+      <div class="big-result" id="qr-read-out"></div>
+      <div class="actions-row" id="qr-read-actions" style="display:none">
+        <button class="btn" id="qr-read-copy">Copy</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ UNITS ============ -->
+<section id="view-units" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">Đổi đơn vị</div>
+  </div>
+  <div class="page-content">
+    <div class="field">
+      <div class="field-label">Loại</div>
+      <select class="select" id="un-type">
+        <option value="length">Độ dài</option>
+        <option value="weight">Khối lượng</option>
+        <option value="temp">Nhiệt độ</option>
+        <option value="area">Diện tích</option>
+        <option value="volume">Thể tích</option>
+        <option value="speed">Tốc độ</option>
+        <option value="data">Dung lượng</option>
+      </select>
+    </div>
+    <div class="row-2" style="margin-top:14px">
+      <div>
+        <div class="field-label">Từ</div>
+        <input type="number" class="text-input" id="un-val" value="1" inputmode="decimal">
+        <select class="select" id="un-from" style="margin-top:8px"></select>
+      </div>
+      <div>
+        <div class="field-label">Sang</div>
+        <div class="unit-result" style="padding:14px;margin-top:0">
+          <div class="val" id="un-result" style="font-size:24px">—</div>
+        </div>
+        <select class="select" id="un-to" style="margin-top:8px"></select>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DATE ============ -->
+<section id="view-date" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">Tính ngày</div>
+  </div>
+  <div class="page-content">
+    <div class="chip-row" style="margin-top:8px">
+      <div class="chip active" data-dm="age">Tuổi</div>
+      <div class="chip" data-dm="between">Khoảng cách</div>
+      <div class="chip" data-dm="add">Cộng/trừ ngày</div>
+    </div>
+    <div id="dt-pane-age" class="dt-pane">
+      <div class="field">
+        <div class="field-label">Ngày sinh</div>
+        <input type="date" class="text-input" id="dt-birth">
+      </div>
+      <div class="unit-result" id="dt-age-result">
+        <div class="val" id="dt-age-val">—</div>
+        <div class="lbl" id="dt-age-lbl">tuổi</div>
+      </div>
+    </div>
+    <div id="dt-pane-between" class="dt-pane" style="display:none">
+      <div class="field">
+        <div class="field-label">Từ ngày</div>
+        <input type="date" class="text-input" id="dt-from">
+      </div>
+      <div class="field">
+        <div class="field-label">Đến ngày</div>
+        <input type="date" class="text-input" id="dt-to">
+      </div>
+      <div class="unit-result">
+        <div class="val" id="dt-between-val">—</div>
+        <div class="lbl">ngày</div>
+      </div>
+    </div>
+    <div id="dt-pane-add" class="dt-pane" style="display:none">
+      <div class="field">
+        <div class="field-label">Từ ngày</div>
+        <input type="date" class="text-input" id="dt-add-from">
+      </div>
+      <div class="field">
+        <div class="field-label">Cộng (âm = trừ)</div>
+        <input type="number" class="text-input" id="dt-add-days" value="30" inputmode="numeric">
+      </div>
+      <div class="unit-result">
+        <div class="val" id="dt-add-val" style="font-size:24px">—</div>
+        <div class="lbl">Kết quả</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RANDOM ============ -->
+<section id="view-random" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">Random</div>
+  </div>
+  <div class="page-content">
+    <div class="chip-row" style="margin-top:8px">
+      <div class="chip active" data-rm="number">Số</div>
+      <div class="chip" data-rm="pick">Bốc thăm</div>
+      <div class="chip" data-rm="dice">Xúc xắc</div>
+      <div class="chip" data-rm="coin">Tung xu</div>
+    </div>
+    <div id="rd-pane-number" class="rd-pane">
+      <div class="row-2" style="margin-top:14px">
+        <div><div class="field-label">Từ</div><input type="number" class="text-input" id="rd-min" value="1"></div>
+        <div><div class="field-label">Đến</div><input type="number" class="text-input" id="rd-max" value="100"></div>
+      </div>
+      <div class="unit-result"><div class="val" id="rd-num-val">—</div><div class="lbl">Bấm tạo</div></div>
+      <button class="btn primary" id="rd-num-go">Random</button>
+    </div>
+    <div id="rd-pane-pick" class="rd-pane" style="display:none">
+      <div class="field"><div class="field-label">Danh sách (mỗi dòng 1 mục)</div>
+        <textarea class="text-area" id="rd-list" placeholder="An&#10;Bình&#10;Chi"></textarea>
+      </div>
+      <div class="unit-result"><div class="val" id="rd-pick-val" style="font-size:24px">—</div><div class="lbl">Người/mục được chọn</div></div>
+      <button class="btn primary" id="rd-pick-go">Bốc</button>
+    </div>
+    <div id="rd-pane-dice" class="rd-pane" style="display:none">
+      <div class="field"><div class="field-label">Số xúc xắc</div>
+        <input type="number" class="text-input" id="rd-dice-n" value="1" min="1" max="10">
+      </div>
+      <div class="unit-result"><div class="val" id="rd-dice-val">—</div><div class="lbl">Tổng điểm</div></div>
+      <button class="btn primary" id="rd-dice-go">🎲 Tung</button>
+    </div>
+    <div id="rd-pane-coin" class="rd-pane" style="display:none">
+      <div class="unit-result" style="margin-top:14px"><div class="val" id="rd-coin-val" style="font-size:48px">—</div></div>
+      <button class="btn primary" id="rd-coin-go">Tung xu</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TTS ============ -->
+<section id="view-tts" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">Text → Nói</div>
+  </div>
+  <div class="page-content">
+    <div class="field">
+      <div class="field-label">Văn bản</div>
+      <textarea class="text-area" id="tts-text" placeholder="Nhập text tiếng Việt..." style="min-height:120px"></textarea>
+    </div>
+    <div class="field">
+      <div class="field-label">Giọng đọc</div>
+      <select class="select" id="tts-voice"></select>
+    </div>
+    <div class="row-2" style="margin-top:14px">
+      <div>
+        <div class="field-label">Tốc độ</div>
+        <input type="range" id="tts-rate" min="0.5" max="2" step="0.1" value="1" style="width:100%">
+        <div style="text-align:center;color:var(--text-2);font-size:12px"><span id="tts-rate-val">1.0</span>x</div>
+      </div>
+      <div>
+        <div class="field-label">Cao độ</div>
+        <input type="range" id="tts-pitch" min="0" max="2" step="0.1" value="1" style="width:100%">
+        <div style="text-align:center;color:var(--text-2);font-size:12px"><span id="tts-pitch-val">1.0</span></div>
+      </div>
+    </div>
+    <div class="actions-row" style="margin-top:16px">
+      <button class="btn primary" id="tts-play">▶ Đọc</button>
+      <button class="btn" id="tts-stop">■ Dừng</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FILES ============ -->
+<section id="view-files" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">Quản lý file</div>
+  </div>
+  <div class="page-content">
+    <div class="breadcrumb" id="files-breadcrumb"></div>
+    <div class="files-toolbar">
+      <div class="chip" id="files-new-folder">＋ Thư mục</div>
+      <div class="chip" id="files-upload">⤴︎ Thêm file</div>
+      <input type="file" id="files-input" multiple style="display:none">
+    </div>
+    <div class="file-list" id="files-list"></div>
+    <div class="empty-state" id="files-empty" style="display:none">
+      <div class="ic">📭</div>
+      <div class="t">Chưa có gì ở đây</div>
+      <div class="s">Bấm <strong>Thêm file</strong> để bắt đầu</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DOWNLOAD ============ -->
+<section id="view-download" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">Tải video</div>
+  </div>
+  <div class="page-content">
+    <div class="field">
+      <div class="field-label">Link video</div>
+      <input type="url" class="text-input" id="dl-url" placeholder="Dán link..." inputmode="url" autocapitalize="off">
+    </div>
+    <!-- iOS-only: uses Shortcuts URL scheme -->
+    <div id="dl-ios-block">
+      <div class="section-label">Chọn nguồn</div>
+      <div class="platform-grid">
+        <button class="platform-btn" data-platform="youtube"><div class="pic yt">▶</div><div><span class="nm">YouTube</span><span class="sub">Cần Scriptable</span></div></button>
+        <button class="platform-btn" data-platform="tiktok"><div class="pic tt">♪</div><div><span class="nm">TikTok</span><span class="sub">Không watermark</span></div></button>
+        <button class="platform-btn" data-platform="facebook"><div class="pic fb">f</div><div><span class="nm">Facebook</span><span class="sub">Video, reels</span></div></button>
+        <button class="platform-btn" data-platform="instagram"><div class="pic ig">◉</div><div><span class="nm">Instagram</span><span class="sub">Reels, posts</span></div></button>
+        <button class="platform-btn" data-platform="twitter"><div class="pic tw">𝕏</div><div><span class="nm">Twitter / X</span><span class="sub">+ Threads</span></div></button>
+        <button class="platform-btn" data-platform="universal"><div class="pic un">∞</div><div><span class="nm">Cobalt</span><span class="sub">Mọi nền tảng</span></div></button>
+      </div>
+      <div class="help-card">
+        <strong style="color:#fca5a5">⚠ YouTube:</strong> Cobalt server bị YouTube chặn. Cần cài bộ riêng:
+        <ol>
+          <li><strong>Cobalt</strong> (TikTok/IG/FB/X): <a href="https://routinehub.co/shortcut/19755/" target="_blank">Cài shortcut</a></li>
+          <li><strong>YouTube</strong> cần 3 thứ:
+            <ul><li>App <strong>Scriptable</strong></li><li>App <strong>a-Shell mini</strong></li><li><a href="https://routinehub.co/shortcut/15247/" target="_blank">YouTube Download shortcut</a></li></ul>
+          </li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- PC-only: opens external services + clipboard helpers -->
+    <div id="dl-pc-block" style="display:none">
+      <div class="section-label">Cách 1 — Mở dịch vụ tải</div>
+      <button class="btn primary" id="dl-pc-cobalt" style="margin-top:8px">🚀 Mở Cobalt.tools (mọi nền tảng)</button>
+      <div class="platform-grid" style="margin-top:10px">
+        <button class="platform-btn" data-host="www.y2mate.com"><div class="pic yt">▶</div><div><span class="nm">Y2Mate</span><span class="sub">YouTube tốt nhất</span></div></button>
+        <button class="platform-btn" data-host="snaptik.app"><div class="pic tt">♪</div><div><span class="nm">SnapTik</span><span class="sub">TikTok no watermark</span></div></button>
+        <button class="platform-btn" data-host="snapinsta.app"><div class="pic ig">◉</div><div><span class="nm">SnapInsta</span><span class="sub">Instagram</span></div></button>
+        <button class="platform-btn" data-host="fdown.net"><div class="pic fb">f</div><div><span class="nm">FDown</span><span class="sub">Facebook</span></div></button>
+        <button class="platform-btn" data-host="twdown.net"><div class="pic tw">𝕏</div><div><span class="nm">TWDown</span><span class="sub">Twitter / X</span></div></button>
+        <button class="platform-btn" data-host="9xbuddy.com"><div class="pic un">∞</div><div><span class="nm">9xBuddy</span><span class="sub">1000+ nền tảng</span></div></button>
+      </div>
+
+      <div class="section-label" style="margin-top:24px">Cách 2 — Dùng yt-dlp (terminal)</div>
+      <div class="actions-row" style="margin-top:8px">
+        <button class="btn" id="dl-pc-ytdlp-v">📹 Copy lệnh tải video</button>
+        <button class="btn" id="dl-pc-ytdlp-a">🎵 Copy lệnh tải MP3</button>
+      </div>
+
+      <div class="help-card">
+        <strong>Cách 1 hoạt động thế nào:</strong>
+        <ol>
+          <li>Dán link video vào ô trên</li>
+          <li>Bấm 1 nút bất kỳ ở trên</li>
+          <li>URL tự động copy vào clipboard, trang dịch vụ mở ra ở tab mới</li>
+          <li>Paste URL vào ô của trang đó → tải về</li>
+        </ol>
+        <strong>Cách 2:</strong> Cần cài <a href="https://github.com/yt-dlp/yt-dlp" target="_blank">yt-dlp</a>. Trên Windows: <code style="background:var(--surface-2);padding:1px 6px;border-radius:4px">pip install yt-dlp</code> rồi paste lệnh đã copy vào CMD/PowerShell.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SHEET (content rebuilt dynamically by sheet.open or menus) ============ -->
+<div class="sheet-bg" id="sheet-bg">
+  <div class="sheet" id="sheet"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ============ LIBRARIES ============ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+
+<script type="module">
+// ==================== UTIL ====================
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+
+const viewCache = new Map();
+
+const navTo = (id) => {
+  const targetId = 'view-' + id;
+  const currentActive = $('.view.active');
+
+  if (currentActive && currentActive.id !== targetId) {
+    currentActive.classList.remove('active');
+    viewCache.set(currentActive.id, currentActive);
+    currentActive.remove();
+  }
+
+  let target = document.getElementById(targetId);
+  if (!target) target = viewCache.get(targetId);
+  if (target) {
+    if (!target.parentNode) document.body.appendChild(target);
+    viewCache.delete(targetId);
+    target.classList.add('active');
+  }
+
+  window.scrollTo(0, 0);
+  if (location.hash !== '#' + id) history.pushState({view: id}, '', '#' + id);
+
+  // Lazy init triggers
+  if (id === 'files') setTimeout(renderFiles, 50);
+  if (id === 'units') setTimeout(initUnits, 50);
+  if (id === 'tts') setTimeout(initTTS, 50);
+  if (id === 'download') setTimeout(initDownload, 50);
+};
+
+window.addEventListener('popstate', e => {
+  const id = (e.state && e.state.view) || 'home';
+  navTo(id);
+});
+
+// Event delegation for module cards + back buttons + tabs
+document.addEventListener('click', (e) => {
+  const card = e.target.closest('.module-card');
+  if (card && card.dataset.go) { navTo(card.dataset.go); return; }
+  const back = e.target.closest('[data-back]');
+  if (back) { navTo('home'); return; }
+  const tab = e.target.closest('.tab[data-tab]');
+  if (tab) {
+    $$('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    $$('.module-group').forEach(g => g.classList.toggle('active', g.dataset.group === tab.dataset.tab));
+    return;
+  }
+});
+
+const fmtSize = (b) => {
+  if (b < 1024) return b + ' B';
+  if (b < 1024*1024) return (b/1024).toFixed(1) + ' KB';
+  if (b < 1024*1024*1024) return (b/1024/1024).toFixed(1) + ' MB';
+  return (b/1024/1024/1024).toFixed(2) + ' GB';
+};
+
+const toast = (msg) => {
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => t.classList.remove('show'), 2200);
+};
+
+const downloadBlob = (blob, filename) => {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+};
+
+const setStatus = (el, msg, type='') => {
+  el.className = 'status show ' + type;
+  el.textContent = msg;
+};
+const hideStatus = (el) => { el.className = 'status'; };
+
+const setProgress = (el, pct) => {
+  el.classList.add('show');
+  el.querySelector('.fill').style.width = pct + '%';
+  if (pct >= 100) setTimeout(() => el.classList.remove('show'), 500);
+};
+
+const copyText = async (text) => {
+  try { await navigator.clipboard.writeText(text); toast('Đã copy'); }
+  catch { toast('Không copy được'); }
+};
+
+const fileIcon = (name) => {
+  const ext = (name.split('.').pop() || '').toLowerCase();
+  return ({jpg:'🖼️',jpeg:'🖼️',png:'🖼️',gif:'🖼️',webp:'🖼️',heic:'🖼️',
+          mp4:'🎬',mov:'🎬',avi:'🎬',mkv:'🎬',
+          mp3:'🎵',wav:'🎵',m4a:'🎵',
+          pdf:'📄',doc:'📝',docx:'📝',txt:'📝',
+          zip:'📦',rar:'📦',
+          json:'⚙️',xml:'⚙️',html:'🌐'})[ext] || '📎';
+};
+
+const sheet = {
+  open({title, desc='', value='', placeholder=''}) {
+    return new Promise(res => {
+      // Reset sheet content
+      const sh = $('#sheet');
+      sh.innerHTML = `
+        <div class="handle"></div>
+        <h3 id="sheet-title">${title}</h3>
+        <p id="sheet-desc">${desc}</p>
+        <input type="text" class="sheet-input" id="sheet-input" autocomplete="off">
+        <div class="actions-row">
+          <button class="btn" id="sheet-cancel">Huỷ</button>
+          <button class="btn primary" id="sheet-ok">Lưu</button>
+        </div>
+      `;
+      const inp = $('#sheet-input');
+      inp.value = value; inp.placeholder = placeholder;
+      $('#sheet-bg').classList.add('show');
+      setTimeout(() => inp.focus(), 100);
+      const close = (v) => {
+        $('#sheet-bg').classList.remove('show');
+        res(v);
+      };
+      $('#sheet-ok').onclick = () => close(inp.value.trim() || null);
+      $('#sheet-cancel').onclick = () => close(null);
+      $('#sheet-bg').onclick = (e) => { if (e.target.id === 'sheet-bg') close(null); };
+      inp.onkeydown = (e) => { if (e.key === 'Enter') close(inp.value.trim() || null); };
+    });
+  }
+};
+
+// Chip toggle helper
+const setupChips = (selector, onChange) => {
+  $$(selector).forEach(c => c.addEventListener('click', () => {
+    const parent = c.parentElement;
+    parent.querySelectorAll('.chip').forEach(x => x.classList.remove('active'));
+    c.classList.add('active');
+    onChange(c);
+  }));
+};
+
+// Helpers for image canvas
+const loadImage = (file) => new Promise((res, rej) => {
+  const img = new Image();
+  img.onload = () => res(img);
+  img.onerror = rej;
+  img.src = URL.createObjectURL(file);
+});
+
+// ==================== SCAN PDF ====================
+const scanPages = [];
+let scanMode = 'color';
+
+setupChips('#view-scan .chip[data-mode]', (c) => { scanMode = c.dataset.mode; });
+
+$('#scan-input').addEventListener('change', async (e) => {
+  for (const f of e.target.files) {
+    const img = await loadImage(f);
+    scanPages.push({img, file: f});
+  }
+  e.target.value = '';
+  renderScanThumbs();
+});
+
+function renderScanThumbs() {
+  const wrap = $('#scan-thumbs');
+  wrap.innerHTML = '';
+  if (!scanPages.length) {
+    $('#scan-options').style.display = 'none';
+    $('#scan-actions').style.display = 'none';
+    return;
+  }
+  $('#scan-options').style.display = 'block';
+  $('#scan-actions').style.display = 'flex';
+  scanPages.forEach((p, i) => {
+    const el = document.createElement('div');
+    el.className = 'thumb';
+    el.innerHTML = `<img src="${p.img.src}"><div class="num">${i+1}</div><div class="del" data-i="${i}">×</div>`;
+    el.querySelector('.del').addEventListener('click', (e) => {
+      e.stopPropagation();
+      scanPages.splice(i, 1);
+      renderScanThumbs();
+    });
+    wrap.appendChild(el);
+  });
+}
+
+function applyImageMode(canvas, mode) {
+  const ctx = canvas.getContext('2d');
+  if (mode === 'color') return;
+  const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const d = imgData.data;
+  if (mode === 'gray') {
+    for (let i = 0; i < d.length; i += 4) {
+      const g = d[i]*0.299 + d[i+1]*0.587 + d[i+2]*0.114;
+      d[i] = d[i+1] = d[i+2] = g;
+    }
+  } else if (mode === 'bw') {
+    // Adaptive threshold (Otsu approximation)
+    let hist = new Array(256).fill(0);
+    for (let i = 0; i < d.length; i += 4) {
+      const g = Math.round(d[i]*0.299 + d[i+1]*0.587 + d[i+2]*0.114);
+      hist[g]++;
+    }
+    let total = canvas.width * canvas.height;
+    let sum = 0; for (let t = 0; t < 256; t++) sum += t * hist[t];
+    let sumB = 0, wB = 0, maxVar = 0, threshold = 128;
+    for (let t = 0; t < 256; t++) {
+      wB += hist[t]; if (wB === 0) continue;
+      const wF = total - wB; if (wF === 0) break;
+      sumB += t * hist[t];
+      const mB = sumB / wB, mF = (sum - sumB) / wF;
+      const v = wB * wF * (mB - mF) * (mB - mF);
+      if (v > maxVar) { maxVar = v; threshold = t; }
+    }
+    for (let i = 0; i < d.length; i += 4) {
+      const g = d[i]*0.299 + d[i+1]*0.587 + d[i+2]*0.114;
+      const v = g > threshold ? 255 : 0;
+      d[i] = d[i+1] = d[i+2] = v;
+    }
+  } else if (mode === 'enhance') {
+    // Brighten + increase contrast
+    for (let i = 0; i < d.length; i += 4) {
+      for (let k = 0; k < 3; k++) {
+        let v = d[i+k];
+        v = (v - 128) * 1.4 + 128 + 10;
+        d[i+k] = Math.max(0, Math.min(255, v));
+      }
+    }
+  }
+  ctx.putImageData(imgData, 0, 0);
+}
+
+$('#scan-export').addEventListener('click', async () => {
+  if (!scanPages.length) return;
+  setStatus($('#scan-status'), 'Đang tạo PDF...');
+  try {
+    const { jsPDF } = await import('https://cdn.jsdelivr.net/npm/jspdf@2.5.1/+esm');
+    const pdf = new jsPDF({orientation:'p', unit:'mm', format:'a4'});
+    const pageW = 210, pageH = 297;
+    for (let i = 0; i < scanPages.length; i++) {
+      const {img} = scanPages[i];
+      const c = document.createElement('canvas');
+      // Limit max dimension for memory
+      const maxDim = 2000;
+      let w = img.width, h = img.height;
+      if (Math.max(w,h) > maxDim) {
+        const s = maxDim / Math.max(w,h);
+        w = Math.round(w*s); h = Math.round(h*s);
+      }
+      c.width = w; c.height = h;
+      const ctx = c.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      applyImageMode(c, scanMode);
+      const dataUrl = c.toDataURL(scanMode === 'bw' ? 'image/jpeg' : 'image/jpeg', 0.8);
+      const ar = w / h;
+      let drawW = pageW, drawH = pageW / ar;
+      if (drawH > pageH) { drawH = pageH; drawW = pageH * ar; }
+      const x = (pageW - drawW)/2, y = (pageH - drawH)/2;
+      if (i > 0) pdf.addPage();
+      pdf.addImage(dataUrl, 'JPEG', x, y, drawW, drawH);
+    }
+    const blob = pdf.output('blob');
+    downloadBlob(blob, 'scan-' + Date.now() + '.pdf');
+    setStatus($('#scan-status'), '✓ Đã xuất PDF', 'success');
+  } catch (err) {
+    setStatus($('#scan-status'), '✗ Lỗi: ' + err.message, 'error');
+  }
+});
+
+// ==================== MERGE PDF ====================
+const mergeFiles = [];
+
+$('#merge-input').addEventListener('change', async (e) => {
+  for (const f of e.target.files) mergeFiles.push(f);
+  e.target.value = '';
+  renderMergeList();
+});
+
+function renderMergeList() {
+  const list = $('#merge-list');
+  list.innerHTML = '';
+  if (!mergeFiles.length) { $('#merge-actions').style.display = 'none'; return; }
+  $('#merge-actions').style.display = 'flex';
+  mergeFiles.forEach((f, i) => {
+    const el = document.createElement('div');
+    el.className = 'file-item';
+    el.innerHTML = `<div class="ic">📄</div><div class="info"><div class="name">${f.name}</div><div class="size">${fmtSize(f.size)}</div></div><div class="act" data-i="${i}">×</div>`;
+    el.querySelector('.act').addEventListener('click', () => { mergeFiles.splice(i, 1); renderMergeList(); });
+    list.appendChild(el);
+  });
+}
+
+$('#merge-clear').addEventListener('click', () => { mergeFiles.length = 0; renderMergeList(); });
+
+$('#merge-do').addEventListener('click', async () => {
+  if (mergeFiles.length < 1) return;
+  setStatus($('#merge-status'), 'Đang gộp PDF...');
+  try {
+    const { PDFDocument } = await import('https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/+esm');
+    const out = await PDFDocument.create();
+    for (const f of mergeFiles) {
+      const buf = await f.arrayBuffer();
+      const src = await PDFDocument.load(buf);
+      const pages = await out.copyPages(src, src.getPageIndices());
+      pages.forEach(p => out.addPage(p));
+    }
+    const bytes = await out.save();
+    downloadBlob(new Blob([bytes], {type:'application/pdf'}), 'merged-' + Date.now() + '.pdf');
+    setStatus($('#merge-status'), '✓ Đã gộp ' + mergeFiles.length + ' file', 'success');
+  } catch (err) {
+    setStatus($('#merge-status'), '✗ Lỗi: ' + err.message, 'error');
+  }
+});
+
+// ==================== PDF <-> IMAGE ====================
+let piMode = 'p2i';
+let piResults = [];
+
+const setPiMode = (m) => {
+  piMode = m;
+  $('#pi-mode-p2i').classList.toggle('active', m === 'p2i');
+  $('#pi-mode-i2p').classList.toggle('active', m === 'i2p');
+  if (m === 'p2i') {
+    $('#pi-icon').textContent = '📄';
+    $('#pi-label').textContent = 'Chọn file PDF';
+    $('#pi-hint').textContent = 'Mỗi trang → 1 ảnh PNG';
+    $('#pi-input').accept = 'application/pdf';
+    $('#pi-input').multiple = false;
+  } else {
+    $('#pi-icon').textContent = '🖼️';
+    $('#pi-label').textContent = 'Chọn ảnh';
+    $('#pi-hint').textContent = 'Nhiều ảnh → 1 file PDF';
+    $('#pi-input').accept = 'image/*';
+    $('#pi-input').multiple = true;
+  }
+  piResults = [];
+  $('#pi-thumbs').innerHTML = '';
+  $('#pi-actions').style.display = 'none';
+  hideStatus($('#pi-status'));
+};
+$('#pi-mode-p2i').addEventListener('click', () => setPiMode('p2i'));
+$('#pi-mode-i2p').addEventListener('click', () => setPiMode('i2p'));
+
+$('#pi-input').addEventListener('change', async (e) => {
+  const files = [...e.target.files];
+  e.target.value = '';
+  if (!files.length) return;
+  piResults = [];
+  $('#pi-thumbs').innerHTML = '';
+  if (piMode === 'p2i') {
+    setStatus($('#pi-status'), 'Đang load PDF...');
+    setProgress($('#pi-progress'), 10);
+    try {
+      const pdfjsLib = await import('https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/+esm');
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/build/pdf.worker.min.mjs';
+      const buf = await files[0].arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({data: buf}).promise;
+      for (let p = 1; p <= pdf.numPages; p++) {
+        setProgress($('#pi-progress'), 10 + (p/pdf.numPages)*85);
+        const page = await pdf.getPage(p);
+        const viewport = page.getViewport({scale: 2});
+        const c = document.createElement('canvas');
+        c.width = viewport.width; c.height = viewport.height;
+        await page.render({canvasContext: c.getContext('2d'), viewport}).promise;
+        const blob = await new Promise(r => c.toBlob(r, 'image/png'));
+        piResults.push({name: `page-${p}.png`, blob, thumb: c.toDataURL('image/jpeg', 0.5)});
+      }
+      setProgress($('#pi-progress'), 100);
+      renderPiThumbs();
+      setStatus($('#pi-status'), '✓ Đã chuyển ' + pdf.numPages + ' trang', 'success');
+    } catch (err) {
+      setStatus($('#pi-status'), '✗ Lỗi: ' + err.message, 'error');
+    }
+  } else {
+    // i2p
+    setStatus($('#pi-status'), 'Đang tạo PDF...');
+    try {
+      const { jsPDF } = await import('https://cdn.jsdelivr.net/npm/jspdf@2.5.1/+esm');
+      const pdf = new jsPDF({unit:'mm', format:'a4'});
+      const pageW = 210, pageH = 297;
+      for (let i = 0; i < files.length; i++) {
+        setProgress($('#pi-progress'), (i/files.length)*90);
+        const img = await loadImage(files[i]);
+        const ar = img.width / img.height;
+        let dW = pageW, dH = pageW/ar;
+        if (dH > pageH) { dH = pageH; dW = pageH*ar; }
+        if (i > 0) pdf.addPage();
+        const c = document.createElement('canvas');
+        const maxDim = 1800;
+        let w = img.width, h = img.height;
+        if (Math.max(w,h) > maxDim) { const s = maxDim/Math.max(w,h); w*=s; h*=s; }
+        c.width = w; c.height = h;
+        c.getContext('2d').drawImage(img, 0, 0, w, h);
+        pdf.addImage(c.toDataURL('image/jpeg', 0.85), 'JPEG', (pageW-dW)/2, (pageH-dH)/2, dW, dH);
+      }
+      const blob = pdf.output('blob');
+      downloadBlob(blob, 'images-' + Date.now() + '.pdf');
+      setProgress($('#pi-progress'), 100);
+      setStatus($('#pi-status'), '✓ Xuất ' + files.length + ' ảnh', 'success');
+    } catch (err) {
+      setStatus($('#pi-status'), '✗ Lỗi: ' + err.message, 'error');
+    }
+  }
+});
+
+function renderPiThumbs() {
+  const wrap = $('#pi-thumbs');
+  wrap.innerHTML = '';
+  if (!piResults.length) { $('#pi-actions').style.display = 'none'; return; }
+  $('#pi-actions').style.display = 'flex';
+  piResults.forEach((p, i) => {
+    const el = document.createElement('div');
+    el.className = 'thumb';
+    el.innerHTML = `<img src="${p.thumb}"><div class="num">${i+1}</div>`;
+    el.addEventListener('click', () => downloadBlob(p.blob, p.name));
+    wrap.appendChild(el);
+  });
+}
+
+$('#pi-download').addEventListener('click', async () => {
+  const zip = new JSZip();
+  piResults.forEach(p => zip.file(p.name, p.blob));
+  const blob = await zip.generateAsync({type:'blob'});
+  downloadBlob(blob, 'pdf-pages-' + Date.now() + '.zip');
+});
+
+// ==================== OCR ====================
+let ocrResult = '';
+
+// Make OCR text clean: collapse multi-spaces, join wrapping lines, preserve structure
+function cleanOcrText(raw) {
+  if (!raw) return '';
+  // Step 1: normalize whitespace inside each line
+  const lines = raw.split(/\r?\n/).map(l =>
+    l.replace(/[\u00A0\u2000-\u200B\t]+/g, ' ')
+     .replace(/ {2,}/g, ' ')
+     .trim()
+  );
+
+  // Heuristics for paragraph boundaries
+  const isPageMarker = (l) => /^---\s*Trang/i.test(l);
+  const isHeading = (l) => {
+    if (!l || l.length < 3 || l.length > 100) return false;
+    // Mostly uppercase letters (Vietnamese diacritics included)
+    if (!/[A-ZÀ-Ỹ]/.test(l)) return false;
+    if (/[a-zà-ỹ]/.test(l)) return false; // has lowercase → not heading
+    return true;
+  };
+  const startsNewBlock = (l) =>
+    /^[-•*+–—]\s/.test(l) ||
+    /^\d+[\.\)]\s/.test(l) ||
+    /^[IVXLCM]+\.\s/.test(l) ||
+    /^[a-zA-Z][\.\)]\s/.test(l) ||
+    /^(Chương|Mục|Phần|Điều|Khoản|Phụ\s*lục|Article|Section|Chapter)\s+/i.test(l);
+  const endsCleanly = (l) =>
+    /[.!?:;…]["'”»)\]]?\s*$/.test(l) ||
+    /["'”»][.!?:;]\s*$/.test(l);
+
+  // Step 2: join wrapped lines
+  const out = [];
+  for (const line of lines) {
+    if (!line) { out.push(''); continue; }
+    if (isPageMarker(line) || isHeading(line)) { out.push(line); continue; }
+    if (out.length === 0) { out.push(line); continue; }
+    const prev = out[out.length - 1];
+    if (!prev || isPageMarker(prev) || isHeading(prev) || endsCleanly(prev) || startsNewBlock(line)) {
+      out.push(line);
+    } else {
+      out[out.length - 1] = prev + ' ' + line;
+    }
+  }
+
+  // Step 3: collapse 3+ blank lines
+  return out.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+}
+
+$('#ocr-input').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const lang = $('#ocr-lang').value;
+  setStatus($('#ocr-status'), 'Đang khởi tạo...');
+  setProgress($('#ocr-progress'), 5);
+  $('#ocr-actions').style.display = 'none';
+  $('#ocr-result').classList.remove('show');
+
+  const isPdf = /pdf/i.test(file.type) || /\.pdf$/i.test(file.name);
+
+  try {
+    if (isPdf) {
+      // ===== PDF: extract embedded text where possible, OCR scanned pages =====
+      setStatus($('#ocr-status'), 'Đang load PDF...');
+      const pdfjsLib = await import('https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/+esm');
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/build/pdf.worker.min.mjs';
+      const buf = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({data: buf}).promise;
+      setProgress($('#ocr-progress'), 10);
+
+      let worker = null;
+      const pageOut = [];
+      let ocrCount = 0;
+
+      for (let p = 1; p <= pdf.numPages; p++) {
+        const page = await pdf.getPage(p);
+
+        // Try embedded text first: group items by Y coordinate into lines
+        const tc = await page.getTextContent();
+        const lineMap = new Map(); // y -> string
+        for (const it of tc.items) {
+          const s = it.str;
+          if (!s) continue;
+          const y = it.transform ? Math.round(it.transform[5]) : 0;
+          // Bucket Y into rows (round to nearest 3px) for stability
+          const yKey = Math.round(y / 3) * 3;
+          lineMap.set(yKey, (lineMap.get(yKey) || '') + s);
+        }
+        // Sort by Y descending (top to bottom in PDF coordinates Y goes up)
+        const sortedLines = [...lineMap.entries()].sort((a, b) => b[0] - a[0]).map(e => e[1]);
+        const embedded = sortedLines.join('\n').replace(/[ \t]+/g, ' ').trim();
+
+        if (embedded.length > 20) {
+          pageOut.push(`--- Trang ${p} ---\n${embedded}`);
+        } else {
+          // Scanned page → OCR
+          if (!worker) {
+            setStatus($('#ocr-status'), 'Đang tải model OCR (lần đầu ~15MB)...');
+            const Tesseract = (await import('https://cdn.jsdelivr.net/npm/tesseract.js@5.0.5/+esm')).default;
+            worker = await Tesseract.createWorker(lang, 1);
+          }
+          setStatus($('#ocr-status'), `Đang OCR trang ${p}/${pdf.numPages}...`);
+          const viewport = page.getViewport({scale: 2});
+          const c = document.createElement('canvas');
+          c.width = viewport.width; c.height = viewport.height;
+          await page.render({canvasContext: c.getContext('2d'), viewport}).promise;
+          const blob = await new Promise(r => c.toBlob(r, 'image/png'));
+          const { data: { text } } = await worker.recognize(blob);
+          pageOut.push(`--- Trang ${p} (OCR) ---\n${text.trim()}`);
+          ocrCount++;
+        }
+
+        setProgress($('#ocr-progress'), 10 + (p / pdf.numPages) * 85);
+      }
+
+      if (worker) await worker.terminate();
+
+      ocrResult = cleanOcrText(pageOut.join('\n\n'));
+      const out = $('#ocr-result');
+      out.textContent = ocrResult || '(Không tìm thấy text)';
+      out.classList.add('show');
+      $('#ocr-actions').style.display = 'flex';
+      setProgress($('#ocr-progress'), 100);
+      const msg = ocrCount === 0
+        ? `✓ Trích text từ ${pdf.numPages} trang (text sẵn)`
+        : ocrCount === pdf.numPages
+          ? `✓ OCR ${pdf.numPages} trang (PDF scan)`
+          : `✓ ${pdf.numPages} trang (${pdf.numPages - ocrCount} text + ${ocrCount} OCR)`;
+      setStatus($('#ocr-status'), msg, 'success');
+
+    } else {
+      // ===== Image: OCR flow =====
+      setStatus($('#ocr-status'), 'Đang tải model OCR...');
+      const Tesseract = (await import('https://cdn.jsdelivr.net/npm/tesseract.js@5.0.5/+esm')).default;
+      const worker = await Tesseract.createWorker(lang, 1, {
+        logger: (m) => {
+          if (m.status === 'recognizing text') setProgress($('#ocr-progress'), 30 + m.progress * 65);
+          else setProgress($('#ocr-progress'), 5 + m.progress * 25);
+        }
+      });
+      setStatus($('#ocr-status'), 'Đang nhận dạng text...');
+      const { data: { text } } = await worker.recognize(file);
+      await worker.terminate();
+      ocrResult = cleanOcrText(text);
+      const out = $('#ocr-result');
+      out.textContent = ocrResult || '(Không tìm thấy text)';
+      out.classList.add('show');
+      $('#ocr-actions').style.display = 'flex';
+      setProgress($('#ocr-progress'), 100);
+      setStatus($('#ocr-status'), '✓ Xong', 'success');
+    }
+  } catch (err) {
+    setStatus($('#ocr-status'), '✗ Lỗi: ' + err.message, 'error');
+  }
+});
+
+$('#ocr-copy').addEventListener('click', () => copyText(ocrResult));
+$('#ocr-save').addEventListener('click', () => {
+  downloadBlob(new Blob([ocrResult], {type:'text/plain;charset=utf-8'}), 'ocr-' + Date.now() + '.txt');
+});
+
+// ----- DOCX export -----
+function _xmlEsc(s) {
+  return String(s)
+    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '') // strip illegal XML control chars
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
+function _ocrParaXml(line) {
+  // Empty line → empty paragraph
+  if (!line.trim()) return '<w:p/>';
+  // Page marker → bold blue heading
+  if (/^---\s*Trang/i.test(line)) {
+    const t = _xmlEsc(line.replace(/^---\s*/, '').replace(/\s*---\s*$/, ''));
+    return `<w:p><w:pPr><w:spacing w:before="240" w:after="120"/></w:pPr>`
+      + `<w:r><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/><w:b/><w:sz w:val="28"/><w:szCs w:val="28"/><w:color w:val="2E74B5"/></w:rPr>`
+      + `<w:t xml:space="preserve">${t}</w:t></w:r></w:p>`;
+  }
+  // All-uppercase line → bold section heading
+  const trimmed = line.trim();
+  const isHeading = trimmed.length < 100 && /[A-ZÀ-Ỹ]/.test(trimmed) && !/[a-zà-ỹ]/.test(trimmed);
+  if (isHeading) {
+    return `<w:p><w:pPr><w:spacing w:before="180" w:after="120"/></w:pPr>`
+      + `<w:r><w:rPr><w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:cs="Times New Roman"/><w:b/><w:sz w:val="26"/><w:szCs w:val="26"/></w:rPr>`
+      + `<w:t xml:space="preserve">${_xmlEsc(trimmed)}</w:t></w:r></w:p>`;
+  }
+  // Regular paragraph
+  return `<w:p><w:pPr><w:spacing w:after="120"/></w:pPr>`
+    + `<w:r><w:rPr><w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:cs="Times New Roman"/><w:sz w:val="26"/><w:szCs w:val="26"/></w:rPr>`
+    + `<w:t xml:space="preserve">${_xmlEsc(trimmed)}</w:t></w:r></w:p>`;
+}
+
+$('#ocr-save-docx').addEventListener('click', async () => {
+  if (!ocrResult) { toast('Chưa có text'); return; }
+  setStatus($('#ocr-status'), 'Đang tạo file Word...');
+  try {
+    const body = ocrResult.split('\n').map(_ocrParaXml).join('');
+
+    const documentXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+<w:body>
+${body}
+<w:sectPr><w:pgSz w:w="12240" w:h="15840"/><w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440"/></w:sectPr>
+</w:body>
+</w:document>`;
+
+    const contentTypes = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+<Default Extension="xml" ContentType="application/xml"/>
+<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+</Types>`;
+
+    const rootRels = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
+</Relationships>`;
+
+    const zip = new JSZip();
+    zip.file('[Content_Types].xml', contentTypes);
+    zip.folder('_rels').file('.rels', rootRels);
+    zip.folder('word').file('document.xml', documentXml);
+
+    const blob = await zip.generateAsync({
+      type: 'blob',
+      mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      compression: 'DEFLATE'
+    });
+    downloadBlob(blob, 'ocr-' + Date.now() + '.docx');
+    setStatus($('#ocr-status'), '✓ Đã tải file .docx', 'success');
+  } catch (err) {
+    setStatus($('#ocr-status'), '✗ Lỗi tạo Word: ' + err.message, 'error');
+  }
+});
+
+// ==================== UNZIP ====================
+let unzippedEntries = [];
+
+$('#unzip-input').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const status = $('#unzip-status'), prog = $('#unzip-progress'), list = $('#unzip-list'), actions = $('#unzip-actions');
+  list.innerHTML = '';
+  actions.style.display = 'none';
+  unzippedEntries = [];
+  setStatus(status, 'Đang giải nén ' + file.name + '...');
+  setProgress(prog, 15);
+  try {
+    const buf = await file.arrayBuffer();
+    setProgress(prog, 40);
+    const zip = await JSZip.loadAsync(buf);
+    const items = [];
+    zip.forEach((path, entry) => { if (!entry.dir) items.push({path, entry}); });
+    for (let i = 0; i < items.length; i++) {
+      const {path, entry} = items[i];
+      const blob = await entry.async('blob');
+      unzippedEntries.push({name: path, blob, size: blob.size});
+      setProgress(prog, 40 + ((i+1)/items.length)*55);
+    }
+    renderUnzipList();
+    actions.style.display = 'flex';
+    setStatus(status, '✓ Giải nén xong: ' + items.length + ' file', 'success');
+    setProgress(prog, 100);
+  } catch (err) {
+    setStatus(status, '✗ Lỗi: ' + err.message, 'error');
+  }
+});
+
+function renderUnzipList() {
+  const list = $('#unzip-list');
+  list.innerHTML = '';
+  unzippedEntries.forEach((it, i) => {
+    const el = document.createElement('div');
+    el.className = 'file-item';
+    el.innerHTML = `<div class="ic">${fileIcon(it.name)}</div><div class="info"><div class="name">${it.name}</div><div class="size">${fmtSize(it.size)}</div></div><div class="act" data-i="${i}">⬇</div>`;
+    el.querySelector('.act').addEventListener('click', () => {
+      downloadBlob(it.blob, it.name.split('/').pop());
+      toast('Đang tải...');
+    });
+    list.appendChild(el);
+  });
+}
+
+$('#unzip-download-all').addEventListener('click', async () => {
+  if (!unzippedEntries.length) return;
+  const zip = new JSZip();
+  unzippedEntries.forEach(it => zip.file(it.name, it.blob));
+  const blob = await zip.generateAsync({type:'blob'});
+  downloadBlob(blob, 'extracted.zip');
+});
+
+$('#unzip-save-files').addEventListener('click', async () => {
+  for (const it of unzippedEntries) {
+    await FS.addFile(it.name.split('/').pop(), it.blob, FS.currentPath);
+  }
+  toast('Đã lưu vào Quản lý file');
+});
+
+// ==================== BG REMOVE ====================
+let bgResultBlob = null;
+let bgRemover = null;
+
+$('#bg-input').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  $('#bg-actions').style.display = 'none';
+  $('#bg-preview').classList.remove('show');
+  bgResultBlob = null;
+  try {
+    if (!bgRemover) {
+      setStatus($('#bg-status'), 'Đang tải model AI (30-80MB)...');
+      const mod = await import('https://esm.sh/@imgly/background-removal@1.7.0?bundle');
+      bgRemover = mod.removeBackground || mod.default?.removeBackground || mod.default;
+    }
+    setStatus($('#bg-status'), 'Đang xử lý ảnh...');
+    setProgress($('#bg-progress'), 20);
+    const result = await bgRemover(file, {
+      progress: (k, c, t) => setProgress($('#bg-progress'), 20 + (c/t)*70)
+    });
+    bgResultBlob = result;
+    const url = URL.createObjectURL(result);
+    $('#bg-preview').innerHTML = `<img src="${url}">`;
+    $('#bg-preview').classList.add('show');
+    setProgress($('#bg-progress'), 100);
+    $('#bg-actions').style.display = 'flex';
+    setStatus($('#bg-status'), '✓ Đã xoá nền', 'success');
+  } catch (err) {
+    setStatus($('#bg-status'), '✗ Lỗi: ' + err.message, 'error');
+  }
+});
+
+$('#bg-download').addEventListener('click', () => {
+  if (bgResultBlob) downloadBlob(bgResultBlob, 'no-bg-' + Date.now() + '.png');
+});
+$('#bg-save').addEventListener('click', async () => {
+  if (bgResultBlob) { await FS.addFile('no-bg-' + Date.now() + '.png', bgResultBlob, FS.currentPath); toast('Đã lưu'); }
+});
+
+// ==================== COMPRESS ====================
+let cpResultBlob = null, cpOriginalSize = 0;
+
+$('#cp-quality').addEventListener('input', (e) => $('#cp-quality-val').textContent = e.target.value);
+
+$('#cp-input').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  cpOriginalSize = file.size;
+  $('#cp-options').style.display = 'block';
+  $('#cp-actions').style.display = 'none';
+  $('#cp-preview').classList.remove('show');
+  await doCompress(file);
+});
+
+async function doCompress(file) {
+  try {
+    setStatus($('#cp-status'), 'Đang xử lý...');
+    const img = await loadImage(file);
+    const maxSize = parseInt($('#cp-size').value) || 0;
+    const quality = parseInt($('#cp-quality').value) / 100;
+    let w = img.width, h = img.height;
+    if (maxSize > 0 && Math.max(w, h) > maxSize) {
+      const s = maxSize / Math.max(w, h);
+      w = Math.round(w * s); h = Math.round(h * s);
+    }
+    const c = document.createElement('canvas');
+    c.width = w; c.height = h;
+    c.getContext('2d').drawImage(img, 0, 0, w, h);
+    const blob = await new Promise(r => c.toBlob(r, 'image/jpeg', quality));
+    cpResultBlob = blob;
+    const url = URL.createObjectURL(blob);
+    $('#cp-preview').innerHTML = `<img src="${url}">`;
+    $('#cp-preview').classList.add('show');
+    $('#cp-actions').style.display = 'flex';
+    const reduction = ((1 - blob.size/cpOriginalSize) * 100).toFixed(0);
+    setStatus($('#cp-status'), `✓ ${fmtSize(cpOriginalSize)} → ${fmtSize(blob.size)} (giảm ${reduction}%)`, 'success');
+  } catch (err) {
+    setStatus($('#cp-status'), '✗ ' + err.message, 'error');
+  }
+}
+
+$('#cp-quality').addEventListener('change', () => {
+  const file = $('#cp-input').files[0];
+  if (file) doCompress(file);
+});
+$('#cp-size').addEventListener('change', () => {
+  const file = $('#cp-input').files[0];
+  if (file) doCompress(file);
+});
+
+$('#cp-download').addEventListener('click', () => {
+  if (cpResultBlob) downloadBlob(cpResultBlob, 'compressed-' + Date.now() + '.jpg');
+});
+$('#cp-save').addEventListener('click', async () => {
+  if (cpResultBlob) { await FS.addFile('compressed-' + Date.now() + '.jpg', cpResultBlob, FS.currentPath); toast('Đã lưu'); }
+});
+
+// ==================== CONVERT (HEIC, JPG, PNG, WebP) ====================
+const cvResults = [];
+
+$('#cv-input').addEventListener('change', async (e) => {
+  const files = [...e.target.files];
+  e.target.value = '';
+  cvResults.length = 0;
+  $('#cv-list').innerHTML = '';
+  $('#cv-actions').style.display = 'none';
+  if (!files.length) return;
+  const fmt = $('#cv-format').value;
+  const ext = fmt.split('/')[1].replace('jpeg','jpg');
+  setStatus($('#cv-status'), 'Đang chuyển...');
+  setProgress($('#cv-progress'), 5);
+
+  for (let i = 0; i < files.length; i++) {
+    const f = files[i];
+    try {
+      let img;
+      const isHeic = /heic|heif/i.test(f.name) || /heic|heif/i.test(f.type);
+      if (isHeic) {
+        // Dynamic import heic2any
+        const heic2any = (await import('https://cdn.jsdelivr.net/npm/heic2any@0.0.4/+esm')).default;
+        const jpgBlob = await heic2any({blob: f, toType: 'image/jpeg', quality: 0.92});
+        img = await loadImage(jpgBlob instanceof Blob ? jpgBlob : jpgBlob[0]);
+      } else {
+        img = await loadImage(f);
+      }
+      const c = document.createElement('canvas');
+      c.width = img.width; c.height = img.height;
+      const ctx = c.getContext('2d');
+      if (fmt === 'image/jpeg') { ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height); }
+      ctx.drawImage(img, 0, 0);
+      const blob = await new Promise(r => c.toBlob(r, fmt, 0.92));
+      const newName = f.name.replace(/\.[^.]+$/, '') + '.' + ext;
+      cvResults.push({name: newName, blob, size: blob.size});
+      setProgress($('#cv-progress'), 5 + ((i+1)/files.length)*90);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+  renderCvList();
+  setProgress($('#cv-progress'), 100);
+  setStatus($('#cv-status'), '✓ Chuyển ' + cvResults.length + '/' + files.length + ' ảnh', 'success');
+});
+
+function renderCvList() {
+  const list = $('#cv-list');
+  list.innerHTML = '';
+  if (!cvResults.length) return;
+  $('#cv-actions').style.display = 'flex';
+  cvResults.forEach((it, i) => {
+    const el = document.createElement('div');
+    el.className = 'file-item';
+    el.innerHTML = `<div class="ic">🖼️</div><div class="info"><div class="name">${it.name}</div><div class="size">${fmtSize(it.size)}</div></div><div class="act">⬇</div>`;
+    el.querySelector('.act').addEventListener('click', () => downloadBlob(it.blob, it.name));
+    list.appendChild(el);
+  });
+}
+
+$('#cv-download-all').addEventListener('click', async () => {
+  if (!cvResults.length) return;
+  const zip = new JSZip();
+  cvResults.forEach(it => zip.file(it.name, it.blob));
+  const blob = await zip.generateAsync({type:'blob'});
+  downloadBlob(blob, 'converted-' + Date.now() + '.zip');
+});
+
+// ==================== EXIF STRIP ====================
+const exResults = [];
+
+$('#ex-input').addEventListener('change', async (e) => {
+  const files = [...e.target.files];
+  e.target.value = '';
+  exResults.length = 0;
+  $('#ex-list').innerHTML = '';
+  $('#ex-actions').style.display = 'none';
+  if (!files.length) return;
+  setStatus($('#ex-status'), 'Đang xoá metadata...');
+
+  // Re-encode through canvas - this strips ALL metadata
+  for (const f of files) {
+    try {
+      const img = await loadImage(f);
+      const c = document.createElement('canvas');
+      c.width = img.width; c.height = img.height;
+      c.getContext('2d').drawImage(img, 0, 0);
+      const blob = await new Promise(r => c.toBlob(r, 'image/jpeg', 0.95));
+      exResults.push({name: 'clean-' + f.name.replace(/\.[^.]+$/, '') + '.jpg', blob, size: blob.size});
+    } catch (err) {}
+  }
+  renderExList();
+  setStatus($('#ex-status'), '✓ Xoá metadata ' + exResults.length + ' ảnh', 'success');
+});
+
+function renderExList() {
+  const list = $('#ex-list');
+  list.innerHTML = '';
+  if (!exResults.length) return;
+  $('#ex-actions').style.display = 'flex';
+  exResults.forEach((it, i) => {
+    const el = document.createElement('div');
+    el.className = 'file-item';
+    el.innerHTML = `<div class="ic">🛡️</div><div class="info"><div class="name">${it.name}</div><div class="size">${fmtSize(it.size)}</div></div><div class="act">⬇</div>`;
+    el.querySelector('.act').addEventListener('click', () => downloadBlob(it.blob, it.name));
+    list.appendChild(el);
+  });
+}
+
+$('#ex-download-all').addEventListener('click', async () => {
+  const zip = new JSZip();
+  exResults.forEach(it => zip.file(it.name, it.blob));
+  downloadBlob(await zip.generateAsync({type:'blob'}), 'clean-' + Date.now() + '.zip');
+});
+
+// ==================== WATERMARK ====================
+const wmResults = [];
+
+$('#wm-input').addEventListener('change', async (e) => {
+  const files = [...e.target.files];
+  e.target.value = '';
+  wmResults.length = 0;
+  $('#wm-list').innerHTML = '';
+  $('#wm-actions').style.display = 'none';
+  if (!files.length) return;
+  const text = $('#wm-text').value || '© SirV';
+  const pos = $('#wm-pos').value;
+  setStatus($('#wm-status'), 'Đang thêm watermark...');
+
+  for (const f of files) {
+    try {
+      const img = await loadImage(f);
+      const c = document.createElement('canvas');
+      c.width = img.width; c.height = img.height;
+      const ctx = c.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      const fontSize = Math.max(20, Math.min(img.width, img.height) / 20);
+      ctx.font = `bold ${fontSize}px -apple-system, sans-serif`;
+      ctx.fillStyle = 'rgba(255,255,255,0.85)';
+      ctx.strokeStyle = 'rgba(0,0,0,0.5)';
+      ctx.lineWidth = Math.max(2, fontSize/15);
+      const m = ctx.measureText(text);
+      const pad = fontSize * 0.6;
+      let x, y;
+      if (pos === 'br') { x = img.width - m.width - pad; y = img.height - pad; ctx.textBaseline = 'alphabetic'; }
+      else if (pos === 'bl') { x = pad; y = img.height - pad; ctx.textBaseline = 'alphabetic'; }
+      else if (pos === 'tr') { x = img.width - m.width - pad; y = pad + fontSize; ctx.textBaseline = 'alphabetic'; }
+      else if (pos === 'tl') { x = pad; y = pad + fontSize; ctx.textBaseline = 'alphabetic'; }
+      else { // center diagonal
+        ctx.save();
+        ctx.translate(img.width/2, img.height/2);
+        ctx.rotate(-Math.PI / 6);
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillStyle = 'rgba(255,255,255,0.35)';
+        ctx.font = `bold ${fontSize*2}px -apple-system, sans-serif`;
+        ctx.fillText(text, 0, 0);
+        ctx.restore();
+        const blob2 = await new Promise(r => c.toBlob(r, 'image/jpeg', 0.92));
+        wmResults.push({name: 'wm-' + f.name, blob: blob2, size: blob2.size});
+        continue;
+      }
+      ctx.strokeText(text, x, y);
+      ctx.fillText(text, x, y);
+      const blob = await new Promise(r => c.toBlob(r, 'image/jpeg', 0.92));
+      wmResults.push({name: 'wm-' + f.name, blob, size: blob.size});
+    } catch (err) {}
+  }
+  renderWmList();
+  setStatus($('#wm-status'), '✓ Đã watermark ' + wmResults.length + ' ảnh', 'success');
+});
+
+function renderWmList() {
+  const list = $('#wm-list');
+  list.innerHTML = '';
+  if (!wmResults.length) return;
+  $('#wm-actions').style.display = 'flex';
+  wmResults.forEach((it) => {
+    const el = document.createElement('div');
+    el.className = 'file-item';
+    el.innerHTML = `<div class="ic">©️</div><div class="info"><div class="name">${it.name}</div><div class="size">${fmtSize(it.size)}</div></div><div class="act">⬇</div>`;
+    el.querySelector('.act').addEventListener('click', () => downloadBlob(it.blob, it.name));
+    list.appendChild(el);
+  });
+}
+
+$('#wm-download-all').addEventListener('click', async () => {
+  const zip = new JSZip();
+  wmResults.forEach(it => zip.file(it.name, it.blob));
+  downloadBlob(await zip.generateAsync({type:'blob'}), 'watermarked-' + Date.now() + '.zip');
+});
+
+// ==================== COLLAGE ====================
+let clResult = null;
+
+$('#cl-input').addEventListener('change', async (e) => {
+  const files = [...e.target.files];
+  e.target.value = '';
+  if (!files.length) return;
+  const layout = $('#cl-layout').value;
+  const need = {h2:2, v2:2, grid4:4, h3:3, v3:3}[layout];
+  if (files.length < need) {
+    setStatus($('#cl-status'), `✗ Cần ${need} ảnh, có ${files.length}`, 'error');
+    return;
+  }
+  setStatus($('#cl-status'), 'Đang ghép...');
+  const imgs = await Promise.all(files.slice(0, need).map(loadImage));
+  const gap = 8;
+  const c = document.createElement('canvas');
+  let W, H, positions;
+  const cell = 800; // base cell size
+  if (layout === 'h2') { W = cell*2 + gap; H = cell; positions = [[0,0,cell,cell],[cell+gap,0,cell,cell]]; }
+  else if (layout === 'v2') { W = cell; H = cell*2 + gap; positions = [[0,0,cell,cell],[0,cell+gap,cell,cell]]; }
+  else if (layout === 'grid4') { W = cell*2+gap; H = cell*2+gap; positions = [[0,0,cell,cell],[cell+gap,0,cell,cell],[0,cell+gap,cell,cell],[cell+gap,cell+gap,cell,cell]]; }
+  else if (layout === 'h3') { W = cell*3+gap*2; H = cell; positions = [[0,0,cell,cell],[cell+gap,0,cell,cell],[(cell+gap)*2,0,cell,cell]]; }
+  else { W = cell; H = cell*3+gap*2; positions = [[0,0,cell,cell],[0,cell+gap,cell,cell],[0,(cell+gap)*2,cell,cell]]; }
+
+  c.width = W; c.height = H;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0, 0, W, H);
+  imgs.forEach((img, i) => {
+    const [x, y, w, h] = positions[i];
+    // cover
+    const ar = img.width / img.height;
+    const tar = w / h;
+    let sx, sy, sw, sh;
+    if (ar > tar) {
+      sh = img.height; sw = sh * tar; sx = (img.width - sw)/2; sy = 0;
+    } else {
+      sw = img.width; sh = sw / tar; sy = (img.height - sh)/2; sx = 0;
+    }
+    ctx.drawImage(img, sx, sy, sw, sh, x, y, w, h);
+  });
+  const blob = await new Promise(r => c.toBlob(r, 'image/jpeg', 0.9));
+  clResult = blob;
+  $('#cl-preview').innerHTML = `<img src="${URL.createObjectURL(blob)}">`;
+  $('#cl-preview').classList.add('show');
+  $('#cl-actions').style.display = 'flex';
+  setStatus($('#cl-status'), '✓ Ghép ' + need + ' ảnh', 'success');
+});
+
+$('#cl-download').addEventListener('click', () => {
+  if (clResult) downloadBlob(clResult, 'collage-' + Date.now() + '.jpg');
+});
+
+// ==================== CROP ====================
+let crResult = null;
+
+$('#cr-input').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const ratio = $('#cr-ratio').value;
+  const [rw, rh] = ratio.split(':').map(Number);
+  const target = rw / rh;
+  try {
+    const img = await loadImage(file);
+    const ar = img.width / img.height;
+    let sx, sy, sw, sh;
+    if (ar > target) {
+      sh = img.height; sw = sh * target; sx = (img.width - sw)/2; sy = 0;
+    } else {
+      sw = img.width; sh = sw / target; sy = (img.height - sh)/2; sx = 0;
+    }
+    const c = document.createElement('canvas');
+    c.width = sw; c.height = sh;
+    c.getContext('2d').drawImage(img, sx, sy, sw, sh, 0, 0, sw, sh);
+    const blob = await new Promise(r => c.toBlob(r, 'image/jpeg', 0.92));
+    crResult = blob;
+    $('#cr-preview').innerHTML = `<img src="${URL.createObjectURL(blob)}">`;
+    $('#cr-preview').classList.add('show');
+    $('#cr-actions').style.display = 'flex';
+    setStatus($('#cr-status'), '✓ Đã cắt theo tỉ lệ ' + ratio, 'success');
+  } catch (err) {
+    setStatus($('#cr-status'), '✗ ' + err.message, 'error');
+  }
+});
+
+$('#cr-ratio').addEventListener('change', () => {
+  const f = $('#cr-input').files[0];
+  if (f) $('#cr-input').dispatchEvent(new Event('change'));
+});
+
+$('#cr-download').addEventListener('click', () => {
+  if (crResult) downloadBlob(crResult, 'cropped-' + Date.now() + '.jpg');
+});
+
+// ==================== JSON VIEWER ====================
+$('#json-format').addEventListener('click', () => {
+  const inp = $('#json-input').value;
+  try {
+    const obj = JSON.parse(inp);
+    const out = JSON.stringify(obj, null, 2);
+    $('#json-output').textContent = out;
+    $('#json-output').classList.add('show');
+    $('#json-actions').style.display = 'flex';
+    setStatus($('#json-status'), '✓ JSON hợp lệ', 'success');
+  } catch (err) {
+    setStatus($('#json-status'), '✗ ' + err.message, 'error');
+    $('#json-output').classList.remove('show');
+  }
+});
+
+$('#json-mini').addEventListener('click', () => {
+  const inp = $('#json-input').value;
+  try {
+    const out = JSON.stringify(JSON.parse(inp));
+    $('#json-output').textContent = out;
+    $('#json-output').classList.add('show');
+    $('#json-actions').style.display = 'flex';
+    setStatus($('#json-status'), '✓ Minified', 'success');
+  } catch (err) {
+    setStatus($('#json-status'), '✗ ' + err.message, 'error');
+  }
+});
+
+$('#json-copy').addEventListener('click', () => copyText($('#json-output').textContent));
+
+// ==================== CHAR COUNT ====================
+$('#cc-input').addEventListener('input', (e) => {
+  const t = e.target.value;
+  $('#cc-chars').textContent = t.length;
+  $('#cc-nospace').textContent = t.replace(/\s/g, '').length;
+  $('#cc-words').textContent = t.trim() ? t.trim().split(/\s+/).length : 0;
+  $('#cc-sentences').textContent = t.trim() ? (t.match(/[.!?]+/g) || []).length || 1 : 0;
+  $('#cc-lines').textContent = t ? t.split('\n').length : 0;
+});
+
+// ==================== TEXT CASE ====================
+const noDiacritics = (s) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D');
+
+setupChips('#view-textcase .chip[data-tc]', (c) => {
+  const t = $('#tc-input').value;
+  let out = '';
+  switch (c.dataset.tc) {
+    case 'upper': out = t.toUpperCase(); break;
+    case 'lower': out = t.toLowerCase(); break;
+    case 'title': out = t.toLowerCase().replace(/\b\w/g, x => x.toUpperCase()); break;
+    case 'sentence': out = t.toLowerCase().replace(/(^|[.!?]\s+)([a-zà-ỹ])/g, (m, p, ch) => p + ch.toUpperCase()); break;
+    case 'slug': out = noDiacritics(t).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); break;
+    case 'nodiacritic': out = noDiacritics(t); break;
+    case 'reverse': out = [...t].reverse().join(''); break;
+  }
+  $('#tc-output').textContent = out;
+  $('#tc-output').classList.add('show');
+  $('#tc-actions').style.display = 'flex';
+});
+
+$('#tc-copy').addEventListener('click', () => copyText($('#tc-output').textContent));
+
+// ==================== ENCODE / HASH ====================
+async function digest(algo, str) {
+  const buf = new TextEncoder().encode(str);
+  const hash = await crypto.subtle.digest(algo, buf);
+  return [...new Uint8Array(hash)].map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// MD5 (since SubtleCrypto doesn't support MD5)
+function md5(str) {
+  function rh(n) { let j, s=''; for(j=0;j<=3;j++) s+=((n>>(j*8+4))&0x0F).toString(16)+((n>>(j*8))&0x0F).toString(16); return s; }
+  function ad(x,y) { let l=(x&0xFFFF)+(y&0xFFFF); return (((x>>16)+(y>>16)+(l>>16))<<16)|(l&0xFFFF); }
+  function rl(n,c) { return (n<<c)|(n>>>(32-c)); }
+  function cm(q,a,b,x,s,t) { return ad(rl(ad(ad(a,q),ad(x,t)),s),b); }
+  function ff(a,b,c,d,x,s,t) { return cm((b&c)|((~b)&d),a,b,x,s,t); }
+  function gg(a,b,c,d,x,s,t) { return cm((b&d)|(c&(~d)),a,b,x,s,t); }
+  function hh(a,b,c,d,x,s,t) { return cm(b^c^d,a,b,x,s,t); }
+  function ii(a,b,c,d,x,s,t) { return cm(c^(b|(~d)),a,b,x,s,t); }
+  function cv(s) {
+    let txt=''; for(let i=0;i<s.length;i++){let c=s.charCodeAt(i); if(c<128)txt+=String.fromCharCode(c); else if(c<2048)txt+=String.fromCharCode((c>>6)|192,(c&63)|128); else txt+=String.fromCharCode((c>>12)|224,((c>>6)&63)|128,(c&63)|128);} return txt;
+  }
+  function cb(s){let n=((s.length+8)>>6)+1,b=new Array(n*16).fill(0); for(let i=0;i<s.length;i++) b[i>>2]|=s.charCodeAt(i)<<((i%4)*8); b[s.length>>2]|=0x80<<((s.length%4)*8); b[n*16-2]=s.length*8; return b;}
+  let x=cb(cv(str)),a=1732584193,b=-271733879,c=-1732584194,d=271733878;
+  for(let i=0;i<x.length;i+=16){
+    let oa=a,ob=b,oc=c,od=d;
+    a=ff(a,b,c,d,x[i+0],7,-680876936); d=ff(d,a,b,c,x[i+1],12,-389564586); c=ff(c,d,a,b,x[i+2],17,606105819); b=ff(b,c,d,a,x[i+3],22,-1044525330);
+    a=ff(a,b,c,d,x[i+4],7,-176418897); d=ff(d,a,b,c,x[i+5],12,1200080426); c=ff(c,d,a,b,x[i+6],17,-1473231341); b=ff(b,c,d,a,x[i+7],22,-45705983);
+    a=ff(a,b,c,d,x[i+8],7,1770035416); d=ff(d,a,b,c,x[i+9],12,-1958414417); c=ff(c,d,a,b,x[i+10],17,-42063); b=ff(b,c,d,a,x[i+11],22,-1990404162);
+    a=ff(a,b,c,d,x[i+12],7,1804603682); d=ff(d,a,b,c,x[i+13],12,-40341101); c=ff(c,d,a,b,x[i+14],17,-1502002290); b=ff(b,c,d,a,x[i+15],22,1236535329);
+    a=gg(a,b,c,d,x[i+1],5,-165796510); d=gg(d,a,b,c,x[i+6],9,-1069501632); c=gg(c,d,a,b,x[i+11],14,643717713); b=gg(b,c,d,a,x[i+0],20,-373897302);
+    a=gg(a,b,c,d,x[i+5],5,-701558691); d=gg(d,a,b,c,x[i+10],9,38016083); c=gg(c,d,a,b,x[i+15],14,-660478335); b=gg(b,c,d,a,x[i+4],20,-405537848);
+    a=gg(a,b,c,d,x[i+9],5,568446438); d=gg(d,a,b,c,x[i+14],9,-1019803690); c=gg(c,d,a,b,x[i+3],14,-187363961); b=gg(b,c,d,a,x[i+8],20,1163531501);
+    a=gg(a,b,c,d,x[i+13],5,-1444681467); d=gg(d,a,b,c,x[i+2],9,-51403784); c=gg(c,d,a,b,x[i+7],14,1735328473); b=gg(b,c,d,a,x[i+12],20,-1926607734);
+    a=hh(a,b,c,d,x[i+5],4,-378558); d=hh(d,a,b,c,x[i+8],11,-2022574463); c=hh(c,d,a,b,x[i+11],16,1839030562); b=hh(b,c,d,a,x[i+14],23,-35309556);
+    a=hh(a,b,c,d,x[i+1],4,-1530992060); d=hh(d,a,b,c,x[i+4],11,1272893353); c=hh(c,d,a,b,x[i+7],16,-155497632); b=hh(b,c,d,a,x[i+10],23,-1094730640);
+    a=hh(a,b,c,d,x[i+13],4,681279174); d=hh(d,a,b,c,x[i+0],11,-358537222); c=hh(c,d,a,b,x[i+3],16,-722521979); b=hh(b,c,d,a,x[i+6],23,76029189);
+    a=hh(a,b,c,d,x[i+9],4,-640364487); d=hh(d,a,b,c,x[i+12],11,-421815835); c=hh(c,d,a,b,x[i+15],16,530742520); b=hh(b,c,d,a,x[i+2],23,-995338651);
+    a=ii(a,b,c,d,x[i+0],6,-198630844); d=ii(d,a,b,c,x[i+7],10,1126891415); c=ii(c,d,a,b,x[i+14],15,-1416354905); b=ii(b,c,d,a,x[i+5],21,-57434055);
+    a=ii(a,b,c,d,x[i+12],6,1700485571); d=ii(d,a,b,c,x[i+3],10,-1894986606); c=ii(c,d,a,b,x[i+10],15,-1051523); b=ii(b,c,d,a,x[i+1],21,-2054922799);
+    a=ii(a,b,c,d,x[i+8],6,1873313359); d=ii(d,a,b,c,x[i+15],10,-30611744); c=ii(c,d,a,b,x[i+6],15,-1560198380); b=ii(b,c,d,a,x[i+13],21,1309151649);
+    a=ii(a,b,c,d,x[i+4],6,-145523070); d=ii(d,a,b,c,x[i+11],10,-1120210379); c=ii(c,d,a,b,x[i+2],15,718787259); b=ii(b,c,d,a,x[i+9],21,-343485551);
+    a=ad(a,oa); b=ad(b,ob); c=ad(c,oc); d=ad(d,od);
+  }
+  return rh(a)+rh(b)+rh(c)+rh(d);
+}
+
+setupChips('#view-encode .chip[data-en]', async (c) => {
+  const t = $('#en-input').value;
+  let out = '';
+  try {
+    switch (c.dataset.en) {
+      case 'b64e': out = btoa(unescape(encodeURIComponent(t))); break;
+      case 'b64d': out = decodeURIComponent(escape(atob(t))); break;
+      case 'urle': out = encodeURIComponent(t); break;
+      case 'urld': out = decodeURIComponent(t); break;
+      case 'md5': out = md5(t); break;
+      case 'sha1': out = await digest('SHA-1', t); break;
+      case 'sha256': out = await digest('SHA-256', t); break;
+    }
+    $('#en-output').textContent = out;
+    $('#en-output').classList.add('show');
+    $('#en-actions').style.display = 'flex';
+  } catch (err) {
+    $('#en-output').textContent = '✗ ' + err.message;
+    $('#en-output').classList.add('show');
+  }
+});
+
+$('#en-copy').addEventListener('click', () => copyText($('#en-output').textContent));
+
+// ==================== SPEECH TO TEXT ====================
+let spRec = null;
+let spText = '';
+
+$('#sp-btn').addEventListener('click', () => {
+  if (spRec) {
+    spRec.stop(); spRec = null;
+    $('#sp-btn').style.background = 'linear-gradient(135deg,#ec4899,#a855f7)';
+    $('#sp-status').textContent = 'Đã dừng';
+    return;
+  }
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { $('#sp-status').textContent = '✗ Trình duyệt không hỗ trợ'; return; }
+  spRec = new SR();
+  spRec.lang = $('#sp-lang').value;
+  spRec.continuous = true;
+  spRec.interimResults = true;
+  spRec.onresult = (e) => {
+    let full = '';
+    for (let i = 0; i < e.results.length; i++) full += e.results[i][0].transcript + ' ';
+    spText = full.trim();
+    $('#sp-output').textContent = spText;
+    $('#sp-output').classList.add('show');
+    $('#sp-actions').style.display = 'flex';
+  };
+  spRec.onerror = (e) => { $('#sp-status').textContent = '✗ ' + e.error; };
+  spRec.onend = () => {
+    if (spRec) { $('#sp-btn').style.background = 'linear-gradient(135deg,#ec4899,#a855f7)'; $('#sp-status').textContent = 'Bấm để bắt đầu'; spRec = null; }
+  };
+  try {
+    spRec.start();
+    $('#sp-btn').style.background = 'linear-gradient(135deg,#ef4444,#dc2626)';
+    $('#sp-status').textContent = '● Đang nghe...';
+  } catch (err) {
+    $('#sp-status').textContent = '✗ ' + err.message;
+  }
+});
+
+$('#sp-copy').addEventListener('click', () => copyText(spText));
+$('#sp-clear').addEventListener('click', () => { spText = ''; $('#sp-output').textContent = ''; $('#sp-output').classList.remove('show'); $('#sp-actions').style.display = 'none'; });
+
+// ==================== QR ====================
+let qrCanvas = null;
+
+$('#qr-tab-gen').addEventListener('click', () => {
+  $('#qr-tab-gen').classList.add('active');
+  $('#qr-tab-read').classList.remove('active');
+  $('#qr-pane-gen').style.display = 'block';
+  $('#qr-pane-read').style.display = 'none';
+});
+$('#qr-tab-read').addEventListener('click', () => {
+  $('#qr-tab-read').classList.add('active');
+  $('#qr-tab-gen').classList.remove('active');
+  $('#qr-pane-gen').style.display = 'none';
+  $('#qr-pane-read').style.display = 'block';
+});
+
+$('#qr-make').addEventListener('click', async () => {
+  const t = $('#qr-text').value.trim();
+  if (!t) return;
+  const out = $('#qr-out');
+  out.innerHTML = '';
+  qrCanvas = document.createElement('canvas');
+  out.appendChild(qrCanvas);
+  await QRCode.toCanvas(qrCanvas, t, {width: 280, margin: 2, errorCorrectionLevel: 'M'});
+  out.classList.add('show');
+  $('#qr-actions').style.display = 'flex';
+});
+
+$('#qr-download').addEventListener('click', () => {
+  if (!qrCanvas) return;
+  qrCanvas.toBlob(b => downloadBlob(b, 'qr-' + Date.now() + '.png'));
+});
+
+$('#qr-img').addEventListener('change', async (e) => {
+  const f = e.target.files[0];
+  if (!f) return;
+  setStatus($('#qr-read-status'), 'Đang đọc QR...');
+  try {
+    const jsQR = (await import('https://cdn.jsdelivr.net/npm/jsqr@1.4.0/+esm')).default;
+    const img = await loadImage(f);
+    const c = document.createElement('canvas');
+    c.width = img.width; c.height = img.height;
+    const ctx = c.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+    const data = ctx.getImageData(0, 0, c.width, c.height);
+    const result = jsQR(data.data, data.width, data.height);
+    if (result) {
+      $('#qr-read-out').textContent = result.data;
+      $('#qr-read-out').classList.add('show');
+      $('#qr-read-actions').style.display = 'flex';
+      setStatus($('#qr-read-status'), '✓ Đã đọc QR', 'success');
+    } else {
+      setStatus($('#qr-read-status'), '✗ Không tìm thấy mã QR', 'error');
+      $('#qr-read-out').classList.remove('show');
+    }
+  } catch (err) {
+    setStatus($('#qr-read-status'), '✗ ' + err.message, 'error');
+  }
+});
+
+$('#qr-read-copy').addEventListener('click', () => copyText($('#qr-read-out').textContent));
+
+// ==================== UNITS ====================
+const UNITS = {
+  length: {base:'m', items: {m:1, km:1000, cm:0.01, mm:0.001, mi:1609.344, yd:0.9144, ft:0.3048, in:0.0254, 'hải lý':1852}},
+  weight: {base:'kg', items: {kg:1, g:0.001, mg:0.000001, ton:1000, lb:0.453592, oz:0.0283495}},
+  temp:   {base:'C', items: {'°C':'C', '°F':'F', 'K':'K'}, special: true},
+  area:   {base:'m²', items: {'m²':1, 'km²':1000000, 'ha':10000, 'cm²':0.0001, 'ft²':0.092903, 'sào':360, 'mẫu':3600}},
+  volume: {base:'L', items: {L:1, mL:0.001, 'm³':1000, gal:3.78541, 'fl oz':0.0295735, 'cup':0.24}},
+  speed:  {base:'m/s', items: {'m/s':1, 'km/h':0.277778, 'mph':0.44704, 'knot':0.514444}},
+  data:   {base:'B', items: {B:1, KB:1024, MB:1048576, GB:1073741824, TB:1099511627776}},
+};
+
+function initUnits() {
+  const type = $('#un-type').value;
+  const u = UNITS[type];
+  const opts = Object.keys(u.items).map(k => `<option value="${k}">${k}</option>`).join('');
+  $('#un-from').innerHTML = opts;
+  $('#un-to').innerHTML = opts;
+  $('#un-from').selectedIndex = 0;
+  $('#un-to').selectedIndex = Math.min(1, Object.keys(u.items).length-1);
+  doConvertUnit();
+}
+
+function doConvertUnit() {
+  const type = $('#un-type').value;
+  const v = parseFloat($('#un-val').value) || 0;
+  const from = $('#un-from').value;
+  const to = $('#un-to').value;
+  const u = UNITS[type];
+  let result;
+  if (u.special && type === 'temp') {
+    let inC;
+    if (from === '°C') inC = v;
+    else if (from === '°F') inC = (v - 32) * 5/9;
+    else if (from === 'K') inC = v - 273.15;
+    if (to === '°C') result = inC;
+    else if (to === '°F') result = inC * 9/5 + 32;
+    else if (to === 'K') result = inC + 273.15;
+  } else {
+    const base = v * u.items[from];
+    result = base / u.items[to];
+  }
+  $('#un-result').textContent = result.toLocaleString(undefined, {maximumFractionDigits: 6});
+}
+
+$('#un-type').addEventListener('change', initUnits);
+['un-val', 'un-from', 'un-to'].forEach(id => $('#' + id).addEventListener('input', doConvertUnit));
+
+// ==================== DATE ====================
+setupChips('#view-date .chip[data-dm]', (c) => {
+  $$('.dt-pane').forEach(p => p.style.display = 'none');
+  $('#dt-pane-' + c.dataset.dm).style.display = 'block';
+});
+
+$('#dt-birth').addEventListener('change', (e) => {
+  const b = new Date(e.target.value); if (isNaN(b)) return;
+  const now = new Date();
+  let years = now.getFullYear() - b.getFullYear();
+  const m = now.getMonth() - b.getMonth();
+  if (m < 0 || (m === 0 && now.getDate() < b.getDate())) years--;
+  const days = Math.floor((now - b) / (1000*60*60*24));
+  $('#dt-age-val').textContent = years;
+  $('#dt-age-lbl').textContent = `tuổi · ${days.toLocaleString()} ngày sống`;
+});
+
+const calcBetween = () => {
+  const a = new Date($('#dt-from').value), b = new Date($('#dt-to').value);
+  if (isNaN(a) || isNaN(b)) return;
+  const days = Math.abs(Math.floor((b - a) / (1000*60*60*24)));
+  $('#dt-between-val').textContent = days.toLocaleString();
+};
+$('#dt-from').addEventListener('change', calcBetween);
+$('#dt-to').addEventListener('change', calcBetween);
+
+const calcAdd = () => {
+  const a = new Date($('#dt-add-from').value);
+  const n = parseInt($('#dt-add-days').value) || 0;
+  if (isNaN(a)) return;
+  const r = new Date(a.getTime() + n*24*60*60*1000);
+  $('#dt-add-val').textContent = r.toLocaleDateString('vi-VN', {weekday:'long', day:'numeric', month:'numeric', year:'numeric'});
+};
+$('#dt-add-from').addEventListener('change', calcAdd);
+$('#dt-add-days').addEventListener('input', calcAdd);
+
+// ==================== RANDOM ====================
+setupChips('#view-random .chip[data-rm]', (c) => {
+  $$('.rd-pane').forEach(p => p.style.display = 'none');
+  $('#rd-pane-' + c.dataset.rm).style.display = 'block';
+});
+
+$('#rd-num-go').addEventListener('click', () => {
+  const min = parseInt($('#rd-min').value), max = parseInt($('#rd-max').value);
+  const v = Math.floor(Math.random() * (max - min + 1)) + min;
+  $('#rd-num-val').textContent = v;
+});
+
+$('#rd-pick-go').addEventListener('click', () => {
+  const items = $('#rd-list').value.split('\n').map(s => s.trim()).filter(Boolean);
+  if (!items.length) return;
+  $('#rd-pick-val').textContent = items[Math.floor(Math.random()*items.length)];
+});
+
+$('#rd-dice-go').addEventListener('click', () => {
+  const n = Math.max(1, Math.min(10, parseInt($('#rd-dice-n').value) || 1));
+  let total = 0, rolls = [];
+  for (let i = 0; i < n; i++) { const r = Math.floor(Math.random()*6)+1; total += r; rolls.push(r); }
+  $('#rd-dice-val').textContent = n === 1 ? total : total + ` (${rolls.join('+')})`;
+});
+
+$('#rd-coin-go').addEventListener('click', () => {
+  $('#rd-coin-val').textContent = Math.random() < 0.5 ? '🪙 Ngửa' : '⚫ Sấp';
+});
+
+// ==================== TTS ====================
+let ttsVoices = [];
+
+function initTTS() {
+  ttsVoices = speechSynthesis.getVoices();
+  if (!ttsVoices.length) {
+    speechSynthesis.onvoiceschanged = () => {
+      ttsVoices = speechSynthesis.getVoices();
+      populateTTSVoices();
+    };
+    return;
+  }
+  populateTTSVoices();
+}
+
+function populateTTSVoices() {
+  const sel = $('#tts-voice');
+  // Prefer Vietnamese voices first
+  const vi = ttsVoices.filter(v => v.lang.startsWith('vi'));
+  const other = ttsVoices.filter(v => !v.lang.startsWith('vi'));
+  sel.innerHTML = [...vi, ...other].map((v, i) => `<option value="${ttsVoices.indexOf(v)}">${v.name} (${v.lang})${v.lang.startsWith('vi')?' ⭐':''}</option>`).join('');
+}
+
+$('#tts-rate').addEventListener('input', e => $('#tts-rate-val').textContent = parseFloat(e.target.value).toFixed(1));
+$('#tts-pitch').addEventListener('input', e => $('#tts-pitch-val').textContent = parseFloat(e.target.value).toFixed(1));
+
+$('#tts-play').addEventListener('click', () => {
+  const t = $('#tts-text').value.trim();
+  if (!t) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(t);
+  const vi = parseInt($('#tts-voice').value);
+  if (!isNaN(vi) && ttsVoices[vi]) u.voice = ttsVoices[vi];
+  u.rate = parseFloat($('#tts-rate').value);
+  u.pitch = parseFloat($('#tts-pitch').value);
+  speechSynthesis.speak(u);
+});
+
+$('#tts-stop').addEventListener('click', () => speechSynthesis.cancel());
+
+// ==================== FILES MANAGER ====================
+const FS = {
+  db: null,
+  currentPath: '/',
+
+  async init() {
+    return new Promise((res, rej) => {
+      const req = indexedDB.open('xtools-files', 1);
+      req.onupgradeneeded = () => {
+        const db = req.result;
+        if (!db.objectStoreNames.contains('items')) {
+          const s = db.createObjectStore('items', {keyPath: 'id', autoIncrement: true});
+          s.createIndex('parent', 'parent', {unique: false});
+        }
+      };
+      req.onsuccess = () => { this.db = req.result; res(); };
+      req.onerror = () => rej(req.error);
+    });
+  },
+  tx(mode='readonly') { return this.db.transaction('items', mode).objectStore('items'); },
+  async list(parent) {
+    return new Promise(res => {
+      const idx = this.tx().index('parent');
+      const out = [];
+      idx.openCursor(IDBKeyRange.only(parent)).onsuccess = (e) => {
+        const cur = e.target.result;
+        if (cur) { out.push(cur.value); cur.continue(); }
+        else res(out.sort((a,b) => (a.type === 'folder' ? -1 : 1) - (b.type === 'folder' ? -1 : 1) || a.name.localeCompare(b.name)));
+      };
+    });
+  },
+  async add(item) { return new Promise((res, rej) => { const r = this.tx('readwrite').add(item); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }); },
+  async addFolder(name, parent='/') { return this.add({type:'folder', name, parent, created: Date.now()}); },
+  async addFile(name, blob, parent='/') { return this.add({type:'file', name, parent, blob, size: blob.size, created: Date.now()}); },
+  async remove(id) { return new Promise((res, rej) => { const r = this.tx('readwrite').delete(id); r.onsuccess = () => res(); r.onerror = () => rej(r.error); }); },
+  async get(id) { return new Promise(res => { const r = this.tx().get(id); r.onsuccess = () => res(r.result); }); },
+  async rename(id, newName) {
+    const item = await this.get(id); if (!item) return;
+    item.name = newName;
+    return new Promise((res, rej) => { const r = this.tx('readwrite').put(item); r.onsuccess = () => res(); r.onerror = () => rej(r.error); });
+  }
+};
+
+async function renderFiles() {
+  const list = $('#files-list'), empty = $('#files-empty'), crumb = $('#files-breadcrumb');
+  const parts = FS.currentPath.split('/').filter(Boolean);
+  crumb.innerHTML = `<span class="crumb${parts.length===0?' current':''}" data-path="/">🏠 Home</span>`;
+  let acc = '';
+  parts.forEach((p, i) => {
+    acc += '/' + p;
+    crumb.innerHTML += `<span class="sep">›</span><span class="crumb${i===parts.length-1?' current':''}" data-path="${acc}/">${p}</span>`;
+  });
+  $$('#files-breadcrumb .crumb').forEach(c => c.addEventListener('click', () => {
+    FS.currentPath = c.dataset.path === '/' ? '/' : c.dataset.path;
+    renderFiles();
+  }));
+  const items = await FS.list(FS.currentPath);
+  list.innerHTML = '';
+  if (!items.length) { empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  for (const it of items) {
+    const el = document.createElement('div');
+    el.className = 'file-item';
+    const isFolder = it.type === 'folder';
+    const icon = isFolder ? '📁' : fileIcon(it.name);
+    el.innerHTML = `<div class="ic">${icon}</div><div class="info"><div class="name">${it.name}</div><div class="size">${isFolder ? 'Thư mục' : fmtSize(it.size)}</div></div><div class="act">⋯</div>`;
+    el.querySelector('.info').addEventListener('click', () => {
+      if (isFolder) {
+        FS.currentPath = (FS.currentPath === '/' ? '' : FS.currentPath) + '/' + it.name + '/';
+        FS.currentPath = FS.currentPath.replace('//', '/');
+        renderFiles();
+      } else {
+        downloadBlob(it.blob, it.name);
+        toast('Đang tải...');
+      }
+    });
+    el.querySelector('.act').addEventListener('click', () => openItemMenu(it, isFolder));
+    list.appendChild(el);
+  }
+}
+
+async function openItemMenu(it, isFolder) {
+  const sb = $('#sheet-bg'), sh = $('#sheet');
+  sh.innerHTML = `
+    <div class="handle"></div>
+    <h3 style="font-size:20px;font-weight:700;margin-bottom:6px">${it.name}</h3>
+    <p style="color:var(--text-2);font-size:13px;margin-bottom:14px">${isFolder ? 'Thư mục' : fmtSize(it.size)}</p>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      ${!isFolder ? '<button class="btn primary" data-a="download">⬇ Tải về</button>' : ''}
+      <button class="btn" data-a="rename">✎ Đổi tên</button>
+      <button class="btn" data-a="delete" style="color:#fca5a5">🗑 Xoá</button>
+      <button class="btn" data-a="cancel">Huỷ</button>
+    </div>
+  `;
+  sb.classList.add('show');
+  const close = () => sb.classList.remove('show');
+  sb.onclick = (e) => { if (e.target.id === 'sheet-bg') close(); };
+  sh.querySelectorAll('[data-a]').forEach(b => b.onclick = async () => {
+    const a = b.dataset.a;
+    if (a === 'download' && !isFolder) { downloadBlob(it.blob, it.name); toast('Đang tải...'); }
+    else if (a === 'delete') { await FS.remove(it.id); renderFiles(); toast('Đã xoá'); }
+    else if (a === 'rename') {
+      close();
+      const n = await sheet.open({title:'Đổi tên', value: it.name});
+      if (n) { await FS.rename(it.id, n); renderFiles(); }
+      return;
+    }
+    close();
+  });
+}
+
+$('#files-new-folder').addEventListener('click', async () => {
+  const n = await sheet.open({title:'Thư mục mới', placeholder:'Tên thư mục'});
+  if (n) { await FS.addFolder(n, FS.currentPath); renderFiles(); }
+});
+
+$('#files-upload').addEventListener('click', () => $('#files-input').click());
+$('#files-input').addEventListener('change', async (e) => {
+  for (const f of e.target.files) await FS.addFile(f.name, f, FS.currentPath);
+  e.target.value = '';
+  renderFiles();
+  toast('Đã thêm');
+});
+
+// ==================== VIDEO DOWNLOADER ====================
+const SHORTCUT_DEFAULTS = {
+  youtube: 'YouTube Download',
+  tiktok: 'Download Video & Audio With Cobalt',
+  facebook: 'Download Video & Audio With Cobalt',
+  instagram: 'Download Video & Audio With Cobalt',
+  twitter: 'Download Video & Audio With Cobalt',
+  universal: 'Download Video & Audio With Cobalt'
+};
+
+// Platform detection: iPhone/iPad uses iOS Shortcuts, everything else uses PC flow
+const IS_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
+            || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+function initDownload() {
+  const iosBlock = $('#dl-ios-block');
+  const pcBlock = $('#dl-pc-block');
+  if (!iosBlock || !pcBlock) return;
+  if (IS_IOS) {
+    iosBlock.style.display = 'block';
+    pcBlock.style.display = 'none';
+  } else {
+    iosBlock.style.display = 'none';
+    pcBlock.style.display = 'block';
+  }
+}
+
+// Get URL from input, validate roughly
+function getDownloadUrl() {
+  const url = ($('#dl-url')?.value || '').trim();
+  if (!url) { toast('Hãy dán link trước'); return null; }
+  if (!/^https?:\/\//i.test(url)) { toast('URL phải bắt đầu bằng http(s)://'); return null; }
+  return url;
+}
+
+async function copyAndOpen(targetUrl, hostLabel) {
+  const url = getDownloadUrl();
+  if (!url) return;
+  try { await navigator.clipboard.writeText(url); } catch {}
+  window.open(targetUrl, '_blank', 'noopener');
+  toast('URL đã copy — paste vào ' + hostLabel);
+}
+
+// Document-level delegation (works even when views are detached and re-attached)
+document.addEventListener('click', (e) => {
+  // iOS: Shortcuts-based platform buttons (scoped to ios block)
+  const iosBtn = e.target.closest('#dl-ios-block .platform-btn');
+  if (iosBtn) {
+    const url = getDownloadUrl();
+    if (!url) return;
+    const key = iosBtn.dataset.platform;
+    const name = SHORTCUT_DEFAULTS[key];
+    window.location.href = `shortcuts://run-shortcut?name=${encodeURIComponent(name)}&input=${encodeURIComponent(url)}`;
+    return;
+  }
+
+  // PC: Cobalt.tools main button
+  if (e.target.closest('#dl-pc-cobalt')) {
+    copyAndOpen('https://cobalt.tools/', 'Cobalt.tools');
+    return;
+  }
+
+  // PC: Service buttons
+  const pcBtn = e.target.closest('#dl-pc-block .platform-btn');
+  if (pcBtn) {
+    const host = pcBtn.dataset.host;
+    copyAndOpen('https://' + host + '/', host);
+    return;
+  }
+
+  // PC: yt-dlp command copy (video)
+  if (e.target.closest('#dl-pc-ytdlp-v')) {
+    const url = getDownloadUrl();
+    if (!url) return;
+    const cmd = `yt-dlp "${url}"`;
+    navigator.clipboard.writeText(cmd).catch(() => {});
+    toast('Đã copy: ' + cmd.slice(0, 50) + (cmd.length > 50 ? '…' : ''));
+    return;
+  }
+
+  // PC: yt-dlp command copy (audio mp3)
+  if (e.target.closest('#dl-pc-ytdlp-a')) {
+    const url = getDownloadUrl();
+    if (!url) return;
+    const cmd = `yt-dlp -x --audio-format mp3 "${url}"`;
+    navigator.clipboard.writeText(cmd).catch(() => {});
+    toast('Đã copy lệnh tải MP3');
+    return;
+  }
+});
+
+// ==================== DESKTOP: KEYBOARD + DRAG-DROP ====================
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+  // Don't intercept when typing
+  const tag = (e.target.tagName || '').toLowerCase();
+  if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
+  if (e.target.isContentEditable) return;
+
+  // Esc = back to home
+  if (e.key === 'Escape') {
+    const active = document.querySelector('.view.active');
+    if (active && active.id !== 'view-home') {
+      navTo('home');
+      e.preventDefault();
+    } else if ($('#sheet-bg').classList.contains('show')) {
+      $('#sheet-bg').classList.remove('show');
+      e.preventDefault();
+    }
+    return;
+  }
+
+  // 1-5 = switch tabs (only on home)
+  const homeActive = document.querySelector('#view-home.active');
+  if (homeActive && /^[1-5]$/.test(e.key)) {
+    const tabs = ['doc','img','text','util','sys'];
+    const tab = document.querySelector(`.tab[data-tab="${tabs[parseInt(e.key)-1]}"]`);
+    if (tab) { tab.click(); e.preventDefault(); }
+  }
+});
+
+// Real drag & drop for all dropzones (event delegation on document since views are cached)
+let dragOverTarget = null;
+document.addEventListener('dragenter', (e) => {
+  const dz = e.target.closest && e.target.closest('.dropzone');
+  if (!dz) return;
+  e.preventDefault();
+  dragOverTarget = dz;
+  dz.classList.add('drag-over');
+});
+document.addEventListener('dragover', (e) => {
+  const dz = e.target.closest && e.target.closest('.dropzone');
+  if (dz) { e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; }
+});
+document.addEventListener('dragleave', (e) => {
+  const dz = e.target.closest && e.target.closest('.dropzone');
+  if (!dz) return;
+  // Only remove highlight if we actually left the dropzone
+  if (!dz.contains(e.relatedTarget)) {
+    dz.classList.remove('drag-over');
+  }
+});
+document.addEventListener('drop', (e) => {
+  const dz = e.target.closest && e.target.closest('.dropzone');
+  if (!dz) return;
+  e.preventDefault();
+  dz.classList.remove('drag-over');
+  const input = dz.querySelector('input[type=file]');
+  if (!input || !e.dataTransfer.files.length) return;
+  // Filter files by input.accept if specified
+  let files = [...e.dataTransfer.files];
+  if (input.accept) {
+    const accepts = input.accept.split(',').map(s => s.trim().toLowerCase());
+    files = files.filter(f => {
+      const name = f.name.toLowerCase();
+      const type = f.type.toLowerCase();
+      return accepts.some(a => {
+        if (a.startsWith('.')) return name.endsWith(a);
+        if (a.endsWith('/*')) return type.startsWith(a.slice(0, -1));
+        return type === a;
+      });
+    });
+  }
+  if (!files.length) { toast('Loại file không hợp lệ'); return; }
+  // Assign files via DataTransfer (works on Chrome/Edge/Firefox)
+  try {
+    const dt = new DataTransfer();
+    files.forEach(f => dt.items.add(f));
+    input.files = dt.files;
+    input.dispatchEvent(new Event('change', {bubbles: true}));
+  } catch (err) {
+    toast('Trình duyệt không hỗ trợ kéo-thả');
+  }
+});
+// Prevent default drag-drop on document-level (so accidental drops don't navigate)
+// Use document instead of window to avoid interfering with browser event loop
+document.addEventListener('dragover', (e) => { if (!e.target.closest || !e.target.closest('.dropzone')) e.preventDefault(); });
+document.addEventListener('drop', (e) => { if (!e.target.closest || !e.target.closest('.dropzone')) e.preventDefault(); });
+
+// Safety net: ensure mouse wheel always scrolls the page.
+// On some Chrome/Edge versions on Windows, wheel events can be misrouted; this guarantees scroll.
+document.addEventListener('wheel', (e) => {
+  if (e.defaultPrevented) return;
+  // Find scrollable ancestor that actually scrolls
+  let el = e.target;
+  while (el && el !== document.body && el !== document.documentElement) {
+    const cs = getComputedStyle(el);
+    if ((cs.overflowY === 'auto' || cs.overflowY === 'scroll') && el.scrollHeight > el.clientHeight) {
+      return; // an inner element handles it
+    }
+    el = el.parentElement;
+  }
+  // Nothing else scrolls — force the page to scroll
+  const scroller = document.scrollingElement || document.documentElement;
+  scroller.scrollTop += e.deltaY;
+}, { passive: true });
+
+// ==================== INIT ====================
+(async () => {
+  await FS.init();
+  // Detach all non-active views (AFTER all event listeners are bound)
+  $$('.view').forEach(v => {
+    if (!v.classList.contains('active')) {
+      viewCache.set(v.id, v);
+      v.remove();
+    }
+  });
+  // Route from hash
+  const h = location.hash.replace('#','');
+  if (h && (document.getElementById('view-' + h) || viewCache.has('view-' + h))) navTo(h);
+})();
+</script>
+</body>
+</html>
