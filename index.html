@@ -226,6 +226,7 @@ body {
 .page-content { padding: 0 20px; }
 
 .dropzone {
+  display: block;
   margin-top: 8px;
   border: 1px solid var(--border);
   border-radius: 22px;
@@ -235,6 +236,14 @@ body {
   cursor: pointer;
 }
 .dropzone:active { background: var(--surface-2); }
+.dropzone input[type=file] {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
 .dropzone .big-icon {
   font-size: 40px;
   margin-bottom: 12px;
@@ -249,7 +258,6 @@ body {
   font-size: 13px;
   color: var(--text-2);
 }
-.dropzone input[type=file] { display: none; }
 
 .btn {
   display: inline-flex;
@@ -829,15 +837,8 @@ const $ = (s, r=document) => r.querySelector(s);
 const $$ = (s, r=document) => [...r.querySelectorAll(s)];
 
 // View cache: keep inactive views entirely OUT of document
+// (Detach happens at END of script, after all event handlers are bound)
 const viewCache = new Map();
-
-// On startup, fully remove all non-active views from DOM
-$$('.view').forEach(v => {
-  if (!v.classList.contains('active')) {
-    viewCache.set(v.id, v);
-    v.remove();
-  }
-});
 
 const navTo = (id) => {
   const targetId = 'view-' + id;
@@ -1344,9 +1345,18 @@ $$('.platform-btn').forEach(btn => {
 // ==================== INIT ====================
 (async () => {
   await FS.init();
+
+  // NOW detach all non-active views (event listeners persist even when detached)
+  $$('.view').forEach(v => {
+    if (!v.classList.contains('active')) {
+      viewCache.set(v.id, v);
+      v.remove();
+    }
+  });
+
   // route from hash
   const h = location.hash.replace('#','');
-  if (h && $('#view-' + h)) navTo(h);
+  if (h && (document.getElementById('view-' + h) || viewCache.has('view-' + h))) navTo(h);
 })();
 </script>
 </body>
