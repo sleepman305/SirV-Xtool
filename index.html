@@ -68,7 +68,22 @@ body {
   padding-top: calc(var(--safe-top) + 12px);
   padding-bottom: calc(var(--safe-bottom) + 24px);
 }
-.view.active { display: block !important; animation: fadeIn 0.35s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.view.active {
+  display: block !important;
+  animation: fadeIn 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+/* Defeat Safari iOS compositor ghosting: physically move inactive views offscreen */
+section.view:not(.active) {
+  position: fixed !important;
+  top: -200vh !important;
+  left: -200vw !important;
+  width: 0 !important;
+  height: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  z-index: -9999 !important;
+  contain: strict;
+}
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
