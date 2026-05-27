@@ -12,7 +12,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23ff6b35'/%3E%3Cstop offset='0.5' stop-color='%23a855f7'/%3E%3Cstop offset='1' stop-color='%2306b6d4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='180' height='180' rx='40' fill='%230a0a0f'/%3E%3Ccircle cx='90' cy='90' r='50' fill='url(%23g)'/%3E%3C/svg%3E">
 
@@ -33,7 +33,7 @@
   --accent-dl: linear-gradient(135deg, #10b981 0%, #84cc16 100%);
   --safe-top: env(safe-area-inset-top);
   --safe-bottom: env(safe-area-inset-bottom);
-  --display: 'Bricolage Grotesque', 'Plus Jakarta Sans', -apple-system, sans-serif;
+  --display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
@@ -98,9 +98,9 @@ body {
 }
 .brand {
   font-family: var(--display);
-  font-size: 72px;
+  font-size: 64px;
   font-weight: 800;
-  letter-spacing: -0.06em;
+  letter-spacing: -0.04em;
   line-height: 0.9;
   background: linear-gradient(135deg, #ff6b35 0%, #ec4899 35%, #a855f7 65%, #06b6d4 100%);
   -webkit-background-clip: text;
@@ -109,8 +109,8 @@ body {
   animation: stagger 0.7s 0.15s both cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 .brand em {
-  font-style: italic;
-  font-weight: 500;
+  font-style: normal;
+  font-weight: 800;
 }
 .brand-tag {
   margin-top: 10px;
@@ -141,12 +141,7 @@ body {
   cursor: pointer;
   overflow: hidden;
   transition: transform 0.2s ease, background 0.2s ease;
-  animation: stagger 0.6s both cubic-bezier(0.2, 0.8, 0.2, 1);
 }
-.module-card:nth-child(1) { animation-delay: 0.28s; }
-.module-card:nth-child(2) { animation-delay: 0.34s; }
-.module-card:nth-child(3) { animation-delay: 0.40s; }
-.module-card:nth-child(4) { animation-delay: 0.46s; }
 
 .module-card:active { transform: scale(0.97); background: var(--surface-2); }
 
@@ -224,11 +219,16 @@ body {
 .back-btn:active { background: var(--surface-2); }
 .page-title {
   font-family: var(--display);
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 700;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.02em;
+  color: var(--text);
 }
-.page-title em { font-style: italic; font-weight: 500; color: var(--text-2); }
+.page-title em {
+  font-style: normal;
+  font-weight: 700;
+  color: var(--text);
+}
 
 .page-content { padding: 0 20px; }
 
@@ -594,7 +594,7 @@ body {
   border-radius: 99px;
   margin: 4px auto 16px;
 }
-.sheet h3 { font-family: var(--display); font-size: 22px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 6px; }
+.sheet h3 { font-family: var(--display); font-size: 20px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 6px; font-style: normal; }
 .sheet p { color: var(--text-2); font-size: 14px; margin-bottom: 16px; }
 .sheet-input {
   width: 100%;
@@ -846,20 +846,54 @@ body {
 const $ = (s, r=document) => r.querySelector(s);
 const $$ = (s, r=document) => [...r.querySelectorAll(s)];
 
+// View cache: detach inactive views completely from DOM
+const viewCache = new Map();
+const viewCacheEl = document.createElement('div');
+viewCacheEl.style.display = 'none';
+document.body.appendChild(viewCacheEl);
+
+// On startup, detach all non-active views
+$$('.view').forEach(v => {
+  if (!v.classList.contains('active')) {
+    viewCache.set(v.id, v);
+    viewCacheEl.appendChild(v);
+  }
+});
+
 const navTo = (id) => {
-  $$('.view').forEach(v => v.classList.remove('active'));
-  $('#view-' + id).classList.add('active');
+  const targetId = 'view-' + id;
+  const currentActive = $('.view.active');
+
+  // Detach current active view
+  if (currentActive && currentActive.id !== targetId) {
+    currentActive.classList.remove('active');
+    viewCache.set(currentActive.id, currentActive);
+    viewCacheEl.appendChild(currentActive);
+  }
+
+  // Attach target view
+  const target = viewCache.get(targetId);
+  if (target) {
+    viewCache.delete(targetId);
+    document.body.insertBefore(target, viewCacheEl);
+    target.classList.add('active');
+  }
+
   window.scrollTo(0, 0);
   history.pushState({view: id}, '', '#' + id);
 };
 window.addEventListener('popstate', e => {
   const id = (e.state && e.state.view) || 'home';
-  $$('.view').forEach(v => v.classList.remove('active'));
-  $('#view-' + id).classList.add('active');
+  navTo(id);
 });
 
-$$('.module-card').forEach(c => c.addEventListener('click', () => navTo(c.dataset.go)));
-$$('[data-back]').forEach(b => b.addEventListener('click', () => navTo('home')));
+// Event delegation: works even after views detach/reattach
+document.addEventListener('click', (e) => {
+  const card = e.target.closest('.module-card');
+  if (card && card.dataset.go) { navTo(card.dataset.go); return; }
+  const back = e.target.closest('[data-back]');
+  if (back) { navTo('home'); return; }
+});
 
 const fmtSize = (b) => {
   if (b < 1024) return b + ' B';
@@ -1212,7 +1246,7 @@ async function openItemMenu(it, isFolder) {
   const sh = $('#sheet');
   sh.innerHTML = `
     <div class="handle"></div>
-    <h3 style="font-family:var(--display);font-size:22px;font-weight:700;letter-spacing:-0.02em;margin-bottom:6px">${it.name}</h3>
+    <h3 style="font-family:var(--display);font-size:20px;font-weight:700;letter-spacing:-0.01em;margin-bottom:6px">${it.name}</h3>
     <p style="color:var(--text-2);font-size:13px;margin-bottom:18px">${isFolder ? 'Thư mục' : fmtSize(it.size)}</p>
     <div style="display:flex;flex-direction:column;gap:8px">
       ${!isFolder ? '<button class="btn primary" data-a="download">⬇  Tải về máy</button>' : ''}
@@ -1263,7 +1297,11 @@ $('#files-input').addEventListener('change', async (e) => {
   toast('Đã thêm file');
 });
 
-// Render files when entering the view
+// Render files when entering the Files view
+const originalNavTo = navTo;
+window.addEventListener('hashchange', () => {
+  if (location.hash === '#files') setTimeout(renderFiles, 50);
+});
 document.addEventListener('click', (e) => {
   const card = e.target.closest('.module-card');
   if (card && card.dataset.go === 'files') setTimeout(renderFiles, 50);
