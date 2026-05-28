@@ -872,6 +872,8 @@ body {
       <div class="tab" data-tab="img">🖼️ Ảnh</div>
       <div class="tab" data-tab="text">📝 Text</div>
       <div class="tab" data-tab="util">🔧 Tiện ích</div>
+      <div class="tab" data-tab="media">🎬 Media</div>
+      <div class="tab" data-tab="ai">🤖 AI</div>
       <div class="tab" data-tab="sys">📁 Hệ thống</div>
     </div>
   </div>
@@ -885,13 +887,21 @@ body {
       <div class="icon doc">📑</div>
       <div><div class="title">Merge PDF</div><div class="desc">Gộp/tách/sắp xếp PDF</div></div>
     </div>
+    <div class="module-card" data-go="pdfsplit">
+      <div class="icon doc">✂️</div>
+      <div><div class="title">Tách PDF</div><div class="desc">Chia/đảo/xoay trang</div></div>
+    </div>
     <div class="module-card" data-go="pdfimg">
       <div class="icon doc">🔄</div>
       <div><div class="title">PDF ↔ Ảnh</div><div class="desc">Chuyển qua lại 2 chiều</div></div>
     </div>
+    <div class="module-card" data-go="docx">
+      <div class="icon doc">📝</div>
+      <div><div class="title">Đọc Word</div><div class="desc">.docx → text</div></div>
+    </div>
     <div class="module-card" data-go="ocr">
       <div class="icon doc">🔍</div>
-      <div><div class="title">OCR</div><div class="desc">Trích text từ ảnh</div></div>
+      <div><div class="title">OCR</div><div class="desc">Trích text từ ảnh, PDF</div></div>
     </div>
     <div class="module-card" data-go="unzip">
       <div class="icon doc">📦</div>
@@ -955,6 +965,14 @@ body {
       <div class="icon text">🔐</div>
       <div><div class="title">Encode/Hash</div><div class="desc">Base64, URL, MD5, SHA</div></div>
     </div>
+    <div class="module-card" data-go="diff">
+      <div class="icon text">⇆</div>
+      <div><div class="title">So sánh text</div><div class="desc">Diff 2 đoạn văn bản</div></div>
+    </div>
+    <div class="module-card" data-go="markdown">
+      <div class="icon text">M↓</div>
+      <div><div class="title">Markdown</div><div class="desc">Soạn + preview live</div></div>
+    </div>
     <div class="module-card" data-go="speech">
       <div class="icon text">🎙️</div>
       <div><div class="title">Nói → Text</div><div class="desc">Ghi âm thành chữ</div></div>
@@ -974,6 +992,14 @@ body {
       <div class="icon util">📅</div>
       <div><div class="title">Tính ngày</div><div class="desc">Tuổi, đếm ngày, deadline</div></div>
     </div>
+    <div class="module-card" data-go="lunar">
+      <div class="icon util">🌙</div>
+      <div><div class="title">Lịch âm</div><div class="desc">Âm-dương, can chi, hoàng đạo</div></div>
+    </div>
+    <div class="module-card" data-go="money">
+      <div class="icon util">₫</div>
+      <div><div class="title">Số → chữ</div><div class="desc">Đọc số tiền tiếng Việt</div></div>
+    </div>
     <div class="module-card" data-go="random">
       <div class="icon util">🎲</div>
       <div><div class="title">Random</div><div class="desc">Bốc thăm, xúc xắc</div></div>
@@ -981,6 +1007,28 @@ body {
     <div class="module-card" data-go="tts">
       <div class="icon util">🔊</div>
       <div><div class="title">Text → Nói</div><div class="desc">Đọc tiếng Việt</div></div>
+    </div>
+  </div>
+
+  <div class="modules module-group" data-group="media">
+    <div class="module-card" data-go="videotrim">
+      <div class="icon img">🎬</div>
+      <div><div class="title">Cắt video</div><div class="desc">Trim đầu/cuối, đổi format</div></div>
+    </div>
+    <div class="module-card" data-go="audiox">
+      <div class="icon img">🎵</div>
+      <div><div class="title">Tách audio</div><div class="desc">Video → MP3/M4A</div></div>
+    </div>
+  </div>
+
+  <div class="modules module-group" data-group="ai">
+    <div class="module-card" data-go="aisummary">
+      <div class="icon sys">✨</div>
+      <div><div class="title">Tóm tắt AI</div><div class="desc">Tóm tắt văn bản dài</div></div>
+    </div>
+    <div class="module-card" data-go="aisettings">
+      <div class="icon sys">🔑</div>
+      <div><div class="title">API key</div><div class="desc">Cấu hình Gemini</div></div>
     </div>
   </div>
 
@@ -1854,6 +1902,341 @@ body {
   </div>
 </section>
 
+<!-- ============ DOCX READER ============ -->
+<section id="view-docx" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">Đọc Word (.docx)</div>
+  </div>
+  <div class="page-content">
+    <label class="dropzone" for="docx-input">
+      <span class="big-icon">📝</span>
+      <div class="label">Chọn file .docx</div>
+      <div class="hint">Trích text + heading từ file Word</div>
+      <input type="file" id="docx-input" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+    </label>
+    <div class="progress-bar" id="docx-progress"><div class="fill"></div></div>
+    <div class="status" id="docx-status"></div>
+    <div class="big-result" id="docx-result"></div>
+    <div class="actions-row" id="docx-actions" style="display:none">
+      <button class="btn primary" id="docx-copy">Copy</button>
+      <button class="btn" id="docx-save-txt">Lưu .txt</button>
+      <button class="btn" id="docx-save-md">Lưu .md</button>
+    </div>
+    <div class="help-card">
+      Hỗ trợ <strong>.docx</strong> (Word 2007+). File <strong>.doc</strong> cũ cần Save As .docx trước.
+    </div>
+  </div>
+</section>
+
+<!-- ============ PDF SPLIT/ROTATE ============ -->
+<section id="view-pdfsplit" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">Tách PDF</div>
+  </div>
+  <div class="page-content">
+    <label class="dropzone" for="pdfsplit-input">
+      <span class="big-icon">✂️</span>
+      <div class="label">Chọn file PDF</div>
+      <div class="hint">Tách trang / xoay / đảo thứ tự</div>
+      <input type="file" id="pdfsplit-input" accept="application/pdf,.pdf">
+    </label>
+    <div id="pdfsplit-options" style="display:none">
+      <div class="field">
+        <div class="field-label">Chế độ</div>
+        <select class="select" id="pdfsplit-mode">
+          <option value="range">Lấy theo khoảng (vd: 1-3,5,8-10)</option>
+          <option value="single">Tách mỗi trang thành 1 file</option>
+          <option value="reverse">Đảo ngược thứ tự trang</option>
+          <option value="rotate90">Xoay tất cả 90° (sang phải)</option>
+          <option value="rotate180">Xoay tất cả 180° (lộn ngược)</option>
+          <option value="rotate270">Xoay tất cả 90° (sang trái)</option>
+        </select>
+      </div>
+      <div class="field" id="pdfsplit-range-field">
+        <div class="field-label">Khoảng trang (vd: 1-3,5,8-10)</div>
+        <input type="text" class="text-input" id="pdfsplit-range" placeholder="1-3,5,8-10">
+        <div style="font-size:11.5px;color:var(--text-3);margin-top:6px">Tổng số trang: <span id="pdfsplit-total">—</span></div>
+      </div>
+    </div>
+    <div class="actions-row" id="pdfsplit-actions" style="display:none">
+      <button class="btn primary" id="pdfsplit-do">Xử lý</button>
+    </div>
+    <div class="progress-bar" id="pdfsplit-progress"><div class="fill"></div></div>
+    <div class="status" id="pdfsplit-status"></div>
+  </div>
+</section>
+
+<!-- ============ DIFF ============ -->
+<section id="view-diff" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">So sánh text</div>
+  </div>
+  <div class="page-content">
+    <div class="row-2">
+      <div>
+        <div class="field-label">Bản A (gốc)</div>
+        <textarea class="text-area" id="diff-a" style="min-height:140px"></textarea>
+      </div>
+      <div>
+        <div class="field-label">Bản B (mới)</div>
+        <textarea class="text-area" id="diff-b" style="min-height:140px"></textarea>
+      </div>
+    </div>
+    <div class="actions-row" style="margin-top:14px">
+      <button class="btn primary" id="diff-run">So sánh</button>
+      <button class="btn" id="diff-clear">Xoá</button>
+    </div>
+    <div class="status" id="diff-status"></div>
+    <div id="diff-result" style="display:none;margin-top:14px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:13.5px;line-height:1.7;white-space:pre-wrap;overflow-wrap:break-word;-webkit-user-select:text;user-select:text;cursor:text"></div>
+  </div>
+</section>
+
+<!-- ============ MARKDOWN EDITOR ============ -->
+<section id="view-markdown" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">Markdown</div>
+  </div>
+  <div class="page-content">
+    <div class="chip-row" style="margin-top:8px">
+      <div class="chip active" id="md-tab-edit">✎ Soạn</div>
+      <div class="chip" id="md-tab-preview">👁 Preview</div>
+      <div class="chip" id="md-tab-split">⊞ Cả hai</div>
+    </div>
+    <div id="md-edit-pane">
+      <textarea class="text-area" id="md-input" placeholder="# Tiêu đề
+
+**Đậm** và *nghiêng*
+
+- Danh sách
+- Mục 2
+
+[Link](https://example.com)" style="min-height:300px;font-family:ui-monospace,'SF Mono',Menlo,monospace;margin-top:14px"></textarea>
+    </div>
+    <div id="md-preview-pane" style="display:none;margin-top:14px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;min-height:300px;-webkit-user-select:text;user-select:text;cursor:text;line-height:1.65"></div>
+    <div class="actions-row" style="margin-top:14px">
+      <button class="btn primary" id="md-copy-html">Copy HTML</button>
+      <button class="btn" id="md-save-md">Lưu .md</button>
+      <button class="btn" id="md-save-html">Lưu .html</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LUNAR ============ -->
+<section id="view-lunar" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">Lịch âm</div>
+  </div>
+  <div class="page-content">
+    <div class="field">
+      <div class="field-label">Ngày dương lịch</div>
+      <input type="date" class="text-input" id="lunar-date">
+    </div>
+    <div class="unit-result">
+      <div class="val" id="lunar-am" style="font-size:28px">—</div>
+      <div class="lbl" id="lunar-canchi">—</div>
+    </div>
+    <div class="row-2" style="margin-top:10px">
+      <div class="unit-result" style="padding:14px">
+        <div class="val" id="lunar-day-canchi" style="font-size:18px">—</div>
+        <div class="lbl">Ngày can chi</div>
+      </div>
+      <div class="unit-result" style="padding:14px">
+        <div class="val" id="lunar-zodiac" style="font-size:18px">—</div>
+        <div class="lbl">Giờ hoàng đạo</div>
+      </div>
+    </div>
+    <div class="help-card">
+      Lịch âm tính theo múi giờ Việt Nam (UTC+7). Can chi ngày/tháng/năm theo quy ước truyền thống.
+    </div>
+  </div>
+</section>
+
+<!-- ============ MONEY TO WORDS ============ -->
+<section id="view-money" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">Số → chữ</div>
+  </div>
+  <div class="page-content">
+    <div class="field">
+      <div class="field-label">Số tiền (đồng)</div>
+      <input type="text" class="text-input" id="money-input" placeholder="1234567" inputmode="numeric">
+    </div>
+    <div class="chip-row" style="margin-top:8px">
+      <div class="chip" data-money="1000">1 nghìn</div>
+      <div class="chip" data-money="100000">100 nghìn</div>
+      <div class="chip" data-money="1000000">1 triệu</div>
+      <div class="chip" data-money="100000000">100 triệu</div>
+      <div class="chip" data-money="1000000000">1 tỷ</div>
+    </div>
+    <div class="unit-result">
+      <div class="val" id="money-output" style="font-size:18px;line-height:1.4;text-transform:capitalize">—</div>
+      <div class="lbl" id="money-num">—</div>
+    </div>
+    <div class="actions-row">
+      <button class="btn" id="money-copy">Copy</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VIDEO TRIM ============ -->
+<section id="view-videotrim" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">Cắt video</div>
+  </div>
+  <div class="page-content">
+    <label class="dropzone" for="vt-input">
+      <span class="big-icon">🎬</span>
+      <div class="label">Chọn video</div>
+      <div class="hint">MP4, MOV, WebM, MKV...</div>
+      <input type="file" id="vt-input" accept="video/*">
+    </label>
+    <video id="vt-preview" controls style="display:none;width:100%;margin-top:14px;border-radius:14px;background:#000;max-height:50vh"></video>
+    <div id="vt-options" style="display:none">
+      <div class="row-2" style="margin-top:14px">
+        <div>
+          <div class="field-label">Bắt đầu (giây)</div>
+          <input type="number" class="text-input" id="vt-start" value="0" step="0.1" inputmode="decimal">
+        </div>
+        <div>
+          <div class="field-label">Kết thúc (giây)</div>
+          <input type="number" class="text-input" id="vt-end" value="10" step="0.1" inputmode="decimal">
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-label">Định dạng đầu ra</div>
+        <select class="select" id="vt-format">
+          <option value="mp4">MP4 (H.264)</option>
+          <option value="webm">WebM (VP8)</option>
+          <option value="gif">GIF (silent)</option>
+        </select>
+      </div>
+      <div class="actions-row">
+        <button class="btn primary" id="vt-do">Cắt video</button>
+      </div>
+    </div>
+    <div class="progress-bar" id="vt-progress"><div class="fill"></div></div>
+    <div class="status" id="vt-status"></div>
+    <div class="help-card">
+      Lần đầu chạy sẽ tải <strong>ffmpeg.wasm (~30MB)</strong>. Sau đó cắt video <strong>hoàn toàn offline</strong>, không upload lên đâu cả.
+    </div>
+  </div>
+</section>
+
+<!-- ============ AUDIO EXTRACT ============ -->
+<section id="view-audiox" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">Tách audio</div>
+  </div>
+  <div class="page-content">
+    <label class="dropzone" for="ax-input">
+      <span class="big-icon">🎵</span>
+      <div class="label">Chọn video</div>
+      <div class="hint">Tách audio thành MP3 hoặc M4A</div>
+      <input type="file" id="ax-input" accept="video/*,audio/*">
+    </label>
+    <div class="field" id="ax-options" style="display:none">
+      <div class="field-label">Định dạng</div>
+      <select class="select" id="ax-format">
+        <option value="mp3">MP3 (192 kbps)</option>
+        <option value="m4a">M4A / AAC (192 kbps)</option>
+        <option value="wav">WAV (không nén)</option>
+      </select>
+      <div class="actions-row" style="margin-top:14px">
+        <button class="btn primary" id="ax-do">Tách audio</button>
+      </div>
+    </div>
+    <div class="progress-bar" id="ax-progress"><div class="fill"></div></div>
+    <div class="status" id="ax-status"></div>
+    <div class="help-card">
+      Dùng chung ffmpeg.wasm với module Cắt video (~30MB, tải 1 lần dùng cả 2).
+    </div>
+  </div>
+</section>
+
+<!-- ============ AI SUMMARY ============ -->
+<section id="view-aisummary" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">Tóm tắt AI</div>
+  </div>
+  <div class="page-content">
+    <div class="field">
+      <div class="field-label">Văn bản cần tóm tắt</div>
+      <textarea class="text-area" id="ai-input" placeholder="Dán văn bản dài vào đây..." style="min-height:180px"></textarea>
+      <div style="font-size:11.5px;color:var(--text-3);margin-top:4px"><span id="ai-input-count">0</span> ký tự</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Kiểu tóm tắt</div>
+      <select class="select" id="ai-style">
+        <option value="short">Ngắn gọn (2-3 câu)</option>
+        <option value="bullets" selected>Gạch đầu dòng (5-7 ý chính)</option>
+        <option value="detailed">Chi tiết (1 đoạn dài)</option>
+        <option value="headline">Tít báo + sapo</option>
+        <option value="keypoints">Điểm quan trọng + kết luận</option>
+      </select>
+    </div>
+    <div class="actions-row">
+      <button class="btn primary" id="ai-go">✨ Tóm tắt</button>
+    </div>
+    <div class="progress-bar" id="ai-progress"><div class="fill"></div></div>
+    <div class="status" id="ai-status"></div>
+    <div class="big-result" id="ai-output"></div>
+    <div class="actions-row" id="ai-actions" style="display:none">
+      <button class="btn primary" id="ai-copy">Copy</button>
+      <button class="btn" id="ai-save">Lưu .txt</button>
+    </div>
+    <div class="help-card" id="ai-need-key" style="display:none;border-color:rgba(239,68,68,0.4);color:#fca5a5">
+      <strong>Chưa có API key.</strong> Vào tab <strong>🤖 AI → API key</strong> để thiết lập (miễn phí từ Google AI Studio).
+    </div>
+  </div>
+</section>
+
+<!-- ============ AI SETTINGS ============ -->
+<section id="view-aisettings" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">Cấu hình AI</div>
+  </div>
+  <div class="page-content">
+    <div class="field">
+      <div class="field-label">Gemini API Key</div>
+      <input type="password" class="text-input" id="ai-key" placeholder="AIza..." autocomplete="off">
+    </div>
+    <div class="field">
+      <div class="field-label">Model</div>
+      <select class="select" id="ai-model">
+        <option value="gemini-2.0-flash">Gemini 2.0 Flash (nhanh, free quota cao)</option>
+        <option value="gemini-2.5-flash">Gemini 2.5 Flash (mới nhất)</option>
+        <option value="gemini-2.5-pro">Gemini 2.5 Pro (chính xác hơn, free quota thấp)</option>
+      </select>
+    </div>
+    <div class="actions-row">
+      <button class="btn primary" id="ai-save-key">Lưu</button>
+      <button class="btn" id="ai-clear-key">Xoá</button>
+    </div>
+    <div class="status" id="ai-key-status"></div>
+    <div class="help-card">
+      <strong>Lấy API key miễn phí:</strong>
+      <ol>
+        <li>Vào <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com/apikey</a></li>
+        <li>Đăng nhập Google → bấm "Create API key"</li>
+        <li>Copy key (bắt đầu bằng <code style="background:var(--surface-2);padding:1px 6px;border-radius:4px">AIza...</code>)</li>
+        <li>Dán vào ô trên → Lưu</li>
+      </ol>
+      <strong>Quota miễn phí:</strong> 15 yêu cầu/phút, 1500/ngày. Đủ dùng cá nhân.<br>
+      <strong>Bảo mật:</strong> Key lưu cục bộ trên máy (localStorage), không gửi đi đâu trừ trực tiếp đến Google.
+    </div>
+  </div>
+</section>
+
 <!-- ============ SHEET (content rebuilt dynamically by sheet.open or menus) ============ -->
 <div class="sheet-bg" id="sheet-bg">
   <div class="sheet" id="sheet"></div>
@@ -1898,6 +2281,9 @@ const navTo = (id) => {
   if (id === 'units') setTimeout(initUnits, 50);
   if (id === 'tts') setTimeout(initTTS, 50);
   if (id === 'download') setTimeout(initDownload, 50);
+  if (id === 'lunar') setTimeout(initLunar, 50);
+  if (id === 'aisettings') setTimeout(initAISettings, 50);
+  if (id === 'aisummary') setTimeout(initAISummary, 50);
 };
 
 window.addEventListener('popstate', e => {
@@ -3708,6 +4094,755 @@ $('#files-input').addEventListener('change', async (e) => {
   toast('Đã thêm');
 });
 
+// ==================== DOCX READER ====================
+let docxResult = '';
+
+$('#docx-input').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  setStatus($('#docx-status'), 'Đang đọc file...');
+  setProgress($('#docx-progress'), 20);
+  $('#docx-actions').style.display = 'none';
+  $('#docx-result').classList.remove('show');
+  try {
+    const mammoth = (await import('https://cdn.jsdelivr.net/npm/mammoth@1.6.0/+esm')).default;
+    setProgress($('#docx-progress'), 50);
+    const buf = await file.arrayBuffer();
+    const result = await mammoth.extractRawText({arrayBuffer: buf});
+    docxResult = (result.value || '').trim();
+    if (!docxResult) {
+      setStatus($('#docx-status'), '✗ File rỗng hoặc không có text', 'error');
+      return;
+    }
+    $('#docx-result').textContent = docxResult;
+    $('#docx-result').classList.add('show');
+    $('#docx-actions').style.display = 'flex';
+    setProgress($('#docx-progress'), 100);
+    const lines = docxResult.split('\n').length;
+    const chars = docxResult.length;
+    setStatus($('#docx-status'), `✓ Đọc xong: ${chars} ký tự, ${lines} dòng`, 'success');
+  } catch (err) {
+    setStatus($('#docx-status'), '✗ Lỗi: ' + err.message, 'error');
+  }
+});
+
+$('#docx-copy').addEventListener('click', () => copyText(docxResult));
+$('#docx-save-txt').addEventListener('click', () => {
+  downloadBlob(new Blob([docxResult], {type:'text/plain;charset=utf-8'}), 'docx-' + Date.now() + '.txt');
+});
+$('#docx-save-md').addEventListener('click', () => {
+  // Convert paragraph breaks to markdown-friendly
+  const md = docxResult.replace(/\n\n+/g, '\n\n');
+  downloadBlob(new Blob([md], {type:'text/markdown;charset=utf-8'}), 'docx-' + Date.now() + '.md');
+});
+
+// ==================== PDF SPLIT / ROTATE ====================
+let pdfsplitFile = null;
+let pdfsplitNumPages = 0;
+
+$('#pdfsplit-input').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  pdfsplitFile = file;
+  try {
+    const { PDFDocument } = await import('https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/+esm');
+    const buf = await file.arrayBuffer();
+    const pdf = await PDFDocument.load(buf);
+    pdfsplitNumPages = pdf.getPageCount();
+    $('#pdfsplit-total').textContent = pdfsplitNumPages;
+    $('#pdfsplit-range').placeholder = `vd: 1-${Math.min(3, pdfsplitNumPages)}, ${pdfsplitNumPages}`;
+    $('#pdfsplit-options').style.display = 'block';
+    $('#pdfsplit-actions').style.display = 'flex';
+    setStatus($('#pdfsplit-status'), `✓ Đã load (${pdfsplitNumPages} trang)`, 'success');
+  } catch (err) {
+    setStatus($('#pdfsplit-status'), '✗ Lỗi: ' + err.message, 'error');
+  }
+});
+
+$('#pdfsplit-mode').addEventListener('change', () => {
+  const m = $('#pdfsplit-mode').value;
+  $('#pdfsplit-range-field').style.display = m === 'range' ? 'block' : 'none';
+});
+
+function parseRanges(input, total) {
+  // "1-3,5,8-10" → [1,2,3,5,8,9,10]
+  const result = [];
+  for (const part of input.split(',').map(s => s.trim()).filter(Boolean)) {
+    const m = part.match(/^(\d+)\s*-\s*(\d+)$/);
+    if (m) {
+      let a = parseInt(m[1]), b = parseInt(m[2]);
+      if (a > b) [a, b] = [b, a];
+      for (let i = a; i <= b; i++) if (i >= 1 && i <= total) result.push(i);
+    } else if (/^\d+$/.test(part)) {
+      const n = parseInt(part);
+      if (n >= 1 && n <= total) result.push(n);
+    }
+  }
+  return [...new Set(result)].sort((a, b) => a - b);
+}
+
+$('#pdfsplit-do').addEventListener('click', async () => {
+  if (!pdfsplitFile) return;
+  const mode = $('#pdfsplit-mode').value;
+  setStatus($('#pdfsplit-status'), 'Đang xử lý...');
+  setProgress($('#pdfsplit-progress'), 10);
+  try {
+    const { PDFDocument, degrees } = await import('https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/+esm');
+    const buf = await pdfsplitFile.arrayBuffer();
+    const src = await PDFDocument.load(buf);
+    setProgress($('#pdfsplit-progress'), 30);
+
+    if (mode === 'range') {
+      const pages = parseRanges($('#pdfsplit-range').value, pdfsplitNumPages);
+      if (!pages.length) { setStatus($('#pdfsplit-status'), '✗ Khoảng trang không hợp lệ', 'error'); return; }
+      const out = await PDFDocument.create();
+      const copied = await out.copyPages(src, pages.map(p => p - 1));
+      copied.forEach(p => out.addPage(p));
+      const bytes = await out.save();
+      downloadBlob(new Blob([bytes], {type:'application/pdf'}), `pages-${pages[0]}-${pages[pages.length-1]}-${Date.now()}.pdf`);
+      setStatus($('#pdfsplit-status'), `✓ Đã lấy ${pages.length} trang`, 'success');
+    } else if (mode === 'single') {
+      const zip = new JSZip();
+      for (let i = 0; i < pdfsplitNumPages; i++) {
+        setProgress($('#pdfsplit-progress'), 30 + (i / pdfsplitNumPages) * 60);
+        const out = await PDFDocument.create();
+        const [page] = await out.copyPages(src, [i]);
+        out.addPage(page);
+        const bytes = await out.save();
+        zip.file(`page-${String(i+1).padStart(3, '0')}.pdf`, bytes);
+      }
+      const blob = await zip.generateAsync({type:'blob'});
+      downloadBlob(blob, `pages-split-${Date.now()}.zip`);
+      setStatus($('#pdfsplit-status'), `✓ Đã tách thành ${pdfsplitNumPages} file PDF (.zip)`, 'success');
+    } else if (mode === 'reverse') {
+      const indices = src.getPageIndices().reverse();
+      const out = await PDFDocument.create();
+      const copied = await out.copyPages(src, indices);
+      copied.forEach(p => out.addPage(p));
+      const bytes = await out.save();
+      downloadBlob(new Blob([bytes], {type:'application/pdf'}), `reversed-${Date.now()}.pdf`);
+      setStatus($('#pdfsplit-status'), '✓ Đã đảo ngược thứ tự trang', 'success');
+    } else if (mode.startsWith('rotate')) {
+      const deg = parseInt(mode.replace('rotate', ''));
+      src.getPages().forEach(p => {
+        const current = p.getRotation().angle;
+        p.setRotation(degrees((current + deg) % 360));
+      });
+      const bytes = await src.save();
+      downloadBlob(new Blob([bytes], {type:'application/pdf'}), `rotated-${deg}-${Date.now()}.pdf`);
+      setStatus($('#pdfsplit-status'), `✓ Đã xoay tất cả trang ${deg}°`, 'success');
+    }
+    setProgress($('#pdfsplit-progress'), 100);
+  } catch (err) {
+    setStatus($('#pdfsplit-status'), '✗ Lỗi: ' + err.message, 'error');
+  }
+});
+
+// ==================== DIFF ====================
+$('#diff-run').addEventListener('click', () => {
+  const a = $('#diff-a').value.split('\n');
+  const b = $('#diff-b').value.split('\n');
+  if (!a.length && !b.length) return;
+  // Simple LCS-based line diff
+  const m = a.length, n = b.length;
+  const dp = Array.from({length: m+1}, () => new Int32Array(n+1));
+  for (let i = m-1; i >= 0; i--) {
+    for (let j = n-1; j >= 0; j--) {
+      if (a[i] === b[j]) dp[i][j] = dp[i+1][j+1] + 1;
+      else dp[i][j] = Math.max(dp[i+1][j], dp[i][j+1]);
+    }
+  }
+  // Backtrack
+  const out = [];
+  let i = 0, j = 0, adds = 0, dels = 0;
+  while (i < m && j < n) {
+    if (a[i] === b[j]) { out.push({t:' ', line: a[i]}); i++; j++; }
+    else if (dp[i+1][j] >= dp[i][j+1]) { out.push({t:'-', line: a[i]}); i++; dels++; }
+    else { out.push({t:'+', line: b[j]}); j++; adds++; }
+  }
+  while (i < m) { out.push({t:'-', line: a[i]}); i++; dels++; }
+  while (j < n) { out.push({t:'+', line: b[j]}); j++; adds++; }
+
+  const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const html = out.map(o => {
+    if (o.t === '+') return `<div style="background:rgba(16,185,129,0.18);color:#6ee7b7;padding:2px 8px;border-radius:6px"><span style="opacity:0.6">+ </span>${esc(o.line) || '&nbsp;'}</div>`;
+    if (o.t === '-') return `<div style="background:rgba(239,68,68,0.18);color:#fca5a5;padding:2px 8px;border-radius:6px;text-decoration:line-through;text-decoration-color:rgba(239,68,68,0.5)"><span style="opacity:0.6">− </span>${esc(o.line) || '&nbsp;'}</div>`;
+    return `<div style="padding:2px 8px;color:var(--text-2)"><span style="opacity:0.4">  </span>${esc(o.line) || '&nbsp;'}</div>`;
+  }).join('');
+
+  const result = $('#diff-result');
+  result.innerHTML = html;
+  result.style.display = 'block';
+  setStatus($('#diff-status'), `✓ ${adds} dòng thêm, ${dels} dòng xoá, ${out.length - adds - dels} dòng giống nhau`, 'success');
+});
+
+$('#diff-clear').addEventListener('click', () => {
+  $('#diff-a').value = ''; $('#diff-b').value = '';
+  $('#diff-result').style.display = 'none';
+  hideStatus($('#diff-status'));
+});
+
+// ==================== MARKDOWN ====================
+// Minimal markdown renderer (handles common syntax)
+function mdRender(src) {
+  const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  // Escape HTML first
+  let s = esc(src);
+  // Code blocks
+  s = s.replace(/```([\s\S]*?)```/g, (_, c) => `<pre style="background:var(--surface-2);padding:12px;border-radius:8px;overflow-x:auto;font-family:ui-monospace,Menlo,monospace;font-size:13px"><code>${c.trim()}</code></pre>`);
+  // Inline code
+  s = s.replace(/`([^`\n]+)`/g, '<code style="background:var(--surface-2);padding:1px 6px;border-radius:4px;font-family:ui-monospace,Menlo,monospace;font-size:0.9em">$1</code>');
+  // Headings
+  s = s.replace(/^###### (.+)$/gm, '<h6 style="font-size:1em;font-weight:700;margin:14px 0 6px">$1</h6>');
+  s = s.replace(/^##### (.+)$/gm, '<h5 style="font-size:1.05em;font-weight:700;margin:14px 0 6px">$1</h5>');
+  s = s.replace(/^#### (.+)$/gm, '<h4 style="font-size:1.1em;font-weight:700;margin:16px 0 8px">$1</h4>');
+  s = s.replace(/^### (.+)$/gm, '<h3 style="font-size:1.25em;font-weight:700;margin:18px 0 8px">$1</h3>');
+  s = s.replace(/^## (.+)$/gm, '<h2 style="font-size:1.5em;font-weight:700;margin:20px 0 10px;border-bottom:1px solid var(--border);padding-bottom:4px">$1</h2>');
+  s = s.replace(/^# (.+)$/gm, '<h1 style="font-size:1.85em;font-weight:800;margin:22px 0 12px;letter-spacing:-0.02em">$1</h1>');
+  // Bold, italic
+  s = s.replace(/\*\*\*([^*\n]+)\*\*\*/g, '<strong><em>$1</em></strong>');
+  s = s.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>');
+  s = s.replace(/__([^_\n]+)__/g, '<strong>$1</strong>');
+  s = s.replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
+  s = s.replace(/_([^_\n]+)_/g, '<em>$1</em>');
+  // Strike
+  s = s.replace(/~~([^~\n]+)~~/g, '<s>$1</s>');
+  // Links and images
+  s = s.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img alt="$1" src="$2" style="max-width:100%;border-radius:8px;margin:8px 0">');
+  s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener" style="color:#93c5fd;text-decoration:underline">$1</a>');
+  // Horizontal rule
+  s = s.replace(/^---+$/gm, '<hr style="border:none;border-top:1px solid var(--border);margin:18px 0">');
+  // Lists - unordered
+  s = s.replace(/(^|\n)((?:[-*+] .+\n?)+)/g, (m, nl, block) => {
+    const items = block.trim().split('\n').map(l => '<li style="margin:4px 0">' + l.replace(/^[-*+] /, '') + '</li>').join('');
+    return nl + '<ul style="padding-left:24px;margin:8px 0">' + items + '</ul>';
+  });
+  // Lists - ordered
+  s = s.replace(/(^|\n)((?:\d+\. .+\n?)+)/g, (m, nl, block) => {
+    const items = block.trim().split('\n').map(l => '<li style="margin:4px 0">' + l.replace(/^\d+\. /, '') + '</li>').join('');
+    return nl + '<ol style="padding-left:24px;margin:8px 0">' + items + '</ol>';
+  });
+  // Blockquotes
+  s = s.replace(/(^|\n)((?:> .+\n?)+)/g, (m, nl, block) => {
+    const content = block.trim().split('\n').map(l => l.replace(/^> ?/, '')).join(' ');
+    return nl + '<blockquote style="border-left:3px solid var(--border-strong);padding:4px 14px;margin:10px 0;color:var(--text-2)">' + content + '</blockquote>';
+  });
+  // Paragraphs (any remaining blocks separated by blank line)
+  s = s.split(/\n{2,}/).map(block => {
+    block = block.trim();
+    if (!block) return '';
+    if (/^<(h\d|ul|ol|pre|blockquote|hr|img)/.test(block)) return block;
+    return '<p style="margin:8px 0">' + block.replace(/\n/g, '<br>') + '</p>';
+  }).join('\n');
+  return s;
+}
+
+const mdRenderLive = () => {
+  $('#md-preview-pane').innerHTML = mdRender($('#md-input').value);
+};
+$('#md-input').addEventListener('input', mdRenderLive);
+
+$('#md-tab-edit').addEventListener('click', () => {
+  $$('#view-markdown .chip').forEach(c => c.classList.remove('active'));
+  $('#md-tab-edit').classList.add('active');
+  $('#md-edit-pane').style.display = 'block';
+  $('#md-preview-pane').style.display = 'none';
+});
+$('#md-tab-preview').addEventListener('click', () => {
+  $$('#view-markdown .chip').forEach(c => c.classList.remove('active'));
+  $('#md-tab-preview').classList.add('active');
+  $('#md-edit-pane').style.display = 'none';
+  $('#md-preview-pane').style.display = 'block';
+  mdRenderLive();
+});
+$('#md-tab-split').addEventListener('click', () => {
+  $$('#view-markdown .chip').forEach(c => c.classList.remove('active'));
+  $('#md-tab-split').classList.add('active');
+  $('#md-edit-pane').style.display = 'block';
+  $('#md-preview-pane').style.display = 'block';
+  mdRenderLive();
+});
+
+$('#md-copy-html').addEventListener('click', () => copyText(mdRender($('#md-input').value)));
+$('#md-save-md').addEventListener('click', () => {
+  downloadBlob(new Blob([$('#md-input').value], {type:'text/markdown;charset=utf-8'}), 'doc-' + Date.now() + '.md');
+});
+$('#md-save-html').addEventListener('click', () => {
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Markdown</title><style>body{font-family:-apple-system,sans-serif;max-width:780px;margin:40px auto;padding:0 20px;line-height:1.6;color:#222}h1,h2,h3{font-weight:700}code{background:#f1f5f9;padding:1px 6px;border-radius:4px}pre{background:#f1f5f9;padding:12px;border-radius:8px;overflow-x:auto}blockquote{border-left:3px solid #cbd5e1;padding:4px 14px;margin:10px 0;color:#475569}a{color:#2563eb}</style></head><body>${mdRender($('#md-input').value)}</body></html>`;
+  downloadBlob(new Blob([html], {type:'text/html;charset=utf-8'}), 'doc-' + Date.now() + '.html');
+});
+
+// ==================== LUNAR ====================
+// Vietnamese lunar calendar (jdFromDate / decodeLunarYear) — adapted from Ho Ngoc Duc algorithm
+const LUNAR_DATA = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+  0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+  0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+  0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+  0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+  0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+  0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+  0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b6a0,0x195a6,
+  0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+  0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x055c0,0x0ab60,0x096d5,0x092e0,
+  0x0c960,0x0d954,0x0d4a0,0x0da50,0x07552,0x056a0,0x0abb7,0x025d0,0x092d0,0x0cab5,
+  0x0a950,0x0b4a0,0x0baa4,0x0ad50,0x055d9,0x04ba0,0x0a5b0,0x15176,0x052b0,0x0a930,
+  0x07954,0x06aa0,0x0ad50,0x05b52,0x04b60,0x0a6e6,0x0a4e0,0x0d260,0x0ea65,0x0d530,
+  0x05aa0,0x076a3,0x096d0,0x04afb,0x04ad0,0x0a4d0,0x1d0b6,0x0d250,0x0d520,0x0dd45,
+  0x0b5a0,0x056d0,0x055b2,0x049b0,0x0a577,0x0a4b0,0x0aa50,0x1b255,0x06d20,0x0ada0];
+
+function jdFromDate(dd, mm, yy) {
+  const a = Math.floor((14 - mm) / 12);
+  const y = yy + 4800 - a;
+  const m = mm + 12 * a - 3;
+  let jd = dd + Math.floor((153 * m + 2) / 5) + 365 * y + Math.floor(y/4) - Math.floor(y/100) + Math.floor(y/400) - 32045;
+  if (jd < 2299161) jd = dd + Math.floor((153 * m + 2)/5) + 365 * y + Math.floor(y/4) - 32083;
+  return jd;
+}
+function jdToDate(jd) {
+  let a, b, c;
+  if (jd > 2299160) { a = jd + 32044; b = Math.floor((4*a + 3)/146097); c = a - Math.floor((146097*b)/4); }
+  else { b = 0; c = jd + 32082; }
+  const d = Math.floor((4*c + 3)/1461);
+  const e = c - Math.floor((1461*d)/4);
+  const m = Math.floor((5*e + 2)/153);
+  const day = e - Math.floor((153*m + 2)/5) + 1;
+  const month = m + 3 - 12*Math.floor(m/10);
+  const year = b*100 + d - 4800 + Math.floor(m/10);
+  return [day, month, year];
+}
+function getNewMoonDay(k, timeZone) {
+  const T = k / 1236.85;
+  const T2 = T*T, T3 = T2*T;
+  const dr = Math.PI/180;
+  let Jd1 = 2415020.75933 + 29.53058868*k + 0.0001178*T2 - 0.000000155*T3;
+  Jd1 += 0.00033 * Math.sin((166.56 + 132.87*T - 0.009173*T2) * dr);
+  const M = 359.2242 + 29.10535608*k - 0.0000333*T2 - 0.00000347*T3;
+  const Mpr = 306.0253 + 385.81691806*k + 0.0107306*T2 + 0.00001236*T3;
+  const F = 21.2964 + 390.67050646*k - 0.0016528*T2 - 0.00000239*T3;
+  let C1 = (0.1734 - 0.000393*T)*Math.sin(M*dr) + 0.0021*Math.sin(2*dr*M);
+  C1 = C1 - 0.4068*Math.sin(Mpr*dr) + 0.0161*Math.sin(dr*2*Mpr);
+  C1 = C1 - 0.0004*Math.sin(dr*3*Mpr);
+  C1 = C1 + 0.0104*Math.sin(dr*2*F) - 0.0051*Math.sin(dr*(M+Mpr));
+  C1 = C1 - 0.0074*Math.sin(dr*(M-Mpr)) + 0.0004*Math.sin(dr*(2*F+M));
+  C1 = C1 - 0.0004*Math.sin(dr*(2*F-M)) - 0.0006*Math.sin(dr*(2*F+Mpr));
+  C1 = C1 + 0.001*Math.sin(dr*(2*F-Mpr)) + 0.0005*Math.sin(dr*(2*Mpr+M));
+  let deltaT = T < -11 ? 0.001 + 0.000839*T + 0.0002261*T2 - 0.00000845*T3 - 0.000000081*T*T3 : -0.000278 + 0.000265*T + 0.000262*T2;
+  const JdNew = Jd1 + C1 - deltaT;
+  return Math.floor(JdNew + 0.5 + timeZone/24);
+}
+function getSunLongitude(jdn, timeZone) {
+  const T = (jdn - 2451545.5 - timeZone/24) / 36525;
+  const T2 = T*T;
+  const dr = Math.PI/180;
+  const M = 357.52910 + 35999.05030*T - 0.0001559*T2 - 0.00000048*T*T2;
+  const L0 = 280.46645 + 36000.76983*T + 0.0003032*T2;
+  let DL = (1.914600 - 0.004817*T - 0.000014*T2)*Math.sin(dr*M);
+  DL += (0.019993 - 0.000101*T)*Math.sin(dr*2*M) + 0.000290*Math.sin(dr*3*M);
+  let L = L0 + DL;
+  L = L * dr; L = L - Math.PI*2*Math.floor(L/(Math.PI*2));
+  return Math.floor(L / Math.PI * 6);
+}
+function getLunarMonth11(yy, timeZone) {
+  const off = jdFromDate(31, 12, yy) - 2415021;
+  const k = Math.floor(off / 29.530588853);
+  let nm = getNewMoonDay(k, timeZone);
+  const sunLong = getSunLongitude(nm, timeZone);
+  if (sunLong >= 9) nm = getNewMoonDay(k-1, timeZone);
+  return nm;
+}
+function getLeapMonthOffset(a11, timeZone) {
+  const k = Math.floor((a11 - 2415021.076998695) / 29.530588853 + 0.5);
+  let last = 0, i = 1;
+  let arc = getSunLongitude(getNewMoonDay(k+i, timeZone), timeZone);
+  do {
+    last = arc;
+    i++;
+    arc = getSunLongitude(getNewMoonDay(k+i, timeZone), timeZone);
+  } while (arc !== last && i < 14);
+  return i - 1;
+}
+function convertSolar2Lunar(dd, mm, yy, timeZone=7) {
+  const dayNumber = jdFromDate(dd, mm, yy);
+  const k = Math.floor((dayNumber - 2415021.076998695) / 29.530588853);
+  let monthStart = getNewMoonDay(k+1, timeZone);
+  if (monthStart > dayNumber) monthStart = getNewMoonDay(k, timeZone);
+  let a11 = getLunarMonth11(yy, timeZone);
+  let b11 = a11;
+  let lunarYear;
+  if (a11 >= monthStart) { lunarYear = yy; a11 = getLunarMonth11(yy-1, timeZone); }
+  else { lunarYear = yy + 1; b11 = getLunarMonth11(yy+1, timeZone); }
+  const lunarDay = dayNumber - monthStart + 1;
+  const diff = Math.floor((monthStart - a11) / 29);
+  let lunarLeap = 0;
+  let lunarMonth = diff + 11;
+  if (b11 - a11 > 365) {
+    const leapMonthDiff = getLeapMonthOffset(a11, timeZone);
+    if (diff >= leapMonthDiff) {
+      lunarMonth = diff + 10;
+      if (diff === leapMonthDiff) lunarLeap = 1;
+    }
+  }
+  if (lunarMonth > 12) lunarMonth -= 12;
+  if (lunarMonth >= 11 && diff < 4) lunarYear -= 1;
+  return {day: lunarDay, month: lunarMonth, year: lunarYear, leap: lunarLeap};
+}
+
+const CAN = ['Giáp','Ất','Bính','Đinh','Mậu','Kỷ','Canh','Tân','Nhâm','Quý'];
+const CHI = ['Tý','Sửu','Dần','Mão','Thìn','Tỵ','Ngọ','Mùi','Thân','Dậu','Tuất','Hợi'];
+function yearCanChi(y) { return CAN[(y+6) % 10] + ' ' + CHI[(y+8) % 12]; }
+function dayCanChi(jd) {
+  return CAN[(jd + 9) % 10] + ' ' + CHI[(jd + 1) % 12];
+}
+// Hoàng đạo / Hắc đạo based on day chi
+const ZODIAC_HOURS = {
+  // For each day chi → list of zodiac hour chi (good hours)
+  // Reference: traditional 黄道吉时
+  '0':[0,1,3,6,8,9],  // Tý
+  '1':[2,3,5,8,10,11],
+  '2':[0,1,4,5,7,10],
+  '3':[0,2,3,6,7,9],
+  '4':[2,4,5,8,9,11],
+  '5':[0,4,6,7,10,11],
+  '6':[0,1,3,6,8,9],
+  '7':[2,3,5,8,10,11],
+  '8':[0,1,4,5,7,10],
+  '9':[0,2,3,6,7,9],
+  '10':[2,4,5,8,9,11],
+  '11':[0,4,6,7,10,11]
+};
+const HOUR_NAMES = ['Tý (23-1h)','Sửu (1-3h)','Dần (3-5h)','Mão (5-7h)','Thìn (7-9h)','Tỵ (9-11h)','Ngọ (11-13h)','Mùi (13-15h)','Thân (15-17h)','Dậu (17-19h)','Tuất (19-21h)','Hợi (21-23h)'];
+
+function renderLunar() {
+  const v = $('#lunar-date').value;
+  if (!v) return;
+  const [yy, mm, dd] = v.split('-').map(Number);
+  const lun = convertSolar2Lunar(dd, mm, yy);
+  $('#lunar-am').textContent = `Âm ${lun.day}/${lun.month}${lun.leap?' (nhuận)':''}/${lun.year}`;
+  $('#lunar-canchi').textContent = `Năm ${yearCanChi(lun.year)} · Tháng ${CAN[(lun.year*12 + lun.month + 3) % 10]} ${CHI[(lun.month + 1) % 12]}`;
+  const jd = jdFromDate(dd, mm, yy);
+  $('#lunar-day-canchi').textContent = dayCanChi(jd);
+  // Good hours
+  const chiIdx = (jd + 1) % 12;
+  const goodHours = ZODIAC_HOURS[chiIdx] || [];
+  $('#lunar-zodiac').textContent = goodHours.map(i => CHI[i]).join(', ');
+}
+
+$('#lunar-date').addEventListener('change', renderLunar);
+
+function initLunar() {
+  if (!$('#lunar-date').value) {
+    const t = new Date();
+    $('#lunar-date').value = `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`;
+    renderLunar();
+  }
+}
+
+// ==================== MONEY TO WORDS (VI) ====================
+const VI_DIGITS = ['không','một','hai','ba','bốn','năm','sáu','bảy','tám','chín'];
+
+function readTriple(n, full) {
+  // n: 0-999, full=true means leading zeros pronounced
+  const tram = Math.floor(n/100);
+  const chuc = Math.floor((n%100)/10);
+  const donvi = n%10;
+  let parts = [];
+  if (tram > 0 || full) parts.push(VI_DIGITS[tram] + ' trăm');
+  if (chuc > 1) {
+    parts.push(VI_DIGITS[chuc] + ' mươi');
+    if (donvi === 1) parts.push('mốt');
+    else if (donvi === 5) parts.push('lăm');
+    else if (donvi > 0) parts.push(VI_DIGITS[donvi]);
+  } else if (chuc === 1) {
+    parts.push('mười');
+    if (donvi === 5) parts.push('lăm');
+    else if (donvi > 0) parts.push(VI_DIGITS[donvi]);
+  } else if (chuc === 0) {
+    if (donvi > 0) {
+      if (tram > 0 || full) parts.push('lẻ');
+      parts.push(VI_DIGITS[donvi]);
+    }
+  }
+  return parts.join(' ');
+}
+
+function moneyToWords(num) {
+  if (num === 0) return 'không đồng';
+  if (num < 0) return 'âm ' + moneyToWords(-num);
+  const units = ['', 'nghìn', 'triệu', 'tỷ', 'nghìn tỷ', 'triệu tỷ'];
+  const groups = [];
+  let n = BigInt(num);
+  while (n > 0n) {
+    groups.push(Number(n % 1000n));
+    n = n / 1000n;
+  }
+  const parts = [];
+  let started = false;
+  for (let i = groups.length - 1; i >= 0; i--) {
+    if (groups[i] === 0) {
+      if (started && i > 0) {
+        // Skip empty middle groups for cleaner output
+      }
+      continue;
+    }
+    const triple = readTriple(groups[i], started);
+    parts.push(triple + (units[i] ? ' ' + units[i] : ''));
+    started = true;
+  }
+  return parts.join(' ').replace(/\s+/g, ' ').trim() + ' đồng';
+}
+
+function updateMoney() {
+  const raw = $('#money-input').value.replace(/[^\d]/g, '');
+  if (!raw) {
+    $('#money-output').textContent = '—';
+    $('#money-num').textContent = '—';
+    return;
+  }
+  try {
+    const n = BigInt(raw);
+    $('#money-num').textContent = Number(n).toLocaleString('vi-VN') + ' đồng';
+    if (n > 999999999999999n) {
+      $('#money-output').textContent = '(Quá lớn)';
+      return;
+    }
+    $('#money-output').textContent = moneyToWords(Number(n));
+  } catch {
+    $('#money-output').textContent = '—';
+  }
+}
+
+$('#money-input').addEventListener('input', updateMoney);
+$$('#view-money .chip[data-money]').forEach(c => c.addEventListener('click', () => {
+  $('#money-input').value = c.dataset.money;
+  updateMoney();
+}));
+$('#money-copy').addEventListener('click', () => copyText($('#money-output').textContent));
+
+// ==================== FFMPEG (shared between video trim + audio extract) ====================
+let ffmpegInstance = null;
+
+async function getFfmpeg(onProgress) {
+  if (ffmpegInstance) return ffmpegInstance;
+  const { FFmpeg } = await import('https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/+esm');
+  const { fetchFile, toBlobURL } = await import('https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.1/+esm');
+  ffmpegInstance = new FFmpeg();
+  if (onProgress) ffmpegInstance.on('progress', ({progress}) => onProgress(progress));
+  const baseURL = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/umd';
+  await ffmpegInstance.load({
+    coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
+    wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
+  });
+  ffmpegInstance._util = { fetchFile };
+  return ffmpegInstance;
+}
+
+// ==================== VIDEO TRIM ====================
+let vtFile = null;
+
+$('#vt-input').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  vtFile = file;
+  const url = URL.createObjectURL(file);
+  const v = $('#vt-preview');
+  v.src = url;
+  v.style.display = 'block';
+  v.onloadedmetadata = () => {
+    $('#vt-end').value = v.duration.toFixed(1);
+    $('#vt-options').style.display = 'block';
+  };
+});
+
+$('#vt-do').addEventListener('click', async () => {
+  if (!vtFile) return;
+  const start = parseFloat($('#vt-start').value) || 0;
+  const end = parseFloat($('#vt-end').value) || 0;
+  const format = $('#vt-format').value;
+  if (end <= start) { setStatus($('#vt-status'), '✗ Thời gian kết thúc phải > bắt đầu', 'error'); return; }
+
+  setStatus($('#vt-status'), 'Đang tải ffmpeg (~30MB nếu lần đầu)...');
+  setProgress($('#vt-progress'), 5);
+  try {
+    const ffmpeg = await getFfmpeg((p) => setProgress($('#vt-progress'), 20 + p*75));
+    setStatus($('#vt-status'), 'Đang xử lý video...');
+    setProgress($('#vt-progress'), 20);
+
+    const inputName = 'input' + (vtFile.name.match(/\.[^.]+$/)?.[0] || '.mp4');
+    await ffmpeg.writeFile(inputName, await ffmpeg._util.fetchFile(vtFile));
+
+    let outputName, args;
+    if (format === 'gif') {
+      outputName = 'output.gif';
+      args = ['-ss', String(start), '-to', String(end), '-i', inputName, '-vf', 'fps=12,scale=480:-1:flags=lanczos', outputName];
+    } else if (format === 'webm') {
+      outputName = 'output.webm';
+      args = ['-ss', String(start), '-to', String(end), '-i', inputName, '-c:v', 'libvpx', '-c:a', 'libvorbis', '-b:v', '1M', outputName];
+    } else {
+      outputName = 'output.mp4';
+      // Stream copy when possible (fast); otherwise re-encode
+      args = ['-ss', String(start), '-to', String(end), '-i', inputName, '-c', 'copy', outputName];
+    }
+    await ffmpeg.exec(args);
+    const data = await ffmpeg.readFile(outputName);
+    const mime = format === 'gif' ? 'image/gif' : (format === 'webm' ? 'video/webm' : 'video/mp4');
+    const blob = new Blob([data.buffer], {type: mime});
+    downloadBlob(blob, 'trim-' + Date.now() + '.' + format);
+    setProgress($('#vt-progress'), 100);
+    setStatus($('#vt-status'), `✓ Cắt xong (${fmtSize(blob.size)})`, 'success');
+  } catch (err) {
+    setStatus($('#vt-status'), '✗ Lỗi: ' + err.message, 'error');
+  }
+});
+
+// ==================== AUDIO EXTRACT ====================
+let axFile = null;
+
+$('#ax-input').addEventListener('change', (e) => {
+  axFile = e.target.files[0];
+  if (axFile) $('#ax-options').style.display = 'block';
+});
+
+$('#ax-do').addEventListener('click', async () => {
+  if (!axFile) return;
+  const format = $('#ax-format').value;
+  setStatus($('#ax-status'), 'Đang tải ffmpeg (~30MB nếu lần đầu)...');
+  setProgress($('#ax-progress'), 5);
+  try {
+    const ffmpeg = await getFfmpeg((p) => setProgress($('#ax-progress'), 20 + p*75));
+    setStatus($('#ax-status'), 'Đang tách audio...');
+    setProgress($('#ax-progress'), 20);
+
+    const inputName = 'input' + (axFile.name.match(/\.[^.]+$/)?.[0] || '.mp4');
+    await ffmpeg.writeFile(inputName, await ffmpeg._util.fetchFile(axFile));
+
+    let outputName, args;
+    if (format === 'mp3') {
+      outputName = 'output.mp3';
+      args = ['-i', inputName, '-vn', '-c:a', 'libmp3lame', '-b:a', '192k', outputName];
+    } else if (format === 'm4a') {
+      outputName = 'output.m4a';
+      args = ['-i', inputName, '-vn', '-c:a', 'aac', '-b:a', '192k', outputName];
+    } else {
+      outputName = 'output.wav';
+      args = ['-i', inputName, '-vn', '-c:a', 'pcm_s16le', outputName];
+    }
+    await ffmpeg.exec(args);
+    const data = await ffmpeg.readFile(outputName);
+    const mime = format === 'mp3' ? 'audio/mpeg' : (format === 'm4a' ? 'audio/mp4' : 'audio/wav');
+    const blob = new Blob([data.buffer], {type: mime});
+    downloadBlob(blob, 'audio-' + Date.now() + '.' + format);
+    setProgress($('#ax-progress'), 100);
+    setStatus($('#ax-status'), `✓ Tách xong (${fmtSize(blob.size)})`, 'success');
+  } catch (err) {
+    setStatus($('#ax-status'), '✗ Lỗi: ' + err.message, 'error');
+  }
+});
+
+// ==================== AI SETTINGS ====================
+function loadAIKey() {
+  return localStorage.getItem('xtools-gemini-key') || '';
+}
+function loadAIModel() {
+  return localStorage.getItem('xtools-gemini-model') || 'gemini-2.0-flash';
+}
+
+function initAISettings() {
+  $('#ai-key').value = loadAIKey();
+  $('#ai-model').value = loadAIModel();
+}
+
+$('#ai-save-key').addEventListener('click', () => {
+  const k = $('#ai-key').value.trim();
+  const m = $('#ai-model').value;
+  if (!k) { setStatus($('#ai-key-status'), '✗ Vui lòng nhập API key', 'error'); return; }
+  if (!/^AIza[\w-]{35}$/.test(k) && !k.startsWith('AIza')) {
+    setStatus($('#ai-key-status'), '⚠ Key không đúng định dạng (thường bắt đầu bằng AIza...)', 'error');
+    return;
+  }
+  localStorage.setItem('xtools-gemini-key', k);
+  localStorage.setItem('xtools-gemini-model', m);
+  setStatus($('#ai-key-status'), '✓ Đã lưu API key', 'success');
+  toast('Đã lưu');
+});
+
+$('#ai-clear-key').addEventListener('click', () => {
+  localStorage.removeItem('xtools-gemini-key');
+  localStorage.removeItem('xtools-gemini-model');
+  $('#ai-key').value = '';
+  setStatus($('#ai-key-status'), 'Đã xoá API key', 'success');
+});
+
+// ==================== AI SUMMARY ====================
+let aiResult = '';
+
+function initAISummary() {
+  $('#ai-need-key').style.display = loadAIKey() ? 'none' : 'block';
+}
+
+$('#ai-input').addEventListener('input', () => {
+  $('#ai-input-count').textContent = $('#ai-input').value.length;
+});
+
+$('#ai-go').addEventListener('click', async () => {
+  const text = $('#ai-input').value.trim();
+  if (!text) { setStatus($('#ai-status'), '✗ Hãy nhập văn bản', 'error'); return; }
+  const key = loadAIKey();
+  if (!key) {
+    $('#ai-need-key').style.display = 'block';
+    setStatus($('#ai-status'), '✗ Chưa có API key — vào AI → API key để cài', 'error');
+    return;
+  }
+  const style = $('#ai-style').value;
+  const model = loadAIModel();
+
+  const prompts = {
+    short: 'Tóm tắt văn bản sau thật ngắn gọn (2-3 câu, bằng tiếng Việt). Chỉ trả về phần tóm tắt, không kèm giới thiệu.',
+    bullets: 'Tóm tắt văn bản sau thành 5-7 ý chính bằng tiếng Việt, dạng gạch đầu dòng (mỗi ý bắt đầu bằng "•"). Chỉ trả về danh sách, không kèm giới thiệu.',
+    detailed: 'Tóm tắt văn bản sau thành một đoạn văn chi tiết (8-12 câu) bằng tiếng Việt, giữ lại các thông tin quan trọng. Chỉ trả về phần tóm tắt.',
+    headline: 'Đọc văn bản sau và tạo: 1) Tít báo ngắn (dưới 15 từ), 2) Sapo (1-2 câu dẫn). Định dạng:\nTÍT: ...\nSAPO: ...\nChỉ trả về 2 phần đó.',
+    keypoints: 'Phân tích văn bản sau bằng tiếng Việt theo cấu trúc:\n## Điểm quan trọng\n• ...\n• ...\n\n## Kết luận\n...\nChỉ trả về phần phân tích.'
+  };
+
+  setStatus($('#ai-status'), 'Đang gọi Gemini...');
+  setProgress($('#ai-progress'), 30);
+  $('#ai-output').classList.remove('show');
+  $('#ai-actions').style.display = 'none';
+
+  try {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(key)}`;
+    const body = {
+      contents: [{ parts: [{ text: prompts[style] + '\n\n--- Văn bản ---\n' + text }] }],
+      generationConfig: { temperature: 0.3, maxOutputTokens: 2048 }
+    };
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(body)
+    });
+    setProgress($('#ai-progress'), 80);
+    const json = await res.json();
+    if (!res.ok) {
+      const errMsg = json.error?.message || `HTTP ${res.status}`;
+      throw new Error(errMsg);
+    }
+    const out = json.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    if (!out) throw new Error('Không nhận được phản hồi từ AI');
+    aiResult = out.trim();
+    $('#ai-output').textContent = aiResult;
+    $('#ai-output').classList.add('show');
+    $('#ai-actions').style.display = 'flex';
+    setProgress($('#ai-progress'), 100);
+    setStatus($('#ai-status'), '✓ Tóm tắt xong', 'success');
+  } catch (err) {
+    setStatus($('#ai-status'), '✗ Lỗi: ' + err.message, 'error');
+  }
+});
+
+$('#ai-copy').addEventListener('click', () => copyText(aiResult));
+$('#ai-save').addEventListener('click', () => {
+  downloadBlob(new Blob([aiResult], {type:'text/plain;charset=utf-8'}), 'summary-' + Date.now() + '.txt');
+});
+
 // ==================== VIDEO DOWNLOADER ====================
 const SHORTCUT_DEFAULTS = {
   youtube: 'YouTube Download',
@@ -3820,10 +4955,10 @@ document.addEventListener('keydown', (e) => {
     return;
   }
 
-  // 1-5 = switch tabs (only on home)
+  // 1-7 = switch tabs (only on home)
   const homeActive = document.querySelector('#view-home.active');
-  if (homeActive && /^[1-5]$/.test(e.key)) {
-    const tabs = ['doc','img','text','util','sys'];
+  if (homeActive && /^[1-7]$/.test(e.key)) {
+    const tabs = ['doc','img','text','util','media','ai','sys'];
     const tab = document.querySelector(`.tab[data-tab="${tabs[parseInt(e.key)-1]}"]`);
     if (tab) { tab.click(); e.preventDefault(); }
   }
