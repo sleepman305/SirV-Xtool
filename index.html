@@ -208,6 +208,140 @@ body {
 .module-group { display: none; }
 .module-group.active { display: grid; }
 
+/* Favorites star badge on cards */
+.module-card .fav-star {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 14px;
+  opacity: 0;
+  transition: opacity 0.15s;
+  pointer-events: none;
+  z-index: 2;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4));
+}
+.module-card.is-fav .fav-star { opacity: 1; }
+
+/* Long-press visual feedback */
+.module-card.pressing {
+  transform: scale(0.94);
+  background: var(--surface-2);
+  box-shadow: 0 0 0 2px var(--border-strong);
+}
+
+/* Context menu (right-click / long-press) */
+.ctx-menu {
+  position: fixed;
+  z-index: 300;
+  background: var(--bg-elev);
+  border: 1px solid var(--border-strong);
+  border-radius: 14px;
+  padding: 6px;
+  min-width: 200px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+  display: none;
+  animation: ctxIn 0.12s ease;
+}
+.ctx-menu.show { display: block; }
+@keyframes ctxIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+.ctx-menu .ctx-item {
+  padding: 11px 14px;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text);
+}
+.ctx-menu .ctx-item:active, .ctx-menu .ctx-item:hover { background: var(--surface-2); }
+.ctx-menu .ctx-item .ic { font-size: 16px; }
+
+/* Favorites empty state + add button */
+.fav-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-3);
+}
+.fav-empty .ic { font-size: 48px; margin-bottom: 12px; opacity: 0.6; }
+.fav-empty .t { font-size: 15px; font-weight: 600; color: var(--text-2); margin-bottom: 6px; }
+.fav-empty .s { font-size: 12.5px; line-height: 1.5; }
+
+/* Add-favorite card (the + tile) */
+.module-card.add-fav-card {
+  border-style: dashed;
+  border-color: var(--border-strong);
+  background: transparent;
+  align-items: center;
+  justify-content: center;
+}
+.module-card.add-fav-card .plus {
+  font-size: 36px;
+  color: var(--text-3);
+  font-weight: 300;
+  line-height: 1;
+}
+.module-card.add-fav-card .add-label {
+  font-size: 12.5px;
+  color: var(--text-3);
+  font-weight: 600;
+  margin-top: 6px;
+}
+
+/* Favorite picker sheet list */
+.fav-picker-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 60vh;
+  overflow-y: auto;
+  margin: 8px 0;
+}
+.fav-picker-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 12px;
+  border-radius: 11px;
+  cursor: pointer;
+}
+.fav-picker-item:active, .fav-picker-item:hover { background: var(--surface-2); }
+.fav-picker-item .pic {
+  width: 34px; height: 34px;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.fav-picker-item .nm { flex: 1; font-size: 14px; font-weight: 600; }
+.fav-picker-item .grp { font-size: 11px; color: var(--text-3); }
+.fav-picker-item .chk {
+  width: 22px; height: 22px;
+  border-radius: 6px;
+  border: 2px solid var(--border-strong);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  font-size: 13px;
+  color: transparent;
+}
+.fav-picker-item.checked .chk {
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--bg);
+}
+.fav-picker-section {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  padding: 12px 12px 4px;
+}
+
 /* ============ MODULE PAGES ============ */
 .page-header {
   display: flex;
@@ -854,6 +988,201 @@ body {
   .brand { font-size: 96px; }
   .brand-logo { width: 96px; height: 96px; }
 }
+
+/* ============ CHAT AI ============ */
+.chat-wrap {
+  display: flex;
+  flex-direction: column;
+  height: calc(100dvh - var(--safe-top) - var(--safe-bottom) - 90px);
+  min-height: 400px;
+}
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 8px 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.chat-msg {
+  max-width: 85%;
+  padding: 11px 15px;
+  border-radius: 18px;
+  font-size: 14.5px;
+  line-height: 1.55;
+  -webkit-user-select: text;
+  user-select: text;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+.chat-msg.user {
+  align-self: flex-end;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #fff;
+  border-bottom-right-radius: 5px;
+}
+.chat-msg.ai {
+  align-self: flex-start;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-bottom-left-radius: 5px;
+}
+.chat-msg.ai p { margin: 6px 0; }
+.chat-msg.ai p:first-child { margin-top: 0; }
+.chat-msg.ai p:last-child { margin-bottom: 0; }
+.chat-msg.ai pre { background: var(--surface-2); padding: 10px; border-radius: 8px; overflow-x: auto; font-size: 13px; margin: 8px 0; }
+.chat-msg.ai code { background: var(--surface-2); padding: 1px 5px; border-radius: 4px; font-family: ui-monospace, Menlo, monospace; font-size: 0.9em; }
+.chat-msg.ai ul, .chat-msg.ai ol { padding-left: 20px; margin: 6px 0; }
+.chat-msg .msg-actions { margin-top: 6px; display: flex; gap: 8px; }
+.chat-msg .msg-copy {
+  font-size: 11px;
+  color: var(--text-3);
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.chat-msg .msg-copy:active { color: var(--text); }
+.chat-typing {
+  align-self: flex-start;
+  padding: 14px 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  border-bottom-left-radius: 5px;
+}
+.chat-typing span {
+  display: inline-block;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--text-3);
+  margin: 0 2px;
+  animation: typing 1.2s infinite;
+}
+.chat-typing span:nth-child(2) { animation-delay: 0.2s; }
+.chat-typing span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typing { 0%, 60%, 100% { opacity: 0.3; transform: translateY(0); } 30% { opacity: 1; transform: translateY(-4px); } }
+.chat-input-row {
+  display: flex;
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  align-items: flex-end;
+}
+.chat-input-row textarea {
+  flex: 1;
+  resize: none;
+  max-height: 120px;
+  min-height: 44px;
+  padding: 11px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 14.5px;
+  outline: none;
+  -webkit-user-select: text;
+  user-select: text;
+}
+.chat-input-row textarea:focus { border-color: var(--border-strong); }
+.chat-send {
+  width: 44px; height: 44px;
+  border-radius: 13px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+}
+.chat-send:disabled { opacity: 0.4; cursor: not-allowed; }
+.chat-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-3);
+  text-align: center;
+  padding: 20px;
+}
+.chat-empty .ic { font-size: 52px; margin-bottom: 14px; opacity: 0.6; }
+.chat-empty .t { font-size: 16px; font-weight: 600; color: var(--text-2); margin-bottom: 6px; }
+.chat-empty .s { font-size: 13px; line-height: 1.5; }
+
+/* ============ NOTES / TODO ============ */
+.note-item, .todo-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 10px;
+}
+.note-item .note-text {
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  -webkit-user-select: text;
+  user-select: text;
+}
+.note-item .note-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+.note-item .note-date { font-size: 11px; color: var(--text-3); }
+.note-item .note-del, .todo-item .todo-del {
+  font-size: 13px;
+  color: #fca5a5;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+.note-item .note-del:active, .todo-item .todo-del:active { background: var(--surface-2); }
+.todo-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.todo-item .todo-check {
+  width: 24px; height: 24px;
+  border-radius: 7px;
+  border: 2px solid var(--border-strong);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  font-size: 14px;
+  color: transparent;
+  transition: all 0.15s;
+}
+.todo-item.done .todo-check {
+  background: var(--accent-util);
+  border-color: transparent;
+  color: #fff;
+}
+.todo-item .todo-text {
+  flex: 1;
+  font-size: 14.5px;
+  -webkit-user-select: text;
+  user-select: text;
+}
+.todo-item.done .todo-text {
+  text-decoration: line-through;
+  color: var(--text-3);
+}
+.todo-stats {
+  font-size: 12.5px;
+  color: var(--text-2);
+  margin: 4px 0 14px;
+  text-align: center;
+}
 </style>
 </head>
 <body>
@@ -868,7 +1197,8 @@ body {
 
   <div class="tabs-wrap">
     <div class="tabs">
-      <div class="tab active" data-tab="doc">📄 Tài liệu</div>
+      <div class="tab active" data-tab="fav">⭐ Ưa thích</div>
+      <div class="tab" data-tab="doc">📄 Tài liệu</div>
       <div class="tab" data-tab="img">🖼️ Ảnh</div>
       <div class="tab" data-tab="text">📝 Text</div>
       <div class="tab" data-tab="util">🔧 Tiện ích</div>
@@ -878,71 +1208,96 @@ body {
     </div>
   </div>
 
-  <div class="modules module-group active" data-group="doc">
+  <div class="modules module-group active" data-group="fav" id="fav-grid">
+    <!-- Populated by JS -->
+  </div>
+
+  <div class="modules module-group" data-group="doc">
     <div class="module-card" data-go="scan">
+      <span class="fav-star">⭐</span>
       <div class="icon doc">📷</div>
       <div><div class="title">Scan PDF</div><div class="desc">Quét tài liệu, chỉnh thẳng</div></div>
     </div>
     <div class="module-card" data-go="pdfmerge">
+      <span class="fav-star">⭐</span>
       <div class="icon doc">📑</div>
       <div><div class="title">Merge PDF</div><div class="desc">Gộp/tách/sắp xếp PDF</div></div>
     </div>
     <div class="module-card" data-go="pdfsplit">
+      <span class="fav-star">⭐</span>
       <div class="icon doc">✂️</div>
       <div><div class="title">Tách PDF</div><div class="desc">Chia/đảo/xoay trang</div></div>
     </div>
     <div class="module-card" data-go="pdfimg">
+      <span class="fav-star">⭐</span>
       <div class="icon doc">🔄</div>
       <div><div class="title">PDF ↔ Ảnh</div><div class="desc">Chuyển qua lại 2 chiều</div></div>
     </div>
     <div class="module-card" data-go="docx">
+      <span class="fav-star">⭐</span>
       <div class="icon doc">📝</div>
       <div><div class="title">Đọc Word</div><div class="desc">.docx → text</div></div>
     </div>
     <div class="module-card" data-go="ocr">
+      <span class="fav-star">⭐</span>
       <div class="icon doc">🔍</div>
       <div><div class="title">OCR</div><div class="desc">Trích text từ ảnh, PDF</div></div>
     </div>
     <div class="module-card" data-go="unzip">
+      <span class="fav-star">⭐</span>
       <div class="icon doc">📦</div>
       <div><div class="title">Giải nén</div><div class="desc">ZIP, xem nội dung</div></div>
     </div>
     <div class="module-card" data-go="pdfshrink">
+      <span class="fav-star">⭐</span>
       <div class="icon doc">🗜️</div>
       <div><div class="title">Nén PDF</div><div class="desc">Giảm dung lượng PDF</div></div>
     </div>
     <div class="module-card" data-go="xlsxshrink">
+      <span class="fav-star">⭐</span>
       <div class="icon doc">📗</div>
       <div><div class="title">Nén Excel</div><div class="desc">Tối ưu file xlsx</div></div>
+    </div>
+    <div class="module-card" data-go="pdfnumber">
+      <span class="fav-star">⭐</span>
+      <div class="icon doc">🔢</div>
+      <div><div class="title">Đánh số trang</div><div class="desc">Thêm số trang vào PDF</div></div>
     </div>
   </div>
 
   <div class="modules module-group" data-group="img">
     <div class="module-card" data-go="bgremove">
+      <span class="fav-star">⭐</span>
       <div class="icon img">✨</div>
       <div><div class="title">Xoá nền</div><div class="desc">AI tách nền ảnh</div></div>
     </div>
     <div class="module-card" data-go="compress">
+      <span class="fav-star">⭐</span>
       <div class="icon img">🗜️</div>
       <div><div class="title">Nén ảnh</div><div class="desc">Giảm size, đổi kích thước</div></div>
     </div>
     <div class="module-card" data-go="convert">
+      <span class="fav-star">⭐</span>
       <div class="icon img">🔁</div>
       <div><div class="title">Convert</div><div class="desc">HEIC, JPG, PNG, WebP</div></div>
     </div>
     <div class="module-card" data-go="exif">
+      <span class="fav-star">⭐</span>
       <div class="icon img">🛡️</div>
       <div><div class="title">Xoá EXIF</div><div class="desc">Xoá GPS, metadata</div></div>
     </div>
     <div class="module-card" data-go="watermark">
+      <span class="fav-star">⭐</span>
       <div class="icon img">©️</div>
       <div><div class="title">Watermark</div><div class="desc">Đóng dấu chữ ký</div></div>
     </div>
     <div class="module-card" data-go="collage">
+      <span class="fav-star">⭐</span>
       <div class="icon img">🧩</div>
       <div><div class="title">Ghép ảnh</div><div class="desc">Collage 2-4 ảnh</div></div>
     </div>
     <div class="module-card" data-go="crop">
+      <span class="fav-star">⭐</span>
       <div class="icon img">✂️</div>
       <div><div class="title">Crop tỉ lệ</div><div class="desc">1:1, 9:16, 4:5...</div></div>
     </div>
@@ -950,61 +1305,85 @@ body {
 
   <div class="modules module-group" data-group="text">
     <div class="module-card" data-go="json">
+      <span class="fav-star">⭐</span>
       <div class="icon text">{}</div>
       <div><div class="title">JSON viewer</div><div class="desc">Format, view, validate</div></div>
     </div>
     <div class="module-card" data-go="charcount">
+      <span class="fav-star">⭐</span>
       <div class="icon text">🔢</div>
       <div><div class="title">Đếm chữ</div><div class="desc">Ký tự, từ, câu, đoạn</div></div>
     </div>
     <div class="module-card" data-go="textcase">
+      <span class="fav-star">⭐</span>
       <div class="icon text">Aa</div>
       <div><div class="title">Đổi chữ</div><div class="desc">HOA, thường, slug, bỏ dấu</div></div>
     </div>
     <div class="module-card" data-go="encode">
+      <span class="fav-star">⭐</span>
       <div class="icon text">🔐</div>
       <div><div class="title">Encode/Hash</div><div class="desc">Base64, URL, MD5, SHA</div></div>
     </div>
     <div class="module-card" data-go="diff">
+      <span class="fav-star">⭐</span>
       <div class="icon text">⇆</div>
       <div><div class="title">So sánh text</div><div class="desc">Diff 2 đoạn văn bản</div></div>
     </div>
     <div class="module-card" data-go="markdown">
+      <span class="fav-star">⭐</span>
       <div class="icon text">M↓</div>
       <div><div class="title">Markdown</div><div class="desc">Soạn + preview live</div></div>
     </div>
     <div class="module-card" data-go="speech">
+      <span class="fav-star">⭐</span>
       <div class="icon text">🎙️</div>
       <div><div class="title">Nói → Text</div><div class="desc">Ghi âm thành chữ</div></div>
+    </div>
+    <div class="module-card" data-go="textclean">
+      <span class="fav-star">⭐</span>
+      <div class="icon text">🧹</div>
+      <div><div class="title">Dọn văn bản</div><div class="desc">Xoá dòng trống, trùng, thừa</div></div>
+    </div>
+    <div class="module-card" data-go="namesplit">
+      <span class="fav-star">⭐</span>
+      <div class="icon text">👤</div>
+      <div><div class="title">Tách họ tên</div><div class="desc">Họ / tên đệm / tên</div></div>
     </div>
   </div>
 
   <div class="modules module-group" data-group="util">
     <div class="module-card" data-go="qr">
+      <span class="fav-star">⭐</span>
       <div class="icon util">⬛</div>
       <div><div class="title">QR Code</div><div class="desc">Tạo và quét QR</div></div>
     </div>
     <div class="module-card" data-go="units">
+      <span class="fav-star">⭐</span>
       <div class="icon util">📏</div>
       <div><div class="title">Đổi đơn vị</div><div class="desc">Dài, nặng, nhiệt độ...</div></div>
     </div>
     <div class="module-card" data-go="date">
+      <span class="fav-star">⭐</span>
       <div class="icon util">📅</div>
       <div><div class="title">Tính ngày</div><div class="desc">Tuổi, đếm ngày, deadline</div></div>
     </div>
     <div class="module-card" data-go="lunar">
+      <span class="fav-star">⭐</span>
       <div class="icon util">🌙</div>
       <div><div class="title">Lịch âm</div><div class="desc">Âm-dương, can chi, hoàng đạo</div></div>
     </div>
     <div class="module-card" data-go="money">
+      <span class="fav-star">⭐</span>
       <div class="icon util">₫</div>
       <div><div class="title">Số → chữ</div><div class="desc">Đọc số tiền tiếng Việt</div></div>
     </div>
     <div class="module-card" data-go="random">
+      <span class="fav-star">⭐</span>
       <div class="icon util">🎲</div>
       <div><div class="title">Random</div><div class="desc">Bốc thăm, xúc xắc</div></div>
     </div>
     <div class="module-card" data-go="tts">
+      <span class="fav-star">⭐</span>
       <div class="icon util">🔊</div>
       <div><div class="title">Text → Nói</div><div class="desc">Đọc tiếng Việt</div></div>
     </div>
@@ -1012,32 +1391,53 @@ body {
 
   <div class="modules module-group" data-group="media">
     <div class="module-card" data-go="videotrim">
+      <span class="fav-star">⭐</span>
       <div class="icon img">🎬</div>
       <div><div class="title">Cắt video</div><div class="desc">Trim đầu/cuối, đổi format</div></div>
     </div>
     <div class="module-card" data-go="audiox">
+      <span class="fav-star">⭐</span>
       <div class="icon img">🎵</div>
       <div><div class="title">Tách audio</div><div class="desc">Video → MP3/M4A</div></div>
     </div>
   </div>
 
   <div class="modules module-group" data-group="ai">
+    <div class="module-card" data-go="aichat">
+      <span class="fav-star">⭐</span>
+      <div class="icon sys">💬</div>
+      <div><div class="title">Chat AI</div><div class="desc">Trò chuyện với Gemini</div></div>
+    </div>
     <div class="module-card" data-go="aisummary">
+      <span class="fav-star">⭐</span>
       <div class="icon sys">✨</div>
       <div><div class="title">Tóm tắt AI</div><div class="desc">Tóm tắt văn bản dài</div></div>
     </div>
     <div class="module-card" data-go="aisettings">
+      <span class="fav-star">⭐</span>
       <div class="icon sys">🔑</div>
       <div><div class="title">API key</div><div class="desc">Cấu hình Gemini</div></div>
     </div>
   </div>
 
   <div class="modules module-group" data-group="sys">
+    <div class="module-card" data-go="notes">
+      <span class="fav-star">⭐</span>
+      <div class="icon sys">📝</div>
+      <div><div class="title">Ghi chú</div><div class="desc">Note nhanh, có tìm kiếm</div></div>
+    </div>
+    <div class="module-card" data-go="todo">
+      <span class="fav-star">⭐</span>
+      <div class="icon sys">✅</div>
+      <div><div class="title">To-do list</div><div class="desc">Danh sách công việc</div></div>
+    </div>
     <div class="module-card" data-go="files">
+      <span class="fav-star">⭐</span>
       <div class="icon sys">📁</div>
       <div><div class="title">Quản lý file</div><div class="desc">Kho lưu trữ riêng</div></div>
     </div>
     <div class="module-card" data-go="download">
+      <span class="fav-star">⭐</span>
       <div class="icon sys">⬇️</div>
       <div><div class="title">Tải video</div><div class="desc">YT, TikTok, FB, IG</div></div>
     </div>
@@ -2237,12 +2637,212 @@ body {
   </div>
 </section>
 
+<!-- ============ CHAT AI ============ -->
+<section id="view-aichat" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">Chat AI</div>
+    <button class="back-btn" id="chat-new" style="margin-left:auto" title="Cuộc trò chuyện mới">✏️</button>
+  </div>
+  <div class="page-content">
+    <div class="chat-wrap">
+      <div class="chat-messages" id="chat-messages"></div>
+      <div class="chat-input-row">
+        <textarea id="chat-input" placeholder="Nhập tin nhắn..." rows="1"></textarea>
+        <button class="chat-send" id="chat-send">↑</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PDF PAGE NUMBER ============ -->
+<section id="view-pdfnumber" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">Đánh số trang</div>
+  </div>
+  <div class="page-content">
+    <label class="dropzone" for="pdfnum-input">
+      <span class="big-icon">🔢</span>
+      <div class="label">Chọn file PDF</div>
+      <div class="hint">Thêm số trang tự động vào mỗi trang</div>
+      <input type="file" id="pdfnum-input" accept="application/pdf,.pdf">
+    </label>
+    <div id="pdfnum-options" style="display:none">
+      <div class="field">
+        <div class="field-label">Vị trí</div>
+        <select class="select" id="pdfnum-pos">
+          <option value="bc">Giữa dưới</option>
+          <option value="br">Phải dưới</option>
+          <option value="bl">Trái dưới</option>
+          <option value="tc">Giữa trên</option>
+          <option value="tr">Phải trên</option>
+          <option value="tl">Trái trên</option>
+        </select>
+      </div>
+      <div class="field">
+        <div class="field-label">Kiểu hiển thị</div>
+        <select class="select" id="pdfnum-style">
+          <option value="n">1, 2, 3...</option>
+          <option value="n_total">1/20, 2/20...</option>
+          <option value="trang_n">Trang 1, Trang 2...</option>
+          <option value="trang_n_total">Trang 1/20...</option>
+          <option value="dash">- 1 -, - 2 -...</option>
+        </select>
+      </div>
+      <div class="row-2">
+        <div>
+          <div class="field-label">Bắt đầu từ số</div>
+          <input type="number" class="text-input" id="pdfnum-start" value="1" inputmode="numeric">
+        </div>
+        <div>
+          <div class="field-label">Cỡ chữ</div>
+          <input type="number" class="text-input" id="pdfnum-size" value="11" inputmode="numeric">
+        </div>
+      </div>
+      <div class="field">
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
+          <input type="checkbox" id="pdfnum-skip-first" style="width:18px;height:18px;cursor:pointer">
+          <span style="font-size:14px">Bỏ qua trang đầu (trang bìa)</span>
+        </label>
+      </div>
+      <div class="actions-row">
+        <button class="btn primary" id="pdfnum-do">Đánh số & tải về</button>
+      </div>
+    </div>
+    <div class="progress-bar" id="pdfnum-progress"><div class="fill"></div></div>
+    <div class="status" id="pdfnum-status"></div>
+  </div>
+</section>
+
+<!-- ============ TEXT CLEAN ============ -->
+<section id="view-textclean" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">Dọn văn bản</div>
+  </div>
+  <div class="page-content">
+    <div class="field">
+      <div class="field-label">Văn bản</div>
+      <textarea class="text-area" id="tcl-input" placeholder="Dán văn bản cần dọn dẹp..." style="min-height:160px"></textarea>
+    </div>
+    <div class="field-label" style="margin-top:14px">Chọn thao tác (bấm áp dụng ngay):</div>
+    <div class="chip-row">
+      <div class="chip" data-clean="trim-lines">Xoá khoảng trắng đầu/cuối dòng</div>
+      <div class="chip" data-clean="multi-space">Gộp nhiều dấu cách</div>
+      <div class="chip" data-clean="blank-lines">Xoá dòng trống</div>
+      <div class="chip" data-clean="multi-blank">Gộp dòng trống liên tiếp</div>
+      <div class="chip" data-clean="dup-lines">Xoá dòng trùng lặp</div>
+      <div class="chip" data-clean="sort">Sắp xếp A→Z</div>
+      <div class="chip" data-clean="sort-desc">Sắp xếp Z→A</div>
+      <div class="chip" data-clean="number">Đánh số dòng</div>
+      <div class="chip" data-clean="join">Nối thành 1 dòng</div>
+      <div class="chip" data-clean="lower">chữ thường</div>
+      <div class="chip" data-clean="upper">CHỮ HOA</div>
+    </div>
+    <div class="actions-row" style="margin-top:14px">
+      <button class="btn" id="tcl-clean-all">🧹 Dọn cơ bản (tất cả)</button>
+    </div>
+    <div class="big-result" id="tcl-output"></div>
+    <div class="actions-row" id="tcl-actions" style="display:none">
+      <button class="btn primary" id="tcl-copy">Copy</button>
+      <button class="btn" id="tcl-use">Dùng làm input</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ NAME SPLIT ============ -->
+<section id="view-namesplit" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">Tách họ tên</div>
+  </div>
+  <div class="page-content">
+    <div class="field">
+      <div class="field-label">Danh sách họ tên (mỗi dòng 1 tên)</div>
+      <textarea class="text-area" id="ns-input" placeholder="Nguyễn Văn An&#10;Trần Thị Bích Hà&#10;Lê Hoàng Phúc" style="min-height:140px"></textarea>
+    </div>
+    <div class="actions-row">
+      <button class="btn primary" id="ns-do">Tách</button>
+    </div>
+    <div class="status" id="ns-status"></div>
+    <div id="ns-result" style="display:none;margin-top:14px;overflow-x:auto"></div>
+    <div class="actions-row" id="ns-actions" style="display:none">
+      <button class="btn primary" id="ns-copy-csv">Copy (CSV)</button>
+      <button class="btn" id="ns-save-csv">Lưu .csv</button>
+    </div>
+    <div class="help-card">
+      Quy tắc: <strong>Từ đầu</strong> = Họ, <strong>từ cuối</strong> = Tên, <strong>phần giữa</strong> = tên đệm. Mở file .csv được bằng Excel.
+    </div>
+  </div>
+</section>
+
+<!-- ============ NOTES ============ -->
+<section id="view-notes" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">Ghi chú</div>
+  </div>
+  <div class="page-content">
+    <div class="field">
+      <textarea class="text-area" id="notes-input" placeholder="Viết ghi chú mới..." style="min-height:80px"></textarea>
+    </div>
+    <div class="actions-row">
+      <button class="btn primary" id="notes-add">+ Thêm ghi chú</button>
+    </div>
+    <div class="field" style="margin-top:14px">
+      <input type="text" class="text-input" id="notes-search" placeholder="🔍 Tìm trong ghi chú...">
+    </div>
+    <div id="notes-list" style="margin-top:14px"></div>
+    <div class="empty-state" id="notes-empty" style="display:none">
+      <div class="ic">📝</div>
+      <div class="t">Chưa có ghi chú</div>
+      <div class="s">Viết gì đó ở trên rồi bấm Thêm</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TODO ============ -->
+<section id="view-todo" class="view">
+  <div class="page-header">
+    <button class="back-btn" data-back>←</button>
+    <div class="page-title">To-do list</div>
+  </div>
+  <div class="page-content">
+    <div class="chat-input-row" style="border-top:none;padding-top:0">
+      <textarea id="todo-input" placeholder="Thêm việc cần làm..." rows="1" style="flex:1;resize:none;max-height:100px;min-height:44px;padding:11px 14px;background:var(--surface);border:1px solid var(--border);border-radius:14px;color:var(--text);font-family:var(--body);font-size:14.5px;outline:none"></textarea>
+      <button class="chat-send" id="todo-add" style="background:var(--accent-util)">+</button>
+    </div>
+    <div class="todo-stats" id="todo-stats" style="display:none"></div>
+    <div class="chip-row" style="margin-top:4px">
+      <div class="chip active" data-todo-filter="all">Tất cả</div>
+      <div class="chip" data-todo-filter="active">Chưa xong</div>
+      <div class="chip" data-todo-filter="done">Đã xong</div>
+    </div>
+    <div id="todo-list" style="margin-top:14px"></div>
+    <div class="empty-state" id="todo-empty" style="display:none">
+      <div class="ic">✅</div>
+      <div class="t">Chưa có việc nào</div>
+      <div class="s">Thêm việc cần làm ở trên</div>
+    </div>
+    <div class="actions-row" id="todo-clear-row" style="display:none">
+      <button class="btn" id="todo-clear-done">Xoá các việc đã xong</button>
+    </div>
+  </div>
+</section>
+
 <!-- ============ SHEET (content rebuilt dynamically by sheet.open or menus) ============ -->
 <div class="sheet-bg" id="sheet-bg">
   <div class="sheet" id="sheet"></div>
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- Context menu for favorites (right-click / long-press) -->
+<div class="ctx-menu" id="ctx-menu">
+  <div class="ctx-item" id="ctx-fav-toggle"><span class="ic">⭐</span><span id="ctx-fav-label">Thêm vào ưa thích</span></div>
+  <div class="ctx-item" id="ctx-open"><span class="ic">↗</span><span>Mở</span></div>
+</div>
 
 <!-- ============ LIBRARIES ============ -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -2254,6 +2854,7 @@ const $ = (s, r=document) => r.querySelector(s);
 const $$ = (s, r=document) => [...r.querySelectorAll(s)];
 
 const viewCache = new Map();
+let suppressNextCardClick = false;
 
 const navTo = (id) => {
   const targetId = 'view-' + id;
@@ -2284,6 +2885,9 @@ const navTo = (id) => {
   if (id === 'lunar') setTimeout(initLunar, 50);
   if (id === 'aisettings') setTimeout(initAISettings, 50);
   if (id === 'aisummary') setTimeout(initAISummary, 50);
+  if (id === 'aichat') setTimeout(initChat, 50);
+  if (id === 'notes') setTimeout(renderNotes, 50);
+  if (id === 'todo') setTimeout(renderTodos, 50);
 };
 
 window.addEventListener('popstate', e => {
@@ -2293,6 +2897,11 @@ window.addEventListener('popstate', e => {
 
 // Event delegation for module cards + back buttons + tabs
 document.addEventListener('click', (e) => {
+  // If a context menu was just opened via long-press, swallow this click
+  if (suppressNextCardClick) { suppressNextCardClick = false; return; }
+  // Don't navigate when clicking inside context menu or the add-fav card
+  if (e.target.closest('#ctx-menu')) return;
+  if (e.target.closest('.add-fav-card')) return;
   const card = e.target.closest('.module-card');
   if (card && card.dataset.go) { navTo(card.dataset.go); return; }
   const back = e.target.closest('[data-back]');
@@ -2404,6 +3013,229 @@ const loadImage = (file) => new Promise((res, rej) => {
   img.onerror = rej;
   img.src = URL.createObjectURL(file);
 });
+
+// ==================== FAVORITES SYSTEM ====================
+const FAV_KEY = 'xtools-favorites';
+
+function loadFavs() {
+  try { return JSON.parse(localStorage.getItem(FAV_KEY) || '[]'); }
+  catch { return []; }
+}
+function saveFavs(arr) {
+  localStorage.setItem(FAV_KEY, JSON.stringify(arr));
+}
+function isFav(go) { return loadFavs().includes(go); }
+function toggleFav(go) {
+  let favs = loadFavs();
+  if (favs.includes(go)) { favs = favs.filter(f => f !== go); }
+  else { favs.push(go); }
+  saveFavs(favs);
+  return favs.includes(go);
+}
+
+// Read module metadata from the source cards in each group
+function getModuleMeta(go) {
+  // Search all original cards (in hidden groups) for matching data-go
+  const card = document.querySelector(`.module-group:not([data-group="fav"]) .module-card[data-go="${go}"]`)
+            || document.querySelector(`.module-card[data-go="${go}"]`);
+  if (!card) return null;
+  const icon = card.querySelector('.icon');
+  const title = card.querySelector('.title');
+  const desc = card.querySelector('.desc');
+  // Determine which group it belongs to
+  const group = card.closest('.module-group')?.dataset.group || '';
+  return {
+    go,
+    iconText: icon ? icon.textContent.trim() : '📦',
+    iconClass: icon ? [...icon.classList].find(c => ['doc','img','text','util','sys'].includes(c)) || 'sys' : 'sys',
+    title: title ? title.textContent : go,
+    desc: desc ? desc.textContent : '',
+    group
+  };
+}
+
+const GROUP_NAMES = { doc:'📄 Tài liệu', img:'🖼️ Ảnh', text:'📝 Text', util:'🔧 Tiện ích', media:'🎬 Media', ai:'🤖 AI', sys:'📁 Hệ thống' };
+
+function renderFavGrid() {
+  const grid = $('#fav-grid');
+  if (!grid) return;
+  const favs = loadFavs();
+  grid.innerHTML = '';
+
+  // Always show the + add card first
+  const addCard = document.createElement('div');
+  addCard.className = 'module-card add-fav-card';
+  addCard.id = 'fav-add-btn';
+  addCard.innerHTML = '<div class="plus">+</div><div class="add-label">Thêm tính năng</div>';
+  addCard.addEventListener('click', openFavPicker);
+  grid.appendChild(addCard);
+
+  if (!favs.length) {
+    const empty = document.createElement('div');
+    empty.className = 'fav-empty';
+    empty.innerHTML = `<div class="ic">⭐</div><div class="t">Chưa có mục ưa thích</div><div class="s">Bấm <strong>+ Thêm tính năng</strong> ở trên,<br>hoặc chuột phải / nhấn giữ vào icon bất kỳ<br>rồi chọn "Thêm vào ưa thích"</div>`;
+    grid.appendChild(empty);
+    return;
+  }
+
+  for (const go of favs) {
+    const meta = getModuleMeta(go);
+    if (!meta) continue;
+    const card = document.createElement('div');
+    card.className = 'module-card is-fav';
+    card.dataset.go = go;
+    card.innerHTML = `
+      <span class="fav-star">⭐</span>
+      <div class="icon ${meta.iconClass}">${meta.iconText}</div>
+      <div><div class="title">${meta.title}</div><div class="desc">${meta.desc}</div></div>
+    `;
+    grid.appendChild(card);
+  }
+}
+
+// Sync star badges across all cards based on current favs
+function syncFavStars() {
+  const favs = loadFavs();
+  $$('.module-card[data-go]').forEach(card => {
+    card.classList.toggle('is-fav', favs.includes(card.dataset.go));
+  });
+}
+
+// ----- Favorite picker sheet (the + button → tick list) -----
+function openFavPicker() {
+  const favs = loadFavs();
+  const sb = $('#sheet-bg'), sh = $('#sheet');
+
+  // Build list grouped by category
+  const groups = ['doc','img','text','util','media','ai','sys'];
+  let listHtml = '';
+  for (const g of groups) {
+    const cards = $$(`.module-group[data-group="${g}"] .module-card[data-go]`);
+    if (!cards.length) continue;
+    listHtml += `<div class="fav-picker-section">${GROUP_NAMES[g] || g}</div>`;
+    for (const card of cards) {
+      const go = card.dataset.go;
+      const meta = getModuleMeta(go);
+      if (!meta) continue;
+      const checked = favs.includes(go);
+      listHtml += `
+        <div class="fav-picker-item ${checked ? 'checked' : ''}" data-go="${go}">
+          <div class="pic icon ${meta.iconClass}">${meta.iconText}</div>
+          <div class="nm">${meta.title}</div>
+          <div class="chk">✓</div>
+        </div>`;
+    }
+  }
+
+  sh.innerHTML = `
+    <div class="handle"></div>
+    <h3 style="font-size:20px;font-weight:700;margin-bottom:4px">Chọn mục ưa thích</h3>
+    <p style="color:var(--text-2);font-size:13px;margin-bottom:8px">Tick để thêm/bỏ. Tự động lưu.</p>
+    <div class="fav-picker-list">${listHtml}</div>
+    <div class="actions-row" style="margin-top:8px">
+      <button class="btn primary" id="fav-picker-done">Xong</button>
+    </div>
+  `;
+  sb.classList.add('show');
+
+  // Toggle on tap
+  sh.querySelectorAll('.fav-picker-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const go = item.dataset.go;
+      const nowFav = toggleFav(go);
+      item.classList.toggle('checked', nowFav);
+      syncFavStars();
+    });
+  });
+
+  const close = () => { sb.classList.remove('show'); renderFavGrid(); };
+  $('#fav-picker-done').onclick = close;
+  sb.onclick = (e) => { if (e.target.id === 'sheet-bg') close(); };
+}
+
+// ----- Context menu (right-click on PC, long-press on mobile) -----
+let ctxTargetGo = null;
+
+function showCtxMenu(x, y, go) {
+  ctxTargetGo = go;
+  const menu = $('#ctx-menu');
+  const fav = isFav(go);
+  $('#ctx-fav-label').textContent = fav ? 'Bỏ khỏi ưa thích' : 'Thêm vào ưa thích';
+  $('#ctx-fav-toggle .ic').textContent = fav ? '☆' : '⭐';
+  menu.classList.add('show');
+  // Position, keep within viewport
+  const mw = menu.offsetWidth, mh = menu.offsetHeight;
+  const vw = window.innerWidth, vh = window.innerHeight;
+  let px = x, py = y;
+  if (px + mw > vw - 10) px = vw - mw - 10;
+  if (py + mh > vh - 10) py = vh - mh - 10;
+  menu.style.left = Math.max(10, px) + 'px';
+  menu.style.top = Math.max(10, py) + 'px';
+}
+function hideCtxMenu() {
+  $('#ctx-menu').classList.remove('show');
+  ctxTargetGo = null;
+}
+
+$('#ctx-fav-toggle').addEventListener('click', () => {
+  if (!ctxTargetGo) return;
+  const nowFav = toggleFav(ctxTargetGo);
+  syncFavStars();
+  renderFavGrid();
+  toast(nowFav ? '⭐ Đã thêm vào ưa thích' : 'Đã bỏ khỏi ưa thích');
+  hideCtxMenu();
+});
+$('#ctx-open').addEventListener('click', () => {
+  if (ctxTargetGo) navTo(ctxTargetGo);
+  hideCtxMenu();
+});
+
+// Right-click (PC)
+document.addEventListener('contextmenu', (e) => {
+  const card = e.target.closest('.module-card[data-go]');
+  if (!card) { hideCtxMenu(); return; }
+  e.preventDefault();
+  showCtxMenu(e.clientX, e.clientY, card.dataset.go);
+});
+
+// Long-press (mobile)
+let lpTimer = null, lpCard = null, lpMoved = false, lpStartXY = null;
+document.addEventListener('touchstart', (e) => {
+  const card = e.target.closest('.module-card[data-go]');
+  if (!card) return;
+  lpCard = card;
+  lpMoved = false;
+  const t = e.touches[0];
+  lpStartXY = {x: t.clientX, y: t.clientY};
+  lpTimer = setTimeout(() => {
+    if (lpMoved) return;
+    if (navigator.vibrate) navigator.vibrate(15);
+    card.classList.add('pressing');
+    showCtxMenu(lpStartXY.x, lpStartXY.y - 20, card.dataset.go);
+    setTimeout(() => card.classList.remove('pressing'), 200);
+    suppressNextCardClick = true; // prevent the click-after-touch from navigating
+    lpCard = null;
+  }, 500);
+}, { passive: true });
+document.addEventListener('touchmove', (e) => {
+  if (!lpStartXY) return;
+  const t = e.touches[0];
+  if (Math.abs(t.clientX - lpStartXY.x) > 10 || Math.abs(t.clientY - lpStartXY.y) > 10) {
+    lpMoved = true;
+    clearTimeout(lpTimer);
+    if (lpCard) lpCard.classList.remove('pressing');
+  }
+}, { passive: true });
+document.addEventListener('touchend', () => {
+  clearTimeout(lpTimer);
+  if (lpCard) lpCard.classList.remove('pressing');
+}, { passive: true });
+
+// Dismiss context menu on outside click/scroll
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('#ctx-menu')) hideCtxMenu();
+});
+document.addEventListener('scroll', hideCtxMenu, true);
 
 // ==================== SCAN PDF ====================
 const scanPages = [];
@@ -4843,6 +5675,457 @@ $('#ai-save').addEventListener('click', () => {
   downloadBlob(new Blob([aiResult], {type:'text/plain;charset=utf-8'}), 'summary-' + Date.now() + '.txt');
 });
 
+// ==================== CHAT AI ====================
+const CHAT_KEY = 'xtools-chat-history';
+let chatHistory = [];
+let chatBusy = false;
+
+function loadChatHistory() {
+  try { return JSON.parse(localStorage.getItem(CHAT_KEY) || '[]'); }
+  catch { return []; }
+}
+function saveChatHistory() {
+  // Keep last 50 messages to avoid localStorage bloat
+  const trimmed = chatHistory.slice(-50);
+  localStorage.setItem(CHAT_KEY, JSON.stringify(trimmed));
+}
+
+function renderChat() {
+  const box = $('#chat-messages');
+  if (!box) return;
+  if (!chatHistory.length) {
+    box.innerHTML = `<div class="chat-empty"><div class="ic">💬</div><div class="t">Chat với Gemini</div><div class="s">Hỏi bất cứ điều gì — soạn email, dịch,<br>tóm tắt, giải thích, viết content...</div></div>`;
+    return;
+  }
+  box.innerHTML = '';
+  chatHistory.forEach((msg, i) => {
+    const el = document.createElement('div');
+    el.className = 'chat-msg ' + msg.role;
+    if (msg.role === 'ai') {
+      el.innerHTML = mdRender(msg.text) + `<div class="msg-actions"><span class="msg-copy" data-i="${i}">📋 Copy</span></div>`;
+    } else {
+      el.textContent = msg.text;
+    }
+    box.appendChild(el);
+  });
+  box.querySelectorAll('.msg-copy').forEach(b => b.addEventListener('click', () => {
+    copyText(chatHistory[parseInt(b.dataset.i)].text);
+  }));
+  box.scrollTop = box.scrollHeight;
+}
+
+function initChat() {
+  chatHistory = loadChatHistory();
+  renderChat();
+}
+
+async function sendChatMessage() {
+  if (chatBusy) return;
+  const input = $('#chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+  const key = loadAIKey();
+  if (!key) {
+    toast('Chưa có API key — vào AI → API key');
+    navTo('aisettings');
+    return;
+  }
+
+  chatHistory.push({role: 'user', text});
+  input.value = '';
+  input.style.height = '44px';
+  renderChat();
+  saveChatHistory();
+
+  chatBusy = true;
+  $('#chat-send').disabled = true;
+
+  // Typing indicator
+  const box = $('#chat-messages');
+  const typing = document.createElement('div');
+  typing.className = 'chat-typing';
+  typing.id = 'chat-typing';
+  typing.innerHTML = '<span></span><span></span><span></span>';
+  box.appendChild(typing);
+  box.scrollTop = box.scrollHeight;
+
+  const model = loadAIModel();
+  try {
+    // Build conversation contents for Gemini
+    const contents = chatHistory.map(m => ({
+      role: m.role === 'user' ? 'user' : 'model',
+      parts: [{text: m.text}]
+    }));
+
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:streamGenerateContent?alt=sse&key=${encodeURIComponent(key)}`;
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        contents,
+        generationConfig: {temperature: 0.7, maxOutputTokens: 4096}
+      })
+    });
+
+    if (!res.ok) {
+      const errJson = await res.json().catch(() => ({}));
+      throw new Error(errJson.error?.message || `HTTP ${res.status}`);
+    }
+
+    // Stream SSE
+    typing.remove();
+    chatHistory.push({role: 'ai', text: ''});
+    const aiIndex = chatHistory.length - 1;
+    const aiEl = document.createElement('div');
+    aiEl.className = 'chat-msg ai';
+    box.appendChild(aiEl);
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+    let fullText = '';
+
+    while (true) {
+      const {done, value} = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, {stream: true});
+      const lines = buffer.split('\n');
+      buffer = lines.pop();
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const data = line.slice(6).trim();
+        if (data === '[DONE]' || !data) continue;
+        try {
+          const json = JSON.parse(data);
+          const chunk = json.candidates?.[0]?.content?.parts?.[0]?.text || '';
+          if (chunk) {
+            fullText += chunk;
+            chatHistory[aiIndex].text = fullText;
+            aiEl.innerHTML = mdRender(fullText);
+            box.scrollTop = box.scrollHeight;
+          }
+        } catch {}
+      }
+    }
+
+    if (!fullText) {
+      chatHistory[aiIndex].text = '(Không nhận được phản hồi)';
+      aiEl.textContent = '(Không nhận được phản hồi)';
+    } else {
+      // Add copy button
+      aiEl.innerHTML = mdRender(fullText) + `<div class="msg-actions"><span class="msg-copy" data-i="${aiIndex}">📋 Copy</span></div>`;
+      aiEl.querySelector('.msg-copy').addEventListener('click', () => copyText(fullText));
+    }
+    saveChatHistory();
+  } catch (err) {
+    const t = $('#chat-typing'); if (t) t.remove();
+    chatHistory.push({role: 'ai', text: '⚠ Lỗi: ' + err.message});
+    renderChat();
+    saveChatHistory();
+  } finally {
+    chatBusy = false;
+    $('#chat-send').disabled = false;
+    box.scrollTop = box.scrollHeight;
+  }
+}
+
+$('#chat-send').addEventListener('click', sendChatMessage);
+$('#chat-input').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChatMessage(); }
+});
+$('#chat-input').addEventListener('input', (e) => {
+  e.target.style.height = '44px';
+  e.target.style.height = Math.min(120, e.target.scrollHeight) + 'px';
+});
+$('#chat-new').addEventListener('click', async () => {
+  if (chatHistory.length && !confirm('Bắt đầu cuộc trò chuyện mới? Lịch sử hiện tại sẽ bị xoá.')) return;
+  chatHistory = [];
+  saveChatHistory();
+  renderChat();
+});
+
+// ==================== PDF PAGE NUMBER ====================
+let pdfnumFile = null;
+
+$('#pdfnum-input').addEventListener('change', (e) => {
+  pdfnumFile = e.target.files[0];
+  if (pdfnumFile) $('#pdfnum-options').style.display = 'block';
+});
+
+$('#pdfnum-do').addEventListener('click', async () => {
+  if (!pdfnumFile) return;
+  setStatus($('#pdfnum-status'), 'Đang xử lý...');
+  setProgress($('#pdfnum-progress'), 10);
+  try {
+    const { PDFDocument, rgb, StandardFonts } = await import('https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/+esm');
+    const buf = await pdfnumFile.arrayBuffer();
+    const pdf = await PDFDocument.load(buf);
+    const font = await pdf.embedFont(StandardFonts.Helvetica);
+    const pages = pdf.getPages();
+    const total = pages.length;
+    const pos = $('#pdfnum-pos').value;
+    const style = $('#pdfnum-style').value;
+    const startNum = parseInt($('#pdfnum-start').value) || 1;
+    const size = parseInt($('#pdfnum-size').value) || 11;
+    const skipFirst = $('#pdfnum-skip-first').checked;
+    setProgress($('#pdfnum-progress'), 30);
+
+    pages.forEach((page, idx) => {
+      if (skipFirst && idx === 0) return;
+      const num = startNum + idx - (skipFirst ? 1 : 0);
+      const displayTotal = skipFirst ? total - 1 : total;
+      let label;
+      switch (style) {
+        case 'n_total': label = `${num}/${displayTotal}`; break;
+        case 'trang_n': label = `Trang ${num}`; break;
+        case 'trang_n_total': label = `Trang ${num}/${displayTotal}`; break;
+        case 'dash': label = `- ${num} -`; break;
+        default: label = `${num}`;
+      }
+      const {width, height} = page.getSize();
+      const textWidth = font.widthOfTextAtSize(label, size);
+      const margin = 30;
+      let x, y;
+      // Horizontal
+      if (pos[1] === 'l') x = margin;
+      else if (pos[1] === 'r') x = width - textWidth - margin;
+      else x = (width - textWidth) / 2; // center
+      // Vertical
+      if (pos[0] === 't') y = height - margin - size;
+      else y = margin;
+      page.drawText(label, {x, y, size, font, color: rgb(0.2, 0.2, 0.2)});
+    });
+
+    setProgress($('#pdfnum-progress'), 80);
+    const bytes = await pdf.save();
+    downloadBlob(new Blob([bytes], {type:'application/pdf'}), 'numbered-' + Date.now() + '.pdf');
+    setProgress($('#pdfnum-progress'), 100);
+    setStatus($('#pdfnum-status'), `✓ Đã đánh số ${skipFirst ? total-1 : total} trang`, 'success');
+  } catch (err) {
+    setStatus($('#pdfnum-status'), '✗ Lỗi: ' + err.message, 'error');
+  }
+});
+
+// ==================== TEXT CLEAN ====================
+function applyClean(text, op) {
+  let lines = text.split('\n');
+  switch (op) {
+    case 'trim-lines': return lines.map(l => l.trim()).join('\n');
+    case 'multi-space': return text.replace(/[ \t]{2,}/g, ' ');
+    case 'blank-lines': return lines.filter(l => l.trim()).join('\n');
+    case 'multi-blank': return text.replace(/\n{3,}/g, '\n\n');
+    case 'dup-lines': {
+      const seen = new Set(); const out = [];
+      for (const l of lines) { if (!seen.has(l)) { seen.add(l); out.push(l); } }
+      return out.join('\n');
+    }
+    case 'sort': return lines.filter(l=>l.trim()).sort((a,b)=>a.localeCompare(b,'vi')).join('\n');
+    case 'sort-desc': return lines.filter(l=>l.trim()).sort((a,b)=>b.localeCompare(a,'vi')).join('\n');
+    case 'number': return lines.map((l,i)=>`${i+1}. ${l}`).join('\n');
+    case 'join': return lines.map(l=>l.trim()).filter(Boolean).join(' ');
+    case 'lower': return text.toLowerCase();
+    case 'upper': return text.toUpperCase();
+    default: return text;
+  }
+}
+
+function showCleanResult(text) {
+  $('#tcl-output').textContent = text;
+  $('#tcl-output').classList.add('show');
+  $('#tcl-actions').style.display = 'flex';
+}
+
+$$('#view-textclean .chip[data-clean]').forEach(c => c.addEventListener('click', () => {
+  const src = $('#tcl-output').classList.contains('show') ? $('#tcl-output').textContent : $('#tcl-input').value;
+  showCleanResult(applyClean(src, c.dataset.clean));
+}));
+
+$('#tcl-clean-all').addEventListener('click', () => {
+  let t = $('#tcl-input').value;
+  // Basic cleanup chain
+  t = applyClean(t, 'trim-lines');
+  t = applyClean(t, 'multi-space');
+  t = applyClean(t, 'multi-blank');
+  showCleanResult(t.trim());
+});
+
+$('#tcl-copy').addEventListener('click', () => copyText($('#tcl-output').textContent));
+$('#tcl-use').addEventListener('click', () => {
+  $('#tcl-input').value = $('#tcl-output').textContent;
+  $('#tcl-output').classList.remove('show');
+  $('#tcl-actions').style.display = 'none';
+  toast('Đã chuyển làm input');
+});
+
+// ==================== NAME SPLIT ====================
+let nsRows = [];
+
+$('#ns-do').addEventListener('click', () => {
+  const names = $('#ns-input').value.split('\n').map(s => s.trim()).filter(Boolean);
+  if (!names.length) { setStatus($('#ns-status'), '✗ Chưa nhập tên', 'error'); return; }
+  nsRows = names.map(full => {
+    const parts = full.replace(/\s+/g, ' ').split(' ');
+    let ho = '', dem = '', ten = '';
+    if (parts.length === 1) { ten = parts[0]; }
+    else if (parts.length === 2) { ho = parts[0]; ten = parts[1]; }
+    else { ho = parts[0]; ten = parts[parts.length-1]; dem = parts.slice(1, -1).join(' '); }
+    return {full, ho, dem, ten};
+  });
+
+  // Build table
+  const esc = (s) => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  let html = '<table style="width:100%;border-collapse:collapse;font-size:13px">';
+  html += '<thead><tr style="text-align:left;color:var(--text-2)"><th style="padding:8px;border-bottom:1px solid var(--border)">Họ tên</th><th style="padding:8px;border-bottom:1px solid var(--border)">Họ</th><th style="padding:8px;border-bottom:1px solid var(--border)">Đệm</th><th style="padding:8px;border-bottom:1px solid var(--border)">Tên</th></tr></thead><tbody>';
+  for (const r of nsRows) {
+    html += `<tr><td style="padding:8px;border-bottom:1px solid var(--border)">${esc(r.full)}</td><td style="padding:8px;border-bottom:1px solid var(--border)">${esc(r.ho)}</td><td style="padding:8px;border-bottom:1px solid var(--border);color:var(--text-2)">${esc(r.dem)}</td><td style="padding:8px;border-bottom:1px solid var(--border);font-weight:600">${esc(r.ten)}</td></tr>`;
+  }
+  html += '</tbody></table>';
+  const result = $('#ns-result');
+  result.innerHTML = html;
+  result.style.display = 'block';
+  result.style.userSelect = 'text';
+  result.style.webkitUserSelect = 'text';
+  $('#ns-actions').style.display = 'flex';
+  setStatus($('#ns-status'), `✓ Đã tách ${nsRows.length} tên`, 'success');
+});
+
+function nsToCsv() {
+  const esc = (s) => /[",\n]/.test(s) ? '"' + s.replace(/"/g,'""') + '"' : s;
+  let csv = 'Họ tên,Họ,Tên đệm,Tên\n';
+  csv += nsRows.map(r => [r.full, r.ho, r.dem, r.ten].map(esc).join(',')).join('\n');
+  return csv;
+}
+$('#ns-copy-csv').addEventListener('click', () => copyText(nsToCsv()));
+$('#ns-save-csv').addEventListener('click', () => {
+  // BOM for Excel to read UTF-8 Vietnamese correctly
+  downloadBlob(new Blob(['\uFEFF' + nsToCsv()], {type:'text/csv;charset=utf-8'}), 'hoten-' + Date.now() + '.csv');
+});
+
+// ==================== NOTES ====================
+const NOTES_KEY = 'xtools-notes';
+function loadNotes() {
+  try { return JSON.parse(localStorage.getItem(NOTES_KEY) || '[]'); }
+  catch { return []; }
+}
+function saveNotes(arr) { localStorage.setItem(NOTES_KEY, JSON.stringify(arr)); }
+
+function renderNotes() {
+  const list = $('#notes-list'), empty = $('#notes-empty');
+  let notes = loadNotes();
+  const q = ($('#notes-search').value || '').toLowerCase().trim();
+  if (q) notes = notes.filter(n => n.text.toLowerCase().includes(q));
+  list.innerHTML = '';
+  if (!notes.length) {
+    empty.style.display = 'block';
+    empty.querySelector('.t').textContent = q ? 'Không tìm thấy' : 'Chưa có ghi chú';
+    return;
+  }
+  empty.style.display = 'none';
+  const esc = (s) => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  notes.forEach(n => {
+    const el = document.createElement('div');
+    el.className = 'note-item';
+    const d = new Date(n.id);
+    const dateStr = d.toLocaleDateString('vi-VN') + ' ' + d.toLocaleTimeString('vi-VN', {hour:'2-digit',minute:'2-digit'});
+    el.innerHTML = `<div class="note-text">${esc(n.text)}</div><div class="note-meta"><span class="note-date">${dateStr}</span><span class="note-del" data-id="${n.id}">🗑 Xoá</span></div>`;
+    el.querySelector('.note-del').addEventListener('click', () => {
+      saveNotes(loadNotes().filter(x => x.id !== n.id));
+      renderNotes();
+      toast('Đã xoá');
+    });
+    list.appendChild(el);
+  });
+}
+
+$('#notes-add').addEventListener('click', () => {
+  const text = $('#notes-input').value.trim();
+  if (!text) return;
+  const notes = loadNotes();
+  notes.unshift({id: Date.now(), text});
+  saveNotes(notes);
+  $('#notes-input').value = '';
+  renderNotes();
+  toast('Đã thêm ghi chú');
+});
+$('#notes-search').addEventListener('input', renderNotes);
+
+// ==================== TODO ====================
+const TODO_KEY = 'xtools-todos';
+let todoFilter = 'all';
+function loadTodos() {
+  try { return JSON.parse(localStorage.getItem(TODO_KEY) || '[]'); }
+  catch { return []; }
+}
+function saveTodos(arr) { localStorage.setItem(TODO_KEY, JSON.stringify(arr)); }
+
+function renderTodos() {
+  const list = $('#todo-list'), empty = $('#todo-empty');
+  let todos = loadTodos();
+  const total = todos.length;
+  const done = todos.filter(t => t.done).length;
+
+  if (todoFilter === 'active') todos = todos.filter(t => !t.done);
+  else if (todoFilter === 'done') todos = todos.filter(t => t.done);
+
+  list.innerHTML = '';
+  $('#todo-stats').style.display = total ? 'block' : 'none';
+  $('#todo-stats').textContent = `${done}/${total} hoàn thành`;
+  $('#todo-clear-row').style.display = done > 0 ? 'flex' : 'none';
+
+  if (!todos.length) {
+    empty.style.display = 'block';
+    empty.querySelector('.t').textContent = total ? 'Không có việc nào' : 'Chưa có việc nào';
+    return;
+  }
+  empty.style.display = 'none';
+  const esc = (s) => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  todos.forEach(t => {
+    const el = document.createElement('div');
+    el.className = 'todo-item' + (t.done ? ' done' : '');
+    el.innerHTML = `<div class="todo-check">✓</div><div class="todo-text">${esc(t.text)}</div><span class="todo-del" data-id="${t.id}">✕</span>`;
+    el.querySelector('.todo-check').addEventListener('click', () => {
+      const all = loadTodos();
+      const item = all.find(x => x.id === t.id);
+      if (item) { item.done = !item.done; saveTodos(all); renderTodos(); }
+    });
+    el.querySelector('.todo-del').addEventListener('click', () => {
+      saveTodos(loadTodos().filter(x => x.id !== t.id));
+      renderTodos();
+    });
+    list.appendChild(el);
+  });
+}
+
+function addTodo() {
+  const text = $('#todo-input').value.trim();
+  if (!text) return;
+  const todos = loadTodos();
+  todos.unshift({id: Date.now(), text, done: false});
+  saveTodos(todos);
+  $('#todo-input').value = '';
+  $('#todo-input').style.height = '44px';
+  renderTodos();
+}
+$('#todo-add').addEventListener('click', addTodo);
+$('#todo-input').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); addTodo(); }
+});
+$('#todo-input').addEventListener('input', (e) => {
+  e.target.style.height = '44px';
+  e.target.style.height = Math.min(100, e.target.scrollHeight) + 'px';
+});
+$$('#view-todo .chip[data-todo-filter]').forEach(c => c.addEventListener('click', () => {
+  $$('#view-todo .chip[data-todo-filter]').forEach(x => x.classList.remove('active'));
+  c.classList.add('active');
+  todoFilter = c.dataset.todoFilter;
+  renderTodos();
+}));
+$('#todo-clear-done').addEventListener('click', () => {
+  saveTodos(loadTodos().filter(t => !t.done));
+  renderTodos();
+  toast('Đã xoá việc hoàn thành');
+});
+
 // ==================== VIDEO DOWNLOADER ====================
 const SHORTCUT_DEFAULTS = {
   youtube: 'YouTube Download',
@@ -4955,10 +6238,10 @@ document.addEventListener('keydown', (e) => {
     return;
   }
 
-  // 1-7 = switch tabs (only on home)
+  // 1-8 = switch tabs (only on home)
   const homeActive = document.querySelector('#view-home.active');
-  if (homeActive && /^[1-7]$/.test(e.key)) {
-    const tabs = ['doc','img','text','util','media','ai','sys'];
+  if (homeActive && /^[1-8]$/.test(e.key)) {
+    const tabs = ['fav','doc','img','text','util','media','ai','sys'];
     const tab = document.querySelector(`.tab[data-tab="${tabs[parseInt(e.key)-1]}"]`);
     if (tab) { tab.click(); e.preventDefault(); }
   }
@@ -5043,6 +6326,14 @@ document.addEventListener('wheel', (e) => {
 // ==================== INIT ====================
 (async () => {
   await FS.init();
+
+  // Initialize favorites: render grid and sync stars BEFORE detaching views
+  renderFavGrid();
+  syncFavStars();
+
+  // Update tab keyboard shortcut array to include fav
+  // (handled in keydown listener below via data-tab order)
+
   // Detach all non-active views (AFTER all event listeners are bound)
   $$('.view').forEach(v => {
     if (!v.classList.contains('active')) {
